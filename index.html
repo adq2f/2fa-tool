@@ -26,273 +26,68 @@
         max-width: 480px;
         margin-top: 20px;
     }
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin-bottom: 8px;
-    }
-    .fb-icon {
-        width: 42px;
-        height: 42px;
-        filter: drop-shadow(0 4px 10px rgba(24,119,242,0.5));
-    }
+    .header { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+    .fb-icon { width: 42px; height: 42px; filter: drop-shadow(0 4px 10px rgba(24,119,242,0.5)); }
     h2 { color: #1877f2; margin: 0; font-size: 24px; font-weight: 800; }
-    .brand {
-        text-align: center;
-        font-size: 11px;
-        font-weight: bold;
-        letter-spacing: 3px;
-        color: #28a745;
-        margin-bottom: 18px;
-    }
-    .mode-tabs {
-        display: flex;
-        background: #f0f2f5;
-        border-radius: 10px;
-        padding: 4px;
-        margin-bottom: 18px;
-        gap: 4px;
-    }
-    .mode-tab {
-        flex: 1;
-        padding: 10px 6px;
-        border-radius: 7px;
-        cursor: pointer;
-        font-size: 10px;
-        font-weight: bold;
-        color: #666;
-        border: none;
-        background: transparent;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        font-family: inherit;
-    }
-    .mode-tab.active {
-        background: #1877f2;
-        color: #fff;
-        box-shadow: 0 3px 10px rgba(24,119,242,0.4);
-    }
+    .brand { text-align: center; font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #28a745; margin-bottom: 18px; }
+    .mode-tabs { display: flex; background: #f0f2f5; border-radius: 10px; padding: 4px; margin-bottom: 18px; gap: 4px; }
+    .mode-tab { flex: 1; padding: 10px 6px; border-radius: 7px; cursor: pointer; font-size: 10px; font-weight: bold; color: #666; border: none; background: transparent; text-transform: uppercase; letter-spacing: 0.3px; font-family: inherit; transition: 0.3s; }
+    .mode-tab.active { background: #1877f2; color: #fff; box-shadow: 0 3px 10px rgba(24,119,242,0.4); }
     .mode-panel { display: none; }
     .mode-panel.active { display: block; }
     .section { margin-bottom: 18px; }
     .input-row { display: flex; align-items: stretch; gap: 8px; }
-    .paste-btn {
-        background: #1877f2;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 0 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 12px rgba(24,119,242,0.4);
-        flex-shrink: 0;
-    }
+    .paste-btn { background: #1877f2; color: #fff; border: none; border-radius: 8px; padding: 0 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24,119,242,0.4); flex-shrink: 0; transition: 0.3s; }
+    .paste-btn:hover { background: #0a4d9e; }
     .paste-btn.copied { background: #17a2b8 !important; }
     .input-wrap { flex: 1; position: relative; min-width: 0; }
-    .input-label {
-        position: absolute;
-        top: 5px;
-        left: 12px;
-        font-size: 8px;
-        font-weight: bold;
-        color: #1877f2;
-        text-transform: uppercase;
-        z-index: 2;
-        opacity: 0.85;
-    }
-    input {
-        width: 100%;
-        height: 100%;
-        padding: 22px 12px 8px 12px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: 'Courier New', monospace;
-        outline: none;
-        min-height: 56px;
-    }
+    .input-label { position: absolute; top: 5px; left: 12px; font-size: 8px; font-weight: bold; color: #1877f2; text-transform: uppercase; z-index: 2; opacity: 0.85; }
+    input { width: 100%; height: 100%; padding: 22px 12px 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Courier New', monospace; outline: none; min-height: 56px; transition: 0.3s; }
     input::placeholder { font-size: 11px; opacity: 0.55; }
     input:focus { border-color: #1877f2; box-shadow: 0 0 0 3px rgba(24,119,242,0.15); }
-    input.has-key {
-        color: #dc3545 !important;
-        font-weight: bold;
-        border-color: #dc3545;
-        background: #fff5f5;
-    }
-    .otp-btn {
-        background: #6c757d;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 6px 10px 8px 10px;
-        cursor: pointer;
-        min-width: 130px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+    input.has-key { color: #dc3545 !important; font-weight: bold; border-color: #dc3545; background: #fff5f5; }
+    .otp-btn { background: #6c757d; color: #fff; border: none; border-radius: 8px; padding: 6px 10px 8px 10px; cursor: pointer; min-width: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; }
     .otp-btn.active { background: #28a745; box-shadow: 0 4px 12px rgba(40,167,69,0.4); }
+    .otp-btn.active:hover { background: #1e7e34; }
     .otp-btn.copied { background: #17a2b8 !important; }
     .otp-btn.wrong { background: #dc3545; }
     .otp-btn:disabled { cursor: not-allowed; opacity: 0.7; }
-    .otp-label-inside {
-        font-size: 8px;
-        font-weight: bold;
-        color: rgba(255,255,255,0.9);
-        text-transform: uppercase;
-        align-self: flex-end;
-        padding-right: 2px;
-    }
-    .otp-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        font-size: 17px;
-        font-weight: bold;
-        font-family: 'Courier New', monospace;
-    }
+    .otp-label-inside { font-size: 8px; font-weight: bold; color: rgba(255,255,255,0.9); text-transform: uppercase; align-self: flex-end; padding-right: 2px; }
+    .otp-content { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 17px; font-weight: bold; font-family: 'Courier New', monospace; }
     .copy-icon { width: 14px; height: 14px; }
-    .output-wrap {
-        border: 2px dashed #28a745;
-        border-radius: 8px;
-        background: #f0fff4;
-        padding: 8px 10px 10px 10px;
-    }
+    .output-wrap { border: 2px dashed #28a745; border-radius: 8px; background: #f0fff4; padding: 8px 10px 10px 10px; transition: 0.3s; }
     .output-wrap.wrong { background: #ffe6e6 !important; border-color: #dc3545 !important; }
     .output-wrap.orange { background: #fff4e6 !important; border-color: #fd7e14 !important; }
-    .output-label-inside {
-        font-size: 8px;
-        font-weight: bold;
-        color: #28a745;
-        text-transform: uppercase;
-        display: block;
-        margin-bottom: 4px;
-    }
+    .output-label-inside { font-size: 8px; font-weight: bold; color: #28a745; text-transform: uppercase; display: block; margin-bottom: 4px; transition: 0.3s; }
     .output-wrap.wrong .output-label-inside { color: #dc3545; }
     .output-wrap.orange .output-label-inside { color: #fd7e14; }
-    .output-box {
-        padding: 6px 8px;
-        font-size: 14px;
-        font-family: 'Courier New', monospace;
-        word-break: break-all;
-        color: #155724;
-        font-weight: bold;
-        background: rgba(255,255,255,0.7);
-        border-radius: 5px;
-        min-height: 30px;
-        display: flex;
-        align-items: center;
-    }
+    .output-box { padding: 6px 8px; font-size: 14px; font-family: 'Courier New', monospace; word-break: break-all; color: #155724; font-weight: bold; background: rgba(255,255,255,0.7); border-radius: 5px; min-height: 30px; display: flex; align-items: center; }
     .output-box.wrong { color: #dc3545 !important; justify-content: center; }
     .output-box.orange { color: #fd7e14 !important; justify-content: center; }
-    .btn-copy-inside {
-        width: 100%;
-        margin-top: 8px;
-        padding: 8px 10px;
-        background: #28a745;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        text-transform: uppercase;
-    }
+    .btn-copy-inside { width: 100%; margin-top: 8px; padding: 8px 10px; background: #28a745; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; text-transform: uppercase; transition: 0.3s; }
+    .btn-copy-inside:hover { background: #1e7e34; }
     .btn-copy-inside:disabled { background: #999; cursor: not-allowed; }
     .btn-copy-inside.copied { background: #17a2b8 !important; }
-    .progress-bar {
-        width: 100%;
-        height: 4px;
-        background: #ddd;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-top: 8px;
-    }
-    .progress-fill {
-        height: 100%;
-        background: #28a745;
-        width: 100%;
-        transition: width 1s linear, background-color 0.5s;
-    }
+    .progress-bar { width: 100%; height: 4px; background: #ddd; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; background: #28a745; width: 100%; transition: width 1s linear, background-color 0.5s; }
     .timer { font-size: 12px; color: #666; font-weight: bold; }
     .timer.wrong { color: #dc3545; }
     .timer.orange { color: #fd7e14; }
     hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
-
-    .coming-soon {
-        text-align: center;
-        padding: 60px 20px;
-        background: #fff5f5;
-        border-radius: 12px;
-        border: 2px dashed #dc3545;
-    }
-    .coming-soon h3 {
-        color: #dc3545;
-        font-size: 28px;
-        font-weight: 900;
-        letter-spacing: 2px;
-        margin: 0 0 12px 0;
-        text-transform: uppercase;
-    }
+    .coming-soon { text-align: center; padding: 60px 20px; background: #fff5f5; border-radius: 12px; border: 2px dashed #dc3545; }
+    .coming-soon h3 { color: #dc3545; font-size: 28px; font-weight: 900; letter-spacing: 2px; margin: 0 0 12px 0; text-transform: uppercase; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
     .coming-soon p { color: #666; font-size: 14px; margin: 0; }
-    .coming-soon .icon-lock {
-        width: 60px;
-        height: 60px;
-        margin-bottom: 15px;
-        stroke: #dc3545;
-    }
-
-    .popup {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-150px);
-        color: #fff;
-        padding: 14px 22px;
-        border-radius: 14px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 9999;
-        opacity: 0;
-        transition: all 0.5s;
-        pointer-events: none;
-        min-width: 240px;
-        max-width: 90%;
-    }
+    .coming-soon .icon-lock { width: 60px; height: 60px; margin-bottom: 15px; stroke: #dc3545; }
+    .popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px); color: #fff; padding: 14px 22px; border-radius: 14px; font-weight: bold; display: flex; align-items: center; gap: 12px; z-index: 9999; opacity: 0; transition: all 0.5s; pointer-events: none; min-width: 240px; max-width: 90%; }
     .popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .popup.green {
-        background: linear-gradient(135deg, #28a745, #1e7e34);
-        box-shadow: 0 12px 40px rgba(40,167,69,0.6);
-    }
-    .popup.red {
-        background: linear-gradient(135deg, #dc3545, #a71e2a);
-        box-shadow: 0 12px 40px rgba(220,53,69,0.6);
-    }
-    .popup.orange {
-        background: linear-gradient(135deg, #fd7e14, #c25a04);
-        box-shadow: 0 12px 40px rgba(253,126,20,0.6);
-    }
+    .popup.green { background: linear-gradient(135deg, #28a745, #1e7e34); box-shadow: 0 12px 40px rgba(40,167,69,0.6); }
+    .popup.red { background: linear-gradient(135deg, #dc3545, #a71e2a); box-shadow: 0 12px 40px rgba(220,53,69,0.6); }
+    .popup.orange { background: linear-gradient(135deg, #fd7e14, #c25a04); box-shadow: 0 12px 40px rgba(253,126,20,0.6); }
     .popup-icon { width: 30px; height: 30px; flex-shrink: 0; }
     .popup-text { display: flex; flex-direction: column; line-height: 1.3; }
     .popup-title { font-size: 13px; text-transform: uppercase; }
-    .popup-code {
-        font-size: 22px;
-        font-family: 'Courier New', monospace;
-        letter-spacing: 4px;
-        margin-top: 3px;
-    }
+    .popup-code { font-size: 22px; font-family: 'Courier New', monospace; letter-spacing: 4px; margin-top: 3px; }
     .popup-msg { font-size: 13px; margin-top: 2px; }
 </style>
 </head>
@@ -331,7 +126,6 @@
         <button class="mode-tab" id="tabMode2" onclick="switchMode(2)">Base64-2FA → 2FA</button>
     </div>
 
-    <!-- MODE 1 -->
     <div class="mode-panel active" id="panelMode1">
         <div class="section">
             <div style="text-align:right;margin-bottom:6px;">
@@ -377,7 +171,6 @@
         </div>
     </div>
 
-    <!-- MODE 2 -->
     <div class="mode-panel" id="panelMode2">
         <div class="coming-soon">
             <svg class="icon-lock" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2">
@@ -391,7 +184,6 @@
 </div>
 
 <script>
-// ============ Base32 Decode ============
 function base32Decode(base32) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     base32 = base32.toUpperCase().replace(/=+$/, '').replace(/\s/g, '');
@@ -410,7 +202,6 @@ function base32Decode(base32) {
     return new Uint8Array(bytes);
 }
 
-// ============ Base64 Encode ============
 function base64Encode(str) {
     const bytes = new TextEncoder().encode(str);
     let bin = '';
@@ -418,19 +209,16 @@ function base64Encode(str) {
     return btoa(bin);
 }
 
-// ============ Base64 signature ============
-function hasBase64Signature(str) {
+function isBase64Input(str) {
     const clean = str.replace(/\s/g, '');
     return /[a-z]/.test(clean) || /[+/]/.test(clean);
 }
 
-// ============ HMAC-SHA1 ============
 async function hmacSHA1(key, message) {
     const ck = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
     return new Uint8Array(await crypto.subtle.sign('HMAC', ck, message));
 }
 
-// ============ TOTP ============
 async function generateTOTP(keyBytes) {
     const epoch = Math.floor(Date.now() / 1000);
     const counter = Math.floor(epoch / 30);
@@ -443,7 +231,6 @@ async function generateTOTP(keyBytes) {
     return (binary % 1000000).toString().padStart(6, '0');
 }
 
-// ============ Elements ============
 const popup = document.getElementById('popup');
 const popupCode = document.getElementById('popupCode');
 const popupTitle = document.getElementById('popupTitle');
@@ -465,7 +252,6 @@ let currentNewKey1 = '', currentOTP1 = '', isValid1 = false;
 let soundCount1 = 0, lastSoundOTP1 = '', lastKeyInput1 = '';
 let popupTimer = null;
 
-// ============ Switch Mode ============
 function switchMode(mode) {
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
@@ -478,33 +264,48 @@ function switchMode(mode) {
     }
 }
 
-// ============ Vibration ============
 function vibrate() {
     if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200, 100, 200]);
     }
 }
 
-// ============ SIMPLE SOUND (Ager moto — ekta beep) ============
 function playSound() {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.3);
-        setTimeout(() => ctx.close(), 500);
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(0.18, ctx.currentTime);
+        masterGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        masterGain.connect(ctx.destination);
+
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, ctx.currentTime);
+        osc1.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.12);
+        gain1.gain.setValueAtTime(0.7, ctx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc1.connect(gain1);
+        gain1.connect(masterGain);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1760, ctx.currentTime);
+        osc2.frequency.exponentialRampToValueAtTime(2200, ctx.currentTime + 0.12);
+        gain2.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        osc2.connect(gain2);
+        gain2.connect(masterGain);
+
+        osc1.start(ctx.currentTime);
+        osc2.start(ctx.currentTime);
+        osc1.stop(ctx.currentTime + 0.4);
+        osc2.stop(ctx.currentTime + 0.4);
+        setTimeout(() => ctx.close(), 800);
     } catch (e) {}
 }
 
-// ============ Popup Functions ============
 function showSuccessPopup(code) {
     popup.className = 'popup green';
     popupTitle.textContent = '2FA CODE GENERATED!';
@@ -544,7 +345,6 @@ function showGoToPopup(target) {
     popupTimer = setTimeout(() => popup.classList.remove('show'), 4000);
 }
 
-// ============ Paste ============
 async function pasteKey(mode) {
     try {
         const text = await navigator.clipboard.readText();
@@ -556,11 +356,9 @@ async function pasteKey(mode) {
         }
     } catch (e) {
         inputEl1.focus();
-        alert('Please paste manually (Ctrl+V)');
     }
 }
 
-// ============ Update Mode 1 ============
 async function updateMode1() {
     const input = inputEl1.value;
 
@@ -589,70 +387,7 @@ async function updateMode1() {
 
     inputEl1.classList.add('has-key');
 
-    let keyBytes = null;
-    try {
-        keyBytes = base32Decode(input);
-    } catch (e) {
-        keyBytes = null;
-    }
-
-    // Base32 pass
-    if (keyBytes) {
-        try {
-            currentOTP1 = await generateTOTP(keyBytes);
-            otpText1.textContent = currentOTP1;
-            otpBtn1.classList.remove('wrong');
-            otpBtn1.classList.add('active');
-            otpBtn1.disabled = false;
-            isValid1 = true;
-        } catch (e) {
-            otpText1.textContent = 'Wrong 2FA';
-            otpBtn1.classList.remove('active');
-            otpBtn1.classList.add('wrong');
-            otpBtn1.disabled = true;
-            newKeyBox1.textContent = 'Wrong 2FA';
-            newKeyBox1.classList.remove('orange');
-            newKeyBox1.classList.add('wrong');
-            outputWrap1.classList.remove('orange');
-            outputWrap1.classList.add('wrong');
-            outputLabel1.textContent = 'BASE64-2FA KEY';
-            progress1.style.background = '#dc3545';
-            timerEl1.classList.remove('orange');
-            timerEl1.classList.add('wrong');
-            currentNewKey1 = currentOTP1 = '';
-            isValid1 = false;
-            copyKeyBtn1.disabled = true;
-            return;
-        }
-
-        currentNewKey1 = base64Encode(input);
-        newKeyBox1.textContent = currentNewKey1;
-        newKeyBox1.classList.remove('wrong', 'orange');
-        outputWrap1.classList.remove('wrong', 'orange');
-        outputLabel1.textContent = 'BASE64-2FA KEY';
-        timerEl1.classList.remove('wrong', 'orange');
-        copyKeyBtn1.disabled = false;
-
-        const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
-        timerEl1.textContent = '⏱ ' + remaining + 's';
-        progress1.style.width = (remaining / 30 * 100) + '%';
-
-        if (remaining > 15) progress1.style.background = '#28a745';
-        else if (remaining > 4.5) progress1.style.background = '#fd7e14';
-        else progress1.style.background = '#dc3545';
-
-        if (currentOTP1 !== lastSoundOTP1 && soundCount1 < 2) {
-            lastSoundOTP1 = currentOTP1;
-            soundCount1++;
-            showSuccessPopup(currentOTP1);
-        } else {
-            popupCode.textContent = currentOTP1;
-        }
-        return;
-    }
-
-    // Base64 signature
-    if (hasBase64Signature(input)) {
+    if (isBase64Input(input)) {
         otpText1.textContent = 'Wrong';
         otpBtn1.classList.remove('active');
         otpBtn1.classList.add('wrong');
@@ -677,26 +412,79 @@ async function updateMode1() {
         return;
     }
 
-    // Wrong
-    otpText1.textContent = 'Wrong 2FA';
-    otpBtn1.classList.remove('active');
-    otpBtn1.classList.add('wrong');
-    otpBtn1.disabled = true;
-    newKeyBox1.textContent = 'Wrong 2FA';
-    newKeyBox1.classList.remove('orange');
-    newKeyBox1.classList.add('wrong');
-    outputWrap1.classList.remove('orange');
-    outputWrap1.classList.add('wrong');
+    let keyBytes = null;
+    try {
+        keyBytes = base32Decode(input);
+    } catch (e) {
+        keyBytes = null;
+    }
+
+    if (!keyBytes) {
+        otpText1.textContent = 'Wrong 2FA';
+        otpBtn1.classList.remove('active');
+        otpBtn1.classList.add('wrong');
+        otpBtn1.disabled = true;
+        newKeyBox1.textContent = 'Wrong 2FA';
+        newKeyBox1.classList.remove('orange');
+        newKeyBox1.classList.add('wrong');
+        outputWrap1.classList.remove('orange');
+        outputWrap1.classList.add('wrong');
+        outputLabel1.textContent = 'BASE64-2FA KEY';
+        progress1.style.background = '#dc3545';
+        timerEl1.classList.remove('orange');
+        timerEl1.classList.add('wrong');
+        currentNewKey1 = currentOTP1 = '';
+        isValid1 = false;
+        copyKeyBtn1.disabled = true;
+        return;
+    }
+
+    try {
+        currentOTP1 = await generateTOTP(keyBytes);
+        otpText1.textContent = currentOTP1;
+        otpBtn1.classList.remove('wrong');
+        otpBtn1.classList.add('active');
+        otpBtn1.disabled = false;
+        isValid1 = true;
+    } catch (e) {
+        otpText1.textContent = 'Wrong 2FA';
+        otpBtn1.classList.remove('active');
+        otpBtn1.classList.add('wrong');
+        otpBtn1.disabled = true;
+        newKeyBox1.textContent = 'Wrong 2FA';
+        newKeyBox1.classList.add('wrong');
+        outputWrap1.classList.add('wrong');
+        currentNewKey1 = currentOTP1 = '';
+        isValid1 = false;
+        copyKeyBtn1.disabled = true;
+        return;
+    }
+
+    currentNewKey1 = base64Encode(input);
+    newKeyBox1.textContent = currentNewKey1;
+    newKeyBox1.classList.remove('wrong', 'orange');
+    outputWrap1.classList.remove('wrong', 'orange');
     outputLabel1.textContent = 'BASE64-2FA KEY';
-    progress1.style.background = '#dc3545';
-    timerEl1.classList.remove('orange');
-    timerEl1.classList.add('wrong');
-    currentNewKey1 = currentOTP1 = '';
-    isValid1 = false;
-    copyKeyBtn1.disabled = true;
+    timerEl1.classList.remove('wrong', 'orange');
+    copyKeyBtn1.disabled = false;
+
+    const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
+    timerEl1.textContent = '⏱ ' + remaining + 's';
+    progress1.style.width = (remaining / 30 * 100) + '%';
+
+    if (remaining > 15) progress1.style.background = '#28a745';
+    else if (remaining > 4.5) progress1.style.background = '#fd7e14';
+    else progress1.style.background = '#dc3545';
+
+    if (currentOTP1 !== lastSoundOTP1 && soundCount1 < 2) {
+        lastSoundOTP1 = currentOTP1;
+        soundCount1++;
+        showSuccessPopup(currentOTP1);
+    } else {
+        popupCode.textContent = currentOTP1;
+    }
 }
 
-// ============ Copy ============
 function copyText(text, btn, isOTP) {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
@@ -721,7 +509,6 @@ function copyText(text, btn, isOTP) {
 function copyNewKey(mode) { copyText(currentNewKey1, copyKeyBtn1, false); }
 function copyOTP(mode) { copyText(currentOTP1, otpBtn1, true); }
 
-// ============ Events ============
 inputEl1.addEventListener('input', updateMode1);
 setInterval(updateMode1, 1000);
 updateMode1();
