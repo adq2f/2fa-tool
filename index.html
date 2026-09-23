@@ -3,609 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Base32 → Base64</title>
+<title>Facebook 2FA Tool</title>
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: #0a0e27;
-        color: #fff;
-        min-height: 100vh;
-        padding: 15px;
-    }
-    .box {
-        background: #fff;
-        color: #1a1a1a;
-        max-width: 950px;
-        margin: 15px auto;
-        padding: 25px;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-    h1 {
-        color: #1877f2;
-        font-size: 18px;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 4px;
-    }
-    .subtitle {
-        font-size: 11px;
-        color: #999;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        text-align: center;
-        margin-bottom: 18px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
-    }
-    .label {
-        font-size: 11px;
-        font-weight: 700;
-        color: #555;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-    textarea {
-        width: 100%;
-        padding: 14px;
-        border: 2px solid #e5e5e5;
-        border-radius: 12px;
-        font-size: 12px;
-        font-family: monospace;
-        outline: none;
-        resize: vertical;
-        min-height: 150px;
-        margin-bottom: 15px;
-        background: #fafafa;
-        line-height: 1.8;
-    }
-    textarea:focus { border-color: #1877f2; background: #fff; }
-
-    .copy-all-sticky {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: #fff;
-        padding: 10px 0;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-    .btn-copy-all {
-        width: 100%;
-        padding: 15px;
-        background: linear-gradient(135deg, #28a745, #1e7e34);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: 800;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-    .btn-copy-all:hover { transform: translateY(-2px); }
-    .btn-copy-all:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-copy-all.copied { background: linear-gradient(135deg, #17a2b8, #117a8b); }
-    .btn-copy-all svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; }
-
-    .stats-row {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-    }
-    .stat-card {
-        flex: 1;
-        min-width: 90px;
-        padding: 10px;
-        border-radius: 10px;
-        text-align: center;
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-    }
-    .stat-card .number {
-        font-size: 20px;
-        font-weight: 800;
-        color: #1877f2;
-        display: block;
-    }
-    .stat-card .label-text {
-        font-size: 9px;
-        font-weight: 700;
-        color: #999;
-        text-transform: uppercase;
-    }
-    .stat-card.valid { background: #e8f5e9; }
-    .stat-card.valid .number { color: #28a745; }
-    .stat-card.wrong { background: #ffebee; }
-    .stat-card.wrong .number { color: #dc3545; }
-    .stat-card.dupe { background: #fff3e0; }
-    .stat-card.dupe .number { color: #fd7e14; }
-
-    .table-container {
-        max-height: 60vh;
-        overflow-y: auto;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        margin-bottom: 15px;
-        background: #fff;
-    }
-    .result-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-size: 10px;
-        table-layout: fixed;
-    }
-    .result-table th {
-        background: linear-gradient(135deg, #1877f2, #0a4d9e);
-        color: #fff;
-        padding: 10px 8px;
-        text-align: left;
-        font-size: 9px;
-        text-transform: uppercase;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    .result-table td {
-        padding: 10px 8px;
-        border-bottom: 1px solid #f0f0f0;
-        font-family: monospace;
-        font-size: 10px;
-        word-break: break-all;
-        vertical-align: middle;
-        background: #fff;
-        line-height: 1.5;
-    }
-    .result-table .line-cell {
-        color: #155724;
-        font-weight: 700;
-        max-width: 400px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .result-table .wrong-line-cell {
-        color: #dc3545;
-        font-weight: 700;
-        max-width: 400px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .result-table .otp-cell {
-        color: #1877f2;
-        font-weight: 800;
-        font-size: 14px;
-        text-align: center;
-        white-space: nowrap;
-        padding: 10px 4px;
-        background: #f0f7ff;
-    }
-    .result-table .wrong-otp-cell {
-        color: #dc3545;
-        font-weight: 800;
-        font-size: 11px;
-        text-align: center;
-        white-space: nowrap;
-        padding: 10px 4px;
-        background: #ffebee;
-    }
-    .result-table .dupe-cell {
-        color: #fd7e14;
-        font-weight: 700;
-        max-width: 400px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .result-table .copy-cell { text-align: center; padding: 6px; width: 50px; }
-    .copy-icon-btn {
-        background: linear-gradient(135deg, #28a745, #1e7e34);
-        border: none;
-        cursor: pointer;
-        padding: 7px;
-        border-radius: 7px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-    }
-    .copy-icon-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    .copy-icon-btn.copied { background: linear-gradient(135deg, #17a2b8, #117a8b); }
-    .copy-icon-btn.wrong-btn { background: linear-gradient(135deg, #dc3545, #a71e2a); }
-    .copy-icon-btn:disabled { background: #e0e0e0; cursor: not-allowed; }
-    .copy-icon-btn:disabled svg { stroke: #bbb; }
-    .empty-msg {
-        text-align: center;
-        padding: 30px 20px;
-        color: #bbb;
-        font-size: 12px;
-        background: #fafafa;
-        border-radius: 12px;
-        border: 2px dashed #e5e5e5;
-        font-style: italic;
-    }
-    .result-table th:nth-child(1), .result-table td:nth-child(1) { width: 60%; }
-    .result-table th:nth-child(2), .result-table td:nth-child(2) { width: 25%; }
-    .result-table th:nth-child(3), .result-table td:nth-child(3) { width: 15%; }
-
-    /* Popup */
-    .popup {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-150px);
-        color: #fff;
-        padding: 14px 22px;
-        border-radius: 14px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 9999;
-        opacity: 0;
-        transition: all 0.5s;
-        pointer-events: none;
-        min-width: 240px;
-        max-width: 90%;
-        box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    }
-    .popup.show {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-    }
-    .popup.success {
-        background: linear-gradient(135deg, #28a745, #1e7e34);
-        box-shadow: 0 12px 40px rgba(40,167,69,0.6);
-    }
-    .popup.info {
-        background: linear-gradient(135deg, #1877f2, #0a4d9e);
-        box-shadow: 0 12px 40px rgba(24,119,242,0.6);
-    }
-    .popup-icon {
-        width: 30px;
-        height: 30px;
-        flex-shrink: 0;
-    }
-    .popup-text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.3;
-    }
-    .popup-title {
-        font-size: 14px;
-        text-transform: uppercase;
-    }
-    .popup-msg {
-        font-size: 12px;
-        margin-top: 2px;
-        opacity: 0.9;
-    }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0e27;color:#fff;min-height:100vh;padding:15px}
+.notice-bar{background:linear-gradient(135deg,#1877f2,#0a4d9e);border-radius:14px;padding:12px 16px;margin:0 auto 15px;max-width:900px;display:flex;align-items:center;gap:12px;overflow:hidden;box-shadow:0 8px 24px rgba(24,119,242,.4);border:2px solid rgba(255,255,255,.2)}
+.notice-icon{flex-shrink:0;width:44px;height:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));animation:iconPulse 2s infinite}
+@keyframes iconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.notice-scroll{flex:1;overflow:hidden;position:relative;height:24px}
+.notice-text{position:absolute;white-space:nowrap;font-size:13px;font-weight:700;color:#fff;line-height:24px;animation:scrollNotice 35s linear infinite;animation-delay:0.3s;text-shadow:0 2px 4px rgba(0,0,0,.3)}
+@keyframes scrollNotice{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.box{background:#fff;color:#1a1a1a;max-width:900px;margin:0 auto;padding:25px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.header{display:flex;align-items:center;justify-content:center;gap:12px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #f0f2f5}
+.fb-logo{width:46px;height:46px}
+h1{color:#1877f2;font-size:20px;font-weight:800}
+.subtitle{text-align:center;font-size:11px;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.mode-tabs{display:flex;background:#f0f2f5;border-radius:12px;padding:4px;margin-bottom:14px;gap:4px}
+.mode-tab{flex:1;padding:10px 8px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:800;color:#666;border:none;background:transparent;text-transform:uppercase;font-family:inherit;transition:.3s}
+.mode-tab.active{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;box-shadow:0 4px 12px rgba(40,167,69,.4)}
+.stats-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;justify-content:center}
+.stat-card{padding:5px 10px;border-radius:8px;background:#f8f9fa;border:1px solid #e9ecef;display:flex;align-items:center;gap:5px;font-size:11px}
+.stat-card .number{font-size:14px;font-weight:800;color:#1877f2}
+.stat-card .label-text{font-size:10px;font-weight:700;color:#666;text-transform:uppercase}
+.stat-card.valid{background:#e8f5e9;border-color:#c8e6c9}
+.stat-card.valid .number{color:#28a745}
+.stat-card.wrong{background:#ffebee;border-color:#ffcdd2}
+.stat-card.wrong .number{color:#dc3545}
+.stat-card.dupe{background:#fff3e0;border-color:#ffe0b2}
+.stat-card.dupe .number{color:#fd7e14}
+.dupe-warning{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border:2px solid #fd7e14;border-radius:10px;padding:12px 14px;margin-bottom:12px;color:#dc3545;font-weight:800;font-size:12px;display:none;align-items:center;gap:8px}
+.dupe-warning.show{display:flex;animation:pulseWarn 1.5s infinite}
+@keyframes pulseWarn{0%,100%{box-shadow:0 0 0 0 rgba(253,126,20,.5)}50%{box-shadow:0 0 0 10px rgba(253,126,20,0)}}
+.paste-row{display:flex;gap:12px;align-items:stretch;margin-bottom:12px}
+.paste-wrap{flex:1;position:relative;min-width:0}
+.label{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#555;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.paste-icon{width:16px;height:16px;stroke:#1877f2;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.label small{font-size:10px;font-weight:600;color:#999;text-transform:none;letter-spacing:.5px;margin-left:2px}
+textarea{width:100%;padding:12px;border:2px solid #e4e6eb;border-radius:12px;font-size:12px;font-family:monospace;outline:none;resize:vertical;min-height:130px;background:#f8f9fa;line-height:1.8}
+textarea:focus{border-color:#1877f2;background:#fff}
+.ring-timer{position:relative;width:70px;height:70px;flex-shrink:0;align-self:center}
+.ring-timer svg{transform:rotate(-90deg);width:70px;height:70px}
+.ring-bg{fill:none;stroke:#e0e0e0;stroke-width:5}
+.ring-fill{fill:none;stroke:#28a745;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .5s}
+.ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:#28a745}
+.copy-all-btn{width:100%;padding:14px;background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;box-shadow:0 4px 14px rgba(40,167,69,.3);transition:.3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.copy-all-btn:hover{transform:translateY(-2px)}
+.copy-all-btn:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;transform:none}
+.copy-all-btn.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
+.copy-all-btn.blink-red{background:linear-gradient(135deg,#dc3545,#a71e2a)!important;animation:blinkRed 1s infinite}
+@keyframes blinkRed{0%,100%{opacity:1}50%{opacity:.5}}
+.copy-all-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.table-container{max-height:60vh;overflow-y:auto;border-radius:12px;border:1px solid #eee;background:#fff}
+.result-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.result-table th{background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;padding:10px 8px;text-align:left;font-size:9px;text-transform:uppercase;position:sticky;top:0;z-index:10}
+.result-table td{padding:8px;border-bottom:1px solid #f0f0f0;font-family:monospace;font-size:11px;word-break:break-all;vertical-align:middle}
+.result-table th:nth-child(1),.result-table td:nth-child(1){width:50%}
+.result-table th:nth-child(2),.result-table td:nth-child(2){width:50%}
+.result-table .wrong-line-cell{color:#dc3545;font-weight:700}
+.result-table .dupe-cell{color:#fd7e14;font-weight:700}
+.copy-box-otp{background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;padding:10px 12px;border-radius:8px;text-align:center;font-weight:800;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .25s;box-shadow:0 3px 10px rgba(24,119,242,.3);white-space:nowrap;user-select:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.copy-box-otp:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(24,119,242,.5)}
+.copy-box-otp:active{transform:scale(.97)}
+.copy-box-otp.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
+.copy-box-2fa{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;padding:10px 12px;border-radius:8px;text-align:center;font-weight:700;font-size:11px;cursor:pointer;transition:all .25s;box-shadow:0 3px 10px rgba(40,167,69,.3);word-break:break-all;user-select:none;display:flex;align-items:center;gap:8px;justify-content:flex-start}
+.copy-box-2fa:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(40,167,69,.5)}
+.copy-box-2fa:active{transform:scale(.97)}
+.copy-box-2fa.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
+.copy-box-2fa .key-text{flex:1;text-align:left}
+.copy-ico{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.85}
+.copy-box-2fa.blink-red,.copy-box-otp.blink-red{background:linear-gradient(135deg,#dc3545,#a71e2a)!important;animation:blinkRed 1s infinite}
+.empty-msg{text-align:center;padding:40px 20px;color:#bbb;font-size:13px;font-style:italic}
+.popup{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-150px);color:#fff;padding:14px 22px;border-radius:14px;font-weight:bold;display:flex;align-items:center;gap:12px;z-index:9999;opacity:0;transition:all .5s;pointer-events:none;min-width:280px;max-width:90%;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.popup.show{transform:translateX(-50%) translateY(0);opacity:1}
+.popup.success{background:linear-gradient(135deg,#28a745,#1e7e34)}
+.popup.info{background:linear-gradient(135deg,#1877f2,#0a4d9e)}
+.popup.error{background:linear-gradient(135deg,#dc3545,#a71e2a)}
+.popup.warn{background:linear-gradient(135deg,#fd7e14,#c25a04)}
+.popup-icon{width:28px;height:28px;flex-shrink:0}
+.popup-title{font-size:13px;text-transform:uppercase}
+.popup-msg{font-size:12px;margin-top:2px;opacity:.9}
+.lock-box{padding:30px 20px;text-align:center;background:#f8f9fa;border-radius:12px;border:2px dashed #dc3545;margin-bottom:12px}
+.lock-icon{font-size:40px;margin-bottom:10px}
+.lock-title{font-size:14px;font-weight:800;color:#dc3545;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.lock-msg{font-size:11px;color:#666;margin-bottom:14px}
+.lock-input{width:100%;max-width:280px;padding:12px;border:2px solid #e4e6eb;border-radius:10px;font-size:14px;text-align:center;font-family:monospace;letter-spacing:2px;outline:none;margin-bottom:10px;background:#fff}
+.lock-input:focus{border-color:#1877f2}
+.lock-btn{padding:12px 32px;background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;box-shadow:0 4px 14px rgba(24,119,242,.3)}
+.lock-btn:hover{transform:translateY(-2px)}
+.countdown-box{background:#ffebee;border:2px solid #dc3545;border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;display:none}
+.countdown-box.show{display:block}
+.countdown-num{font-size:42px;font-weight:900;color:#dc3545;font-family:monospace;margin:8px 0}
+.countdown-label{font-size:12px;color:#666;font-weight:700;text-transform:uppercase}
+.attempts-left{font-size:11px;color:#fd7e14;font-weight:700;margin-top:8px}
 </style>
 </head>
 <body>
 
-<!-- Popup -->
+<div class="notice-bar">
+<svg class="notice-icon" viewBox="0 0 64 64">
+<defs>
+<linearGradient id="notifGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ffd700"/>
+<stop offset="50%" stop-color="#ff9500"/>
+<stop offset="100%" stop-color="#ff6b00"/>
+</linearGradient>
+<linearGradient id="bellGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fff"/>
+<stop offset="100%" stop-color="#ffe0b2"/>
+</linearGradient>
+<filter id="notifShadow" x="-50%" y="-50%" width="200%" height="200%">
+<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.4"/>
+</filter>
+</defs>
+<circle cx="32" cy="32" r="28" fill="url(#notifGrad)" filter="url(#notifShadow)"/>
+<circle cx="32" cy="32" r="22" fill="#fff" fill-opacity="0.15"/>
+<path d="M 32 16 C 26 16 22 20 22 26 L 22 34 L 19 40 L 45 40 L 42 34 L 42 26 C 42 20 38 16 32 16 Z" fill="url(#bellGrad)" filter="url(#notifShadow)"/>
+<circle cx="32" cy="44" r="3" fill="#ff6b00"/>
+<path d="M 28 12 L 36 12 L 35 15 L 29 15 Z" fill="url(#bellGrad)"/>
+<circle cx="28" cy="24" r="1.5" fill="#fff" opacity="0.9"/>
+<circle cx="32" cy="22" r="1.5" fill="#fff" opacity="0.9"/>
+<circle cx="36" cy="24" r="1.5" fill="#fff" opacity="0.9"/>
+</svg>
+<div class="notice-scroll">
+<div class="notice-text">📢 Notice: আসসালামু আলাইকুম আমাদের এই 2FA TOOL এর Fetuses হলো আপনি 2FA তো Normal ভাবে বের করতে পারবেন। এবং 2FA to Base64 2FA Convert করতে পারবেন। কিন্তু Base64 থেকে Base32 এ Convert করতে Access লাগবে যা সবার কাছে থাকে না। Security এর জন্য Base64 to Base32 Converter Lock করা আছে।</div>
+</div>
+</div>
+
 <div class="popup" id="popup">
-    <svg class="popup-icon" id="popupIcon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
-        <polyline points="20 6 9 17 4 12"></polyline>
-    </svg>
-    <div class="popup-text">
-        <span class="popup-title" id="popupTitle">Success</span>
-        <span class="popup-msg" id="popupMsg"></span>
-    </div>
+<svg class="popup-icon" id="popupIcon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<div><div class="popup-title" id="popupTitle">Success</div><div class="popup-msg" id="popupMsg"></div></div>
 </div>
 
 <div class="box">
-    <h1>🔐 2FA Base32 → Base64</h1>
-    <div class="subtitle">Line by Line — Sheet Ready</div>
+<div class="header">
+<svg class="fb-logo" viewBox="0 0 64 64">
+<defs>
+<linearGradient id="fbG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4292ff"/><stop offset="50%" stop-color="#1877f2"/><stop offset="100%" stop-color="#0a4d9e"/></linearGradient>
+<filter id="fbS" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0a4d9e" flood-opacity="0.6"/></filter>
+</defs>
+<rect x="3" y="3" width="58" height="58" rx="18" fill="url(#fbG)" filter="url(#fbS)"/>
+<rect x="3" y="3" width="58" height="32" rx="18" fill="#fff" fill-opacity="0.15"/>
+<path d="M 42 20 L 36 20 C 32 20 30 22 30 26 L 30 30 L 26 30 L 26 36 L 30 36 L 30 50 L 37 50 L 37 36 L 42 36 L 43 30 L 37 30 L 37 27 C 37 26 37.5 25.5 38.5 25.5 L 42 25.5 Z" fill="#ffffff"/>
+</svg>
+<h1>FACEBOOK 2FA TOOL</h1>
+</div>
+<div class="subtitle">2FA ↔ Base64 Converter</div>
 
-    <div class="label">Paste 2FA Keys (Line by Line)</div>
-    <textarea id="inputData" placeholder="HD3T J6UX EL2Z WRP3&#10;7ZDU YGTD 5P3E LE7P&#10;AHGF XJSB TUII ORZ4" oninput="processData()"></textarea>
-
-    <div class="stats-row" id="statsRow" style="display:none;">
-        <div class="stat-card"><span class="number" id="totalCount">0</span><div class="label-text">Total</div></div>
-        <div class="stat-card valid"><span class="number" id="validCount">0</span><div class="label-text">✅ Valid</div></div>
-        <div class="stat-card wrong"><span class="number" id="wrongCount">0</span><div class="label-text">❌ Wrong</div></div>
-        <div class="stat-card dupe"><span class="number" id="dupeCount">0</span><div class="label-text">🔄 Dupe</div></div>
-    </div>
-
-    <div class="copy-all-sticky" id="copyAllSticky" style="display:none;">
-        <button class="btn-copy-all" id="copyAllBtn" onclick="copyAllValid()" disabled>
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            COPY ALL BASE64 (LINE BY LINE)
-        </button>
-    </div>
-
-    <div class="label">Result</div>
-    <div id="resultContainer">
-        <div class="empty-msg">Paste 2FA keys above to see results</div>
-    </div>
+<div class="mode-tabs">
+<button class="mode-tab active" id="tabMode1" onclick="switchMode(1)">2FA → Base64</button>
+<button class="mode-tab" id="tabMode2" onclick="switchMode(2)">Base64 → 2FA</button>
 </div>
 
+<div class="stats-row" id="statsRow" style="display:none;">
+<div class="stat-card"><span class="number" id="totalCount">0</span><span class="label-text">Total</span></div>
+<div class="stat-card valid"><span class="number" id="validCount">0</span><span class="label-text">✅ Valid</span></div>
+<div class="stat-card wrong"><span class="number" id="wrongCount">0</span><span class="label-text">❌ Wrong</span></div>
+<div class="stat-card dupe"><span class="number" id="dupeCount">0</span><span class="label-text">🔄 Dupe</span></div>
+</div>
+
+<div class="dupe-warning" id="dupeWarning">
+<span>⚠️</span>
+<span id="dupeWarningText">Warning Duplicate Found (0) Please Fast Remove Duplicate 2FA</span>
+</div>
+
+<div class="paste-row">
+<div class="paste-wrap">
+<div class="label">
+<svg class="paste-icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+<span>Paste 2FA Keys</span><small>(Line by Line)</small>
+</div>
+<textarea id="inputData" placeholder="HD3T J6UX EL2Z WRP3&#10;7ZDU YGTD 5P3E LE7P" oninput="processData()"></textarea>
+</div>
+<div class="ring-timer">
+<svg viewBox="0 0 70 70"><circle class="ring-bg" cx="35" cy="35" r="30"></circle><circle class="ring-fill" id="ringFill" cx="35" cy="35" r="30"></circle></svg>
+<div class="ring-text" id="ringText">30</div>
+</div>
+</div>
+
+<button class="copy-all-btn" id="copyAllBtn" onclick="copyAllValid()" disabled>
+<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+COPY ALL (LINE BY LINE)
+</button>
+
+<div id="accessLock" class="lock-box" style="display:none;">
+<div class="lock-icon">🔒</div>
+<div class="lock-title">Page Locked</div>
+<div class="lock-msg">Enter Access Key to unlock Base64 → 2FA</div>
+<input type="password" id="accessKeyInput" class="lock-input" placeholder="Enter Access Key" onkeydown="if(event.key==='Enter')checkAccessKey()">
+<br>
+<button class="lock-btn" onclick="checkAccessKey()">UNLOCK</button>
+<div class="attempts-left" id="attemptsLeft" style="display:none;">Attempts left: 3</div>
+</div>
+
+<div id="unlockStatus" style="display:none;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border:2px solid #28a745;border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;font-size:11px;font-weight:800;color:#1e7e34;">
+✅ UNLOCKED • ⏱️ <span id="unlockTimer">12:00:00</span> remaining
+</div>
+
+<div id="countdownBox" class="countdown-box">
+<div style="font-size:32px;">⏱️</div>
+<div class="countdown-label">Too Many Wrong Attempts</div>
+<div class="countdown-num" id="countdownNum">60</div>
+<div class="countdown-label">seconds remaining</div>
+</div>
+
+<div id="resultContainer"><div class="empty-msg">Paste 2FA keys above to see results</div></div>
+</div>
 <script>
-function base32Decode(str) {
-    const abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-    str = str.toUpperCase().replace(/=+$/, '').replace(/\s/g, '');
-    if (!str.length) throw new Error('Empty');
-    let bits = '';
-    for (let i = 0; i < str.length; i++) {
-        const v = abc.indexOf(str[i]);
-        if (v === -1) throw new Error('Invalid');
-        bits += v.toString(2).padStart(5, '0');
-    }
-    const bytes = [];
-    for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2));
-    if (!bytes.length) throw new Error('Invalid');
-    return new Uint8Array(bytes);
+function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
+function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
+function base64Decode(str){let clean=str.replace(/\s/g,'');while(clean.length%4!==0)clean+='=';if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw new Error('Invalid');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
+function isBase32(str){const raw=str.replace(/\s/g,'');if(/=/.test(raw))return false;if(/[a-z]/.test(raw))return false;if(/[+/]/.test(raw))return false;const clean=raw.toUpperCase();if(clean.length<16)return false;return /^[A-Z2-7]+$/.test(clean)}
+function isBase64(str){const clean=str.replace(/\s/g,'');if(clean.length<8||clean.length>200)return false;if(!/^[A-Za-z0-9+/]+=*$/.test(clean))return false;return /[a-z]/.test(clean)||/[+/]/.test(clean)}
+function formatBase32(str){const clean=str.replace(/\s/g,'').toUpperCase();const groups=clean.match(/.{1,4}/g)||[];return groups.join(' ')}
+async function hmacSHA1(key,message){const ck=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:'SHA-1'},false,['sign']);return new Uint8Array(await crypto.subtle.sign('HMAC',ck,message))}
+async function generateTOTP(keyBytes){const epoch=Math.floor(Date.now()/1000);const counter=Math.floor(epoch/30);const buffer=new ArrayBuffer(8);const view=new DataView(buffer);view.setUint32(4,counter,false);const hmac=await hmacSHA1(keyBytes,buffer);const offset=hmac[hmac.length-1]&0x0f;const binary=((hmac[offset]&0x7f)<<24)|((hmac[offset+1]&0xff)<<16)|((hmac[offset+2]&0xff)<<8)|(hmac[offset+3]&0xff);return (binary%1000000).toString().padStart(6,'0')}
+function escapeHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function playSound(type){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();if(type==='copy'){const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.15)}else if(type==='copyAll'){const notes=[659,784,988,1175];notes.forEach((freq,i)=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime+i*0.07);gain.gain.setValueAtTime(0,ctx.currentTime+i*0.07);gain.gain.linearRampToValueAtTime(0.12,ctx.currentTime+i*0.07+0.02);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.07+0.15);osc.start(ctx.currentTime+i*0.07);osc.stop(ctx.currentTime+i*0.07+0.2)})}else if(type==='error'){const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='square';osc.frequency.setValueAtTime(300,ctx.currentTime);gain.gain.setValueAtTime(0.1,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3)}setTimeout(()=>ctx.close(),1500)}catch(e){}}
+let popupTimer=null;
+function showPopup(type,title,msg){const popup=document.getElementById('popup');const popupTitle=document.getElementById('popupTitle');const popupMsg=document.getElementById('popupMsg');const popupIcon=document.getElementById('popupIcon');popup.className='popup '+type;popupTitle.textContent=title;popupMsg.textContent=msg||'';if(type==='success')popupIcon.innerHTML='<polyline points="20 6 9 17 4 12"></polyline>';else if(type==='error')popupIcon.innerHTML='<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';else if(type==='warn')popupIcon.innerHTML='<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';else popupIcon.innerHTML='<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';popup.classList.add('show');if(popupTimer)clearTimeout(popupTimer);popupTimer=setTimeout(()=>popup.classList.remove('show'),4000)}
+function copyToClipboard(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);return new Promise((resolve,reject)=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');document.body.removeChild(ta);resolve()}catch(e){document.body.removeChild(ta);reject(e)}})}
+let isUnlocked=false;
+const ACCESS_KEYS=['adq','ADQ'];
+const LOCK_DURATION=12*60*60*1000;
+const MAX_ATTEMPTS=3;
+const COUNTDOWN_SECONDS=60;
+let userIP='unknown';
+let countdownInterval=null;
+let unlockTimerInterval=null;
+let currentAttempts=0;
+let rowsData=[];
+let currentMode=1;
+function getIP(){return fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{userIP=d.ip;return d.ip}).catch(()=>{userIP='unknown';return 'unknown'})}
+function getLockKey(){return 'fb2fa_lock_'+userIP}
+function getAttemptsKey(){return 'fb2fa_attempts_'+userIP}
+function getCountdownKey(){return 'fb2fa_countdown_'+userIP}
+function checkLockStatus(){const lockData=localStorage.getItem(getLockKey());if(!lockData)return false;try{const d=JSON.parse(lockData);if(Date.now()-d.time<LOCK_DURATION){return true}else{localStorage.removeItem(getLockKey());return false}}catch(e){return false}}
+function saveUnlock(){localStorage.setItem(getLockKey(),JSON.stringify({time:Date.now(),ip:userIP}))}
+function getAttempts(){const a=localStorage.getItem(getAttemptsKey());return a?parseInt(a):0}
+function saveAttempts(n){localStorage.setItem(getAttemptsKey(),n.toString())}
+function clearAttempts(){localStorage.removeItem(getAttemptsKey())}
+function getCountdown(){const c=localStorage.getItem(getCountdownKey());if(!c)return 0;try{const d=JSON.parse(c);const remain=Math.ceil((d.end-Date.now())/1000);if(remain>0)return remain;localStorage.removeItem(getCountdownKey());return 0}catch(e){return 0}}
+function saveCountdown(sec){localStorage.setItem(getCountdownKey(),JSON.stringify({end:Date.now()+sec*1000}))}
+function updateAttemptsDisplay(){const el=document.getElementById('attemptsLeft');if(el){el.style.display='block';el.textContent='Attempts left: '+(MAX_ATTEMPTS-currentAttempts)}}
+function startCountdown(sec){const box=document.getElementById('countdownBox');const num=document.getElementById('countdownNum');const lock=document.getElementById('accessLock');lock.style.display='none';box.classList.add('show');let remaining=sec;num.textContent=remaining;if(countdownInterval)clearInterval(countdownInterval);countdownInterval=setInterval(()=>{remaining--;num.textContent=remaining;saveCountdown(remaining);if(remaining<=0){clearInterval(countdownInterval);countdownInterval=null;localStorage.removeItem(getCountdownKey());box.classList.remove('show');lock.style.display='block';currentAttempts=0;clearAttempts();updateAttemptsDisplay()}},1000)}
+function startUnlockTimer(){if(unlockTimerInterval)clearInterval(unlockTimerInterval);function tick(){const el=document.getElementById('unlockTimer');if(!el)return;const lockData=localStorage.getItem(getLockKey());if(!lockData){el.textContent='00:00:00';document.getElementById('unlockStatus').style.display='none';isUnlocked=false;localStorage.removeItem(getLockKey());if(currentMode===2)switchMode(2);return}try{const d=JSON.parse(lockData);const remain=LOCK_DURATION-(Date.now()-d.time);if(remain<=0){el.textContent='00:00:00';document.getElementById('unlockStatus').style.display='none';isUnlocked=false;localStorage.removeItem(getLockKey());if(currentMode===2)switchMode(2);return}const h=Math.floor(remain/3600000);const m=Math.floor((remain%3600000)/60000);const s=Math.floor((remain%60000)/1000);el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}catch(e){}}tick();unlockTimerInterval=setInterval(tick,1000)}
+async function initLock(){await getIP();if(checkLockStatus()){isUnlocked=true}else{isUnlocked=false}}
+function switchMode(mode){currentMode=mode;document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tabMode'+mode).classList.add('active');const lock=document.getElementById('accessLock');const input=document.getElementById('inputData');const pasteRow=document.querySelector('.paste-row');const copyBtn=document.getElementById('copyAllBtn');const countdownBox=document.getElementById('countdownBox');const unlockStatus=document.getElementById('unlockStatus');if(mode===2){if(unlockStatus&&isUnlocked)unlockStatus.style.display='block';else if(unlockStatus)unlockStatus.style.display='none'}else{if(unlockStatus)unlockStatus.style.display='none'}if(mode===1){input.placeholder='HD3T J6UX EL2Z WRP3\n7ZDU YGTD 5P3E LE7P'}else{input.placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA=='}if(mode===2&&!isUnlocked){const cd=getCountdown();if(cd>0){input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';lock.style.display='none';startCountdown(cd);document.getElementById('resultContainer').innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];return}lock.style.display='block';input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';countdownBox.classList.remove('show');document.getElementById('resultContainer').innerHTML='<div class="empty-msg">🔒 Page Locked — Enter Access Key</div>';document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];currentAttempts=getAttempts();updateAttemptsDisplay()}else{lock.style.display='none';countdownBox.classList.remove('show');input.style.display='';pasteRow.style.display='flex';copyBtn.style.display='';processData()}}
+function checkAccessKey(){const inp=document.getElementById('accessKeyInput');const val=inp.value.trim();if(ACCESS_KEYS.includes(val)){isUnlocked=true;saveUnlock();clearAttempts();currentAttempts=0;playSound('copyAll');showPopup('success','SUCCESS!','Page Unlocked for 12 hours');if(navigator.vibrate)navigator.vibrate([50,50,50]);document.getElementById('accessLock').style.display='none';document.getElementById('inputData').style.display='';document.getElementById('inputData').placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA==';document.getElementById('copyAllBtn').style.display='';document.querySelector('.paste-row').style.display='flex';document.getElementById('unlockStatus').style.display='block';inp.value='';startUnlockTimer();processData()}else{currentAttempts++;saveAttempts(currentAttempts);if(navigator.vibrate)navigator.vibrate([200,100,200]);playSound('error');if(currentAttempts>=MAX_ATTEMPTS){showPopup('error','LOCKED!','Too many wrong attempts. Wait 1 minute.');startCountdown(COUNTDOWN_SECONDS);saveCountdown(COUNTDOWN_SECONDS);inp.value=''}else{showPopup('error','WRONG KEY!','Attempts left: '+(MAX_ATTEMPTS-currentAttempts));inp.value='';inp.focus();updateAttemptsDisplay()}}}
+async function processData(){
+const input=document.getElementById('inputData').value;
+const container=document.getElementById('resultContainer');
+const copyAllBtn=document.getElementById('copyAllBtn');
+const statsRow=document.getElementById('statsRow');
+const dupeWarning=document.getElementById('dupeWarning');
+const dupeWarningText=document.getElementById('dupeWarningText');
+const lines=input.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+if(lines.length===0){container.innerHTML='<div class="empty-msg">Paste 2FA keys above to see results</div>';copyAllBtn.disabled=true;copyAllBtn.classList.remove('blink-red');statsRow.style.display='none';dupeWarning.classList.remove('show');rowsData=[];return}
+rowsData=[];const seen=new Set();let validCount=0,wrongCount=0,dupeCount=0;
+const seenFirst=new Set();
+for(const line of lines){if(seenFirst.has(line)){dupeCount++}else{seenFirst.add(line)}}
+for(const line of lines){
+if(seen.has(line)){rowsData.push({original:line,output:line,otp:'🔄 Duplicate',status:'dupe'});continue}
+seen.add(line);
+if(dupeCount>0){rowsData.push({original:line,output:line,otp:'⛔ Blocked',status:'blocked'});continue}
+if(currentMode===1){
+if(isBase32(line)){
+try{const keyBytes=base32Decode(line);const outputLine=base64Encode(line.toUpperCase().replace(/\s/g,''));const otp=await generateTOTP(keyBytes);rowsData.push({original:line,output:outputLine,otp:otp,status:'valid'});validCount++}catch(e){rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
-
-function base64Encode(str) {
-    const bytes = new TextEncoder().encode(str);
-    let bin = '';
-    bytes.forEach(b => bin += String.fromCharCode(b));
-    return btoa(bin);
+else if(isBase64(line)){
+try{const decoded=base64Decode(line);const decodedText=new TextDecoder().decode(decoded).trim();const clean=decodedText.replace(/\s/g,'').toUpperCase();if(/^[A-Z2-7]+$/.test(clean)&&clean.length>=16){const keyBytes=base32Decode(clean);const otp=await generateTOTP(keyBytes);rowsData.push({original:line,output:line,otp:otp,status:'valid'});validCount++}else{rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}}catch(e){rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
-
-function isBase32(str) {
-    const clean = str.toUpperCase().replace(/=+$/, '').replace(/\s/g, '');
-    if (clean.length < 16) return false;
-    return /^[A-Z2-7]+$/.test(clean);
+else{rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
+}else{
+if(isBase64(line)){
+try{const decoded=base64Decode(line);const decodedText=new TextDecoder().decode(decoded).trim();const clean=decodedText.replace(/\s/g,'').toUpperCase();if(/^[A-Z2-7]+$/.test(clean)&&clean.length>=16){const keyBytes=base32Decode(clean);const otp=await generateTOTP(keyBytes);rowsData.push({original:line,output:formatBase32(clean),otp:otp,status:'valid'});validCount++}else{rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}}catch(e){rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
-
-async function hmacSHA1(key, message) {
-    const ck = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-    return new Uint8Array(await crypto.subtle.sign('HMAC', ck, message));
+else if(isBase32(line)){
+try{const keyBytes=base32Decode(line);const otp=await generateTOTP(keyBytes);rowsData.push({original:line,output:formatBase32(line),otp:otp,status:'valid'});validCount++}catch(e){rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
-
-async function generateTOTP(keyBytes) {
-    const epoch = Math.floor(Date.now() / 1000);
-    const counter = Math.floor(epoch / 30);
-    const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
-    view.setUint32(4, counter, false);
-    const hmac = await hmacSHA1(keyBytes, buffer);
-    const offset = hmac[hmac.length - 1] & 0x0f;
-    const binary = ((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff);
-    return (binary % 1000000).toString().padStart(6, '0');
+else{rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
-
-function escapeHtml(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-
-// ============ SOUND ============
-function playCopySound() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.15);
-        setTimeout(() => ctx.close(), 500);
-    } catch (e) {}
+document.getElementById('totalCount').textContent=lines.length;
+document.getElementById('validCount').textContent=validCount;
+document.getElementById('wrongCount').textContent=wrongCount;
+document.getElementById('dupeCount').textContent=dupeCount;
+statsRow.style.display='flex';
+if(dupeCount>0){dupeWarningText.textContent='Warning Duplicate Found ('+dupeCount+') Please Fast Remove Duplicate 2FA';dupeWarning.classList.add('show');copyAllBtn.classList.add('blink-red')}else{dupeWarning.classList.remove('show');copyAllBtn.classList.remove('blink-red')}
+copyAllBtn.disabled=false;
+renderTable(container,rowsData)
 }
-
-function playCopyAllSound() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = [659, 784, 988, 1175];
-        notes.forEach((freq, i) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
-            gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.07);
-            gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + i * 0.07 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.15);
-            osc.start(ctx.currentTime + i * 0.07);
-            osc.stop(ctx.currentTime + i * 0.07 + 0.2);
-        });
-        setTimeout(() => ctx.close(), 1000);
-    } catch (e) {}
+function renderTable(container,rowsData){
+if(rowsData.length===0){container.innerHTML='<div class="empty-msg">No data</div>';return}
+const hasBlock=rowsData.some(r=>r.status==='blocked'||r.status==='dupe');
+let html='<div class="table-container"><table class="result-table"><thead><tr>';
+if(currentMode===1){html+='<th>Base64 (Converted)</th><th>OTP (Click to Copy)</th>'}else{html+='<th>2FA Key (Converted)</th><th>OTP (Click to Copy)</th>'}
+html+='</tr></thead><tbody>';
+rowsData.forEach((row,idx)=>{
+html+='<tr>';
+if(row.status==='valid'){
+const blinkClass=hasBlock?' blink-red':'';
+html+='<td><div class="copy-box-2fa'+blinkClass+'" id="copy-2fa-'+idx+'" onclick="copy2FA('+idx+')">';
+html+='<svg class="copy-ico" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+html+='<span class="key-text">'+escapeHtml(row.output)+'</span></div></td>';
+html+='<td><div class="copy-box-otp'+blinkClass+'" id="copy-otp-'+idx+'" onclick="copyOTP('+idx+')">';
+html+='<svg class="copy-ico" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+html+='<span>'+row.otp+'</span></div></td>';
+}else if(row.status==='dupe'){
+html+='<td class="dupe-cell">🔄 '+escapeHtml(row.original)+'</td>';
+html+='<td class="dupe-cell">🔄 Duplicate</td>';
+}else if(row.status==='blocked'){
+html+='<td class="dupe-cell">⛔ '+escapeHtml(row.original)+'</td>';
+html+='<td class="dupe-cell">⛔ Blocked</td>';
+}else{
+html+='<td class="wrong-line-cell">'+escapeHtml(row.original)+'</td>';
+html+='<td class="wrong-line-cell">⚠️ Wrong 2FA❗</td>'}
+html+='</tr>'});
+html+='</tbody></table></div>';
+container.innerHTML=html}
+function copyOTP(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.otp).then(()=>{playSound('copy');showPopup('info','COPIED!','OTP copied');const el=document.getElementById('copy-otp-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+function copy2FA(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.output).then(()=>{playSound('copy');showPopup('success','COPIED!','2FA copied');const el=document.getElementById('copy-2fa-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+function copyAllValid(){const copyable=rowsData.filter(r=>r.status==='valid');if(copyable.length===0)return alert('No valid lines to copy');const all=copyable.map(r=>r.output).join('\n');copyToClipboard(all).then(()=>{playSound('copyAll');showPopup('success','COPIED!',copyable.length+' lines copied');const btn=document.getElementById('copyAllBtn');btn.classList.add('copied');const orig=btn.innerHTML;btn.innerHTML='✅ COPIED '+copyable.length+' LINES!';setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+const ringFill=document.getElementById('ringFill');
+const ringText=document.getElementById('ringText');
+const RADIUS=30;
+const CIRCUMFERENCE=2*Math.PI*RADIUS;
+ringFill.style.strokeDasharray=CIRCUMFERENCE;
+function updateRing(){
+const remaining=30-(Math.floor(Date.now()/1000)%30);
+ringText.textContent=remaining;
+const offset=CIRCUMFERENCE-(remaining/30)*CIRCUMFERENCE;
+ringFill.style.strokeDashoffset=offset;
+if(remaining>15){ringFill.style.stroke='#28a745';ringText.style.color='#28a745'}
+else if(remaining>5){ringFill.style.stroke='#fd7e14';ringText.style.color='#fd7e14'}
+else{ringFill.style.stroke='#dc3545';ringText.style.color='#dc3545'}
 }
-
-// ============ POPUP ============
-let popupTimer = null;
-function showPopup(type, title, msg) {
-    const popup = document.getElementById('popup');
-    const popupTitle = document.getElementById('popupTitle');
-    const popupMsg = document.getElementById('popupMsg');
-    const popupIcon = document.getElementById('popupIcon');
-    
-    popup.className = 'popup ' + type;
-    popupTitle.textContent = title;
-    popupMsg.textContent = msg || '';
-    
-    if (type === 'success') {
-        popupIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
-    } else {
-        popupIcon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
-    }
-    
-    popup.classList.add('show');
-    if (popupTimer) clearTimeout(popupTimer);
-    popupTimer = setTimeout(() => popup.classList.remove('show'), 3000);
+updateRing();
+setInterval(updateRing,1000);
+setInterval(async()=>{
+if(rowsData.length===0)return;
+for(let i=0;i<rowsData.length;i++){
+const row=rowsData[i];
+if(row.status!=='valid')continue;
+try{
+let keyBytes;
+if(isBase32(row.original)){keyBytes=base32Decode(row.original)}
+else if(isBase64(row.original)){const decoded=base64Decode(row.original);const decodedText=new TextDecoder().decode(decoded).trim();const clean=decodedText.replace(/\s/g,'').toUpperCase();keyBytes=base32Decode(clean)}
+else continue;
+const newOTP=await generateTOTP(keyBytes);
+if(newOTP!==row.otp){
+row.otp=newOTP;
+const cell=document.getElementById('copy-otp-'+i);
+if(cell){const span=cell.querySelector('span');if(span)span.textContent=newOTP}
 }
-
-// ============ GLOBAL ============
-let rowsData = [];
-
-async function processData() {
-    const input = document.getElementById('inputData').value;
-    const container = document.getElementById('resultContainer');
-    const copyAllBtn = document.getElementById('copyAllBtn');
-    const copyAllSticky = document.getElementById('copyAllSticky');
-    const statsRow = document.getElementById('statsRow');
-
-    const lines = input.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-    if (lines.length === 0) {
-        container.innerHTML = '<div class="empty-msg">Paste 2FA keys above to see results</div>';
-        copyAllBtn.disabled = true;
-        copyAllSticky.style.display = 'none';
-        statsRow.style.display = 'none';
-        rowsData = [];
-        return;
-    }
-
-    rowsData = [];
-    const seenOriginal = new Set();
-    const seenOutput = new Set();
-    let validCount = 0, wrongCount = 0, dupeCount = 0;
-
-    for (const line of lines) {
-        if (seenOriginal.has(line)) {
-            dupeCount++;
-            rowsData.push({ original: line, output: '🔄 Duplicate', otp: 'Dupe', status: 'dupe' });
-            continue;
-        }
-        seenOriginal.add(line);
-
-        if (!isBase32(line)) {
-            rowsData.push({ original: line, output: '⚠️ Wrong 2FA❗', otp: '⚠️ Wrong 2FA❗', status: 'wrong' });
-            wrongCount++;
-            continue;
-        }
-
-        let outputLine = '';
-        let otp = '';
-
-        try {
-            const keyBytes = base32Decode(line);
-            outputLine = base64Encode(line);
-            otp = await generateTOTP(keyBytes);
-        } catch (e) {
-            rowsData.push({ original: line, output: '⚠️ Wrong 2FA❗', otp: '⚠️ Wrong 2FA❗', status: 'wrong' });
-            wrongCount++;
-            continue;
-        }
-
-        if (seenOutput.has(outputLine)) {
-            dupeCount++;
-            rowsData.push({ original: line, output: outputLine, otp: 'Dupe', status: 'dupe' });
-            continue;
-        }
-        seenOutput.add(outputLine);
-
-        rowsData.push({
-            original: line,
-            output: outputLine,
-            otp: otp,
-            status: 'valid'
-        });
-
-        validCount++;
-    }
-
-    document.getElementById('totalCount').textContent = lines.length;
-    document.getElementById('validCount').textContent = validCount;
-    document.getElementById('wrongCount').textContent = wrongCount;
-    document.getElementById('dupeCount').textContent = dupeCount;
-    statsRow.style.display = 'flex';
-    copyAllSticky.style.display = 'block';
-
-    renderTable(container, rowsData);
-    copyAllBtn.disabled = false;
+}catch(e){}
 }
-
-function renderTable(container, rowsData) {
-    if (rowsData.length === 0) {
-        container.innerHTML = '<div class="empty-msg">No data</div>';
-        return;
-    }
-
-    let html = '<div class="table-container"><table class="result-table">';
-    html += '<thead><tr><th>Base64 (Converted)</th><th>OTP</th><th>Copy</th></tr></thead><tbody>';
-
-    rowsData.forEach((row, idx) => {
-        html += '<tr>';
-        if (row.status === 'valid') {
-            html += '<td class="line-cell" title="' + escapeHtml(row.output) + '">' + escapeHtml(row.output) + '</td>';
-            html += '<td class="otp-cell" id="otp-' + idx + '">' + row.otp + '</td>';
-            html += '<td class="copy-cell"><button class="copy-icon-btn" id="btn-' + idx + '" onclick="copySingle(' + idx + ')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></td>';
-        } else if (row.status === 'dupe') {
-            html += '<td class="dupe-cell" title="' + escapeHtml(row.output) + '">' + escapeHtml(row.output) + '</td>';
-            html += '<td class="dupe-cell">Dupe</td>';
-            html += '<td class="copy-cell"><button class="copy-icon-btn" disabled><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></td>';
-        } else {
-            html += '<td class="wrong-line-cell" title="' + escapeHtml(row.output) + '">' + escapeHtml(row.output) + '</td>';
-            html += '<td class="wrong-otp-cell">⚠️ Wrong 2FA❗</td>';
-            html += '<td class="copy-cell"><button class="copy-icon-btn wrong-btn" id="btn-' + idx + '" onclick="copySingle(' + idx + ')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></td>';
-        }
-        html += '</tr>';
-    });
-
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
+},1000);
+(async function init(){
+await initLock();
+if(isUnlocked){startUnlockTimer()}
+if(currentMode===2){
+if(isUnlocked){
+document.getElementById('unlockStatus').style.display='block';
+}else{
+const cd=getCountdown();
+if(cd>0){
+document.getElementById('inputData').style.display='none';
+document.querySelector('.paste-row').style.display='none';
+document.getElementById('copyAllBtn').style.display='none';
+document.getElementById('accessLock').style.display='none';
+startCountdown(cd);
+document.getElementById('resultContainer').innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';
+}else{
+document.getElementById('accessLock').style.display='block';
+document.getElementById('inputData').style.display='none';
+document.querySelector('.paste-row').style.display='none';
+document.getElementById('copyAllBtn').style.display='none';
+document.getElementById('resultContainer').innerHTML='<div class="empty-msg">🔒 Page Locked — Enter Access Key</div>';
+currentAttempts=getAttempts();
+updateAttemptsDisplay();
 }
-
-function copySingle(idx) {
-    const row = rowsData[idx];
-    if (!row || row.status === 'dupe') return;
-    navigator.clipboard.writeText(row.output).then(() => {
-        playCopySound();
-        const btn = document.getElementById('btn-' + idx);
-        btn.classList.add('copied');
-        setTimeout(() => btn.classList.remove('copied'), 800);
-    });
 }
-
-function copyAllValid() {
-    const copyable = rowsData.filter(r => r.status === 'valid' || r.status === 'wrong');
-    if (copyable.length === 0) return alert('No copyable lines');
-    
-    const all = copyable.map(r => r.output).join('\n');
-    
-    navigator.clipboard.writeText(all).then(() => {
-        playCopyAllSound();
-        showPopup('success', 'COPIED!', copyable.length + ' lines copied');
-        
-        const btn = document.getElementById('copyAllBtn');
-        btn.classList.add('copied');
-        const orig = btn.innerHTML;
-        btn.innerHTML = '✅ COPIED ' + copyable.length + ' LINES!';
-        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
-    });
 }
-
-setInterval(async () => {
-    if (rowsData.length === 0) return;
-    for (let i = 0; i < rowsData.length; i++) {
-        const row = rowsData[i];
-        if (row.status !== 'valid') continue;
-        try {
-            if (isBase32(row.original)) {
-                const keyBytes = base32Decode(row.original);
-                const newOTP = await generateTOTP(keyBytes);
-                if (newOTP !== row.otp) {
-                    row.otp = newOTP;
-                    const cell = document.getElementById('otp-' + i);
-                    if (cell) cell.textContent = newOTP;
-                }
-            }
-        } catch (e) {}
-    }
-}, 1000);
+})();
 </script>
-
 </body>
 </html>
