@@ -314,10 +314,10 @@ const pasteBtn2 = document.getElementById('pasteBtn2');
 
 // ============ STATE ============
 let currentNewKey1 = '', currentOTP1 = '', isValid1 = false;
-let soundCount1 = 0, lastSoundOTP1 = '', lastKeyInput1 = '';
+let soundCount1 = 0, lastSoundOTP1 = '', lastKeyInput1 = '', lastWrongInput1 = '';
 
 let currentNewKey2 = '', currentOTP2 = '', isValid2 = false;
-let soundCount2 = 0, lastSoundOTP2 = '', lastKeyInput2 = '';
+let soundCount2 = 0, lastSoundOTP2 = '', lastKeyInput2 = '', lastWrongInput2 = '';
 
 let popupTimer = null;
 
@@ -436,14 +436,19 @@ async function updateMode1() {
         currentNewKey1 = currentOTP1 = '';
         isValid1 = false;
         copyKeyBtn1.disabled = true;
-        soundCount1 = 0; lastSoundOTP1 = ''; lastKeyInput1 = '';
+        soundCount1 = 0;
+        lastSoundOTP1 = '';
+        lastKeyInput1 = '';
+        lastWrongInput1 = '';
         return;
     }
 
     // Reset on new key
     if (input !== lastKeyInput1) {
         lastKeyInput1 = input;
-        soundCount1 = 0; lastSoundOTP1 = '';
+        soundCount1 = 0;
+        lastSoundOTP1 = '';
+        lastWrongInput1 = '';
     }
 
     inputEl1.classList.add('has-key');
@@ -467,9 +472,8 @@ async function updateMode1() {
         isValid1 = false;
         copyKeyBtn1.disabled = true;
 
-        // Show popup only once per key
-        if (lastSoundOTP1 !== 'wrong_' + input) {
-            lastSoundOTP1 = 'wrong_' + input;
+        if (lastWrongInput1 !== input) {
+            lastWrongInput1 = input;
             showGoToPopup('Base64-2FA → 2FA');
         }
         return;
@@ -542,8 +546,7 @@ async function updateMode1() {
     else if (remaining > 4.5) progress1.style.background = '#fd7e14';
     else progress1.style.background = '#dc3545';
 
-    // Popup only max 2 times per key
-    if (soundCount1 < 2 && currentOTP1 !== lastSoundOTP1) {
+    if (currentOTP1 !== lastSoundOTP1 && soundCount1 < 2) {
         lastSoundOTP1 = currentOTP1;
         soundCount1++;
         showSuccessPopup(currentOTP1);
@@ -556,6 +559,7 @@ async function updateMode1() {
 async function updateMode2() {
     const input = inputEl2.value;
 
+    // EMPTY STATE
     if (!input || !input.trim()) {
         inputEl2.classList.remove('has-key');
         otpText2.textContent = '------';
@@ -570,9 +574,12 @@ async function updateMode2() {
         currentNewKey2 = currentOTP2 = '';
         isValid2 = false;
         copyKeyBtn2.disabled = true;
-        soundCount2 = 0; lastSoundOTP2 = ''; lastKeyInput2 = '';
+        soundCount2 = 0;
+        lastSoundOTP2 = '';
+        lastKeyInput2 = '';
+        lastWrongInput2 = '';
         return;
     }
 
-    if (input !== lastKeyInput2) {
-        lastKey
+    // Reset on new key
+    if (input !== lastKey
