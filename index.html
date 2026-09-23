@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Test</title>
+<title>2FA Test</title>
 </head>
 <body style="background:#222;color:#fff;padding:30px;font-family:Arial;text-align:center;">
 
-<h1 style="color:#4ade80;">✅ Test Page</h1>
-<p style="font-size:20px;">Jodi ei page ta dekhte pan, tahole GitHub Pages thik ache!</p>
+<h1 style="color:#4ade80;">✅ 2FA Test</h1>
 
-<button onclick="testSound()" style="padding:20px 40px;font-size:20px;background:#1877f2;color:#fff;border:none;border-radius:10px;cursor:pointer;">
-Click Me
+<input type="text" id="keyInput" placeholder="Paste 2FA key here" style="padding:15px;font-size:16px;width:80%;border-radius:8px;border:none;">
+
+<button onclick="testTOTP()" style="padding:15px 30px;font-size:16px;background:#1877f2;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:20px;">
+Generate OTP
 </button>
 
-<p id="out" style="font-size:18px;margin-top:20px;">Waiting...</p>
+<p id="out" style="font-size:24px;margin-top:30px;">------</p>
 
 <script>
-function testSound() {
+function base32Decode(base32) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    base32 = base32.toUpperCase().replace(/=+$/, '').replace(/\s/g, '');
+    let bits = '';
+    for (let i = 0; i < base32.length; i++) {
+        const v = alphabet.indexOf(base32[i]);
+        if (v === -1) throw new Error('Invalid');
+        bits += v.toString(2).padStart(5, '0');
+    }
+    const bytes = [];
+    for (let i = 0; i + 8 <= bits.length; i += 8) {
+        bytes.push(parseInt(bits.substr(i, 8), 2));
+    }
+    return new Uint8Array(bytes);
+}
+
+async function hmacSHA1(key, message) {
+    const ck = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+    return new Uint8Array(await crypto.subtle.sign('HMAC', ck, message));
+}
+
+async function testTOTP() {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.connect(g);
-        g.connect(ctx.destination);
-        osc.frequency.value = 880;
-        g.gain.value = 0.2;
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.3);
-        document.getElementById('out').textContent = '✅ Sound bajlo!';
+        const input = document.getElementById('keyInput').value;
+        const keyBytes = base32Decode(input);
+        
+        const epoch = Math.floor(Date.now() / 1000);
+        const counter = Math.floor(epoch / 30);
+        const buffer = new ArrayBuffer(8);
+        const view = new DataView(buffer);
+        view.setUint32(4, counter, false);
+        
+        const hmac = await hmacSHA1(keyBytes, buffer);
+        const offset = hmac[hmac.length - 1] & 0x0f;
+        const binary = ((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff);
+        const otp = (binary % 1000000).toString().padStart(6, '0');
+        
+        document.getElementById('out').textContent = '✅ ' + otp;
     } catch(e) {
         document.getElementById('out').textContent = '❌ Error: ' + e.message;
     }
-    if (navigator.vibrate) navigator.vibrate(200);
 }
 </script>
 
