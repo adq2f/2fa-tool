@@ -165,6 +165,8 @@ textarea:focus{border-color:#1877f2;background:#fff}
 .ban-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,#dc3545,#fd7e14);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
 .ban-message{font-size:13px;color:#c8cfe0;font-weight:600;line-height:1.7;margin-bottom:20px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
 </head>
 <body>
 <div id="banScreen" class="ban-screen">
@@ -1224,16 +1226,13 @@ document.getElementById('adminLogin').classList.remove('show');
 document.getElementById('adminPanel').classList.remove('show');
 }
 
-async function adminLogin(){
+function adminLogin(){
 const email=document.getElementById('adminEmailInput').value.trim();
 const pass=document.getElementById('adminPassInput').value;
 const status=document.getElementById('adminLoginStatus');
-if(!email||!pass){status.textContent='❌ Email and password required';playSound('error');return}
-status.textContent='⏳ Logging in...';
-try{
-await signInWithEmailAndPassword(auth,email,pass);
-currentAdminEmail=email;
+if(email==='mdtanviradil@gmail.com' && pass==='DDbb11$$'){
 isAdminLoggedIn=true;
+currentAdminEmail=email;
 document.getElementById('adminEmailShow').textContent=email;
 document.getElementById('adminLogin').classList.remove('show');
 document.getElementById('adminPanel').classList.add('show');
@@ -1242,24 +1241,15 @@ document.getElementById('adminPassInput').value='';
 status.textContent='Enter your admin email and password';
 playSound('copyAll');
 showPopup('success','WELCOME!','Admin Panel Opened');
-await loadAdminFields();
-await loadActivityLogs();
-}catch(e){
+loadAdminFields();
+loadActivityLogs();
+}else{
 playSound('error');
-let msg='Login failed';
-if(e.code==='auth/user-not-found')msg='User not found';
-else if(e.code==='auth/wrong-password')msg='Wrong password';
-else if(e.code==='auth/invalid-credential')msg='Invalid credentials';
-else if(e.code==='auth/too-many-requests')msg='Too many attempts. Try later';
-status.textContent='❌ '+msg;
-showPopup('error','LOGIN FAILED!',msg);
+status.textContent='❌ Invalid credentials';
+showPopup('error','LOGIN FAILED!','Wrong email or password');
 }
 }
-
-async function adminLogout(){
-try{
-await signOut(auth);
-}catch(e){}
+function adminLogout(){
 isAdminLoggedIn=false;
 currentAdminEmail='';
 closeAdmin();
