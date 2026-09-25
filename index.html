@@ -441,8 +441,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let isAdminLoggedIn = false;
-let currentAdminEmail = '';
+window.isAdminLoggedIn = false;
+window.currentAdminEmail = '';
 let isBanned = false;
 let isUnlocked = false;
 let isServiceUnlocked = false;
@@ -696,7 +696,6 @@ async function clearHistory(){
     showPopup('error', 'ERROR!', 'Failed to clear history');
   }
 }
-
 function updateAttemptsDisplay(){
   const el = document.getElementById('attemptsLeft');
   if(el){ el.style.display = 'block'; el.textContent = 'Attempts left: ' + (MAX_ATTEMPTS - currentAttempts); }
@@ -809,6 +808,7 @@ function startServiceUnlockTimer(){
   tick();
   serviceUnlockTimerInterval = setInterval(tick, 1000);
 }
+
 let liveSettings = {notice:'', accessKeys:['adq','ADQ'], serviceKeys:['adq1','ADQ1']};
 
 function listenSettings(){
@@ -886,7 +886,6 @@ function updateMaintenanceStatus(){
     if(maintenanceInterval) clearInterval(maintenanceInterval);
   }
 }
-
 function checkBanStatus(){
   if(!userIP || userIP === 'unknown') return;
   const ref = doc(db, 'ban_list', userIP);
@@ -912,43 +911,48 @@ function checkBanStatus(){
     console.log('Ban listener error:', err);
   });
 }
+
 async function registerUser(){
-if(!userIP || userIP === 'unknown') return;
-try{
-const ref = doc(db, 'users', userIP);
-const snap = await getDoc(ref);
-if(!snap.exists()){
-await setDoc(ref, {
-uid: userIP,
-status: 'active',
-createdAt: Date.now(),
-lastSeen: Date.now()
-});
-}else{
-await updateDoc(ref, {lastSeen: Date.now()});
+  if(!userIP || userIP === 'unknown') return;
+  try{
+    const ref = doc(db, 'users', userIP);
+    const snap = await getDoc(ref);
+    if(!snap.exists()){
+      await setDoc(ref, {
+        uid: userIP,
+        status: 'active',
+        createdAt: Date.now(),
+        lastSeen: Date.now()
+      });
+    }else{
+      await updateDoc(ref, {lastSeen: Date.now()});
+    }
+  }catch(e){
+    console.log('Register user error:', e);
+  }
 }
-}catch(e){
-console.log('Register user error:', e);
-}
-}
+
 function saveServiceFields(){
-localStorage.setItem('fb2fa_service_id',document.getElementById('serviceIdInput').value);
-localStorage.setItem('fb2fa_service_qty',document.getElementById('qtyInput').value);
+  localStorage.setItem('fb2fa_service_id',document.getElementById('serviceIdInput').value);
+  localStorage.setItem('fb2fa_service_qty',document.getElementById('qtyInput').value);
 }
+
 function loadServiceFields(){
-const sid=localStorage.getItem('fb2fa_service_id');
-const qty=localStorage.getItem('fb2fa_service_qty');
-if(sid)document.getElementById('serviceIdInput').value=sid;
-if(qty)document.getElementById('qtyInput').value=qty;
+  const sid=localStorage.getItem('fb2fa_service_id');
+  const qty=localStorage.getItem('fb2fa_service_qty');
+  if(sid)document.getElementById('serviceIdInput').value=sid;
+  if(qty)document.getElementById('qtyInput').value=qty;
 }
+
 async function initAll(){
-await getIP();
-isUnlocked=checkLockStatus();
-isServiceUnlocked=checkServiceLockStatus();
-await registerUser();
-listenSettings();
-checkBanStatus();
+  await getIP();
+  isUnlocked=checkLockStatus();
+  isServiceUnlocked=checkServiceLockStatus();
+  await registerUser();
+  listenSettings();
+  checkBanStatus();
 }
+
 window.addHistory = addHistory;
 window.showPopup = showPopup;
 window.playSound = playSound;
@@ -984,23 +988,45 @@ window.clearAttempts = clearAttempts;
 window.clearServiceAttempts = clearServiceAttempts;
 window.saveUnlock = saveUnlock;
 window.saveServiceUnlock = saveServiceUnlock;
+
 onAuthStateChanged(auth,(user)=>{
-if(user){isAdminLoggedIn=true;currentAdminEmail=user.email||'';const el=document.getElementById('adminEmailShow');if(el)el.textContent=currentAdminEmail}else{isAdminLoggedIn=false;currentAdminEmail=''}
+  if(user){
+    window.isAdminLoggedIn=true;
+    window.currentAdminEmail=user.email||'';
+    const el=document.getElementById('adminEmailShow');
+    if(el)el.textContent=window.currentAdminEmail;
+  }else{
+    window.isAdminLoggedIn=false;
+    window.currentAdminEmail='';
+  }
 });
+
 window.getLockKey = getLockKey;
 window.getServiceLockKey = getServiceLockKey;
 window.addEventListener('DOMContentLoaded',()=>{
-initAll();
+  initAll();
 });
 </script>
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, limit, onSnapshot, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const app2 = initializeApp({
+  apiKey: "AIzaSyC7KS5Pb0snp24xbTDXrTB43hhpPNvomY7A",
+  authDomain: "adq2fa.firebaseapp.com",
+  projectId: "adq2fa",
+  storageBucket: "adq2fa.firebasestorage.app",
+  messagingSenderId: "741922457058",
+  appId: "1:741922457058:web:0c1f03a64c7845361b25bb"
+}, "app2");
+const db = getFirestore(app2);
+
 let rowsData = [];
 let currentMode = 1;
 let serviceOutputText = '';
 let isUnlocked = false;
 let isServiceUnlocked = false;
-let isAdminLoggedIn = false;
-let currentAdminEmail = '';
+// isAdminLoggedIn moved to window
 let currentAttempts = 0;
 let serviceAttempts = 0;
 let countdownInterval = null;
@@ -1015,6 +1041,7 @@ let ACCESS_KEYS = ['adq','ADQ'];
 let SERVICE_KEYS = ['adq1','ADQ1'];
 let liveMaintenance = { active: false, endTime: 0, message: '' };
 let liveNotice = '';
+
 function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
 function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
 function base64Decode(str){let clean=str.replace(/\s/g,'');while(clean.length%4!==0)clean+='=';if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw new Error('Invalid');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
@@ -1192,7 +1219,6 @@ updateServiceAttemptsDisplay();
 }
 }
 }
-
 function serviceConvert(){
 const sid=document.getElementById('serviceIdInput').value.trim();
 const uidRaw=document.getElementById('uidInput').value;
@@ -1240,22 +1266,23 @@ btn.innerHTML='✅ COPIED!';
 setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500);
 }).catch(()=>showPopup('error','COPY FAILED!','Try again'));
 }
+
 function openAdmin(){
 document.getElementById('adminLogin').classList.add('show');
 document.getElementById('adminPanel').classList.remove('show');
 }
+
 function closeAdmin(){
 document.getElementById('adminLogin').classList.remove('show');
 document.getElementById('adminPanel').classList.remove('show');
 }
-
 function adminLogin(){
 const email=document.getElementById('adminEmailInput').value.trim();
 const pass=document.getElementById('adminPassInput').value;
 const status=document.getElementById('adminLoginStatus');
 if(email==='mdtanviradil@gmail.com' && pass==='DDbb11$$'){
-isAdminLoggedIn=true;
-currentAdminEmail=email;
+window.isAdminLoggedIn=true;
+window.currentAdminEmail=email;
 document.getElementById('adminEmailShow').textContent=email;
 document.getElementById('adminLogin').classList.remove('show');
 document.getElementById('adminPanel').classList.add('show');
@@ -1264,39 +1291,23 @@ document.getElementById('adminPassInput').value='';
 status.textContent='Enter your admin email and password';
 playSound('copyAll');
 showPopup('success','WELCOME!','Admin Panel Opened');
-loadAdminFields();
-loadActivityLogs();
+window.loadActivityLogs && window.loadActivityLogs();
 }else{
 playSound('error');
 status.textContent='❌ Invalid credentials';
 showPopup('error','LOGIN FAILED!','Wrong email or password');
 }
 }
+
 function adminLogout(){
-isAdminLoggedIn=false;
-currentAdminEmail='';
+window.isAdminLoggedIn=false;
+window.currentAdminEmail='';
 closeAdmin();
 showPopup('success','LOGGED OUT!','Admin session ended');
 }
 
-async function loadAdminFields(){
-try{
-const ref=doc(db,'settings','main');
-const snap=await getDoc(ref);
-if(snap.exists()){
-const d=snap.data();
-if(d.notice)document.getElementById('adminNotice').value=d.notice;
-if(d.accessKeys)document.getElementById('adminAccessKey').value=d.accessKeys.join(',');
-if(d.serviceKeys)document.getElementById('adminServiceKey').value=d.serviceKeys.join(',');
-}
-}catch(e){
-console.log('Load admin fields error:',e);
-}
-updateMaintenanceStatus();
-}
-
 async function saveNotice(){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 const val=document.getElementById('adminNotice').value.trim();
 if(!val){showPopup('error','EMPTY!','Notice cannot be empty');return}
 try{
@@ -1308,7 +1319,7 @@ showPopup('error','FAILED!','Could not save notice');
 }
 
 async function saveAccessKeys(){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 const a=document.getElementById('adminAccessKey').value.trim();
 const s=document.getElementById('adminServiceKey').value.trim();
 if(!a||!s){showPopup('error','MISSING!','Both keys required');return}
@@ -1321,9 +1332,8 @@ showPopup('success','SAVED!','All keys updated');
 showPopup('error','FAILED!','Could not save keys');
 }
 }
-
 async function startMaintenance(){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 const dateVal=document.getElementById('adminDate').value;
 const timeVal=document.getElementById('adminTime').value;
 const msg=document.getElementById('adminMessage').value.trim();
@@ -1341,7 +1351,7 @@ showPopup('error','FAILED!','Could not start maintenance');
 }
 
 async function stopMaintenance(){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 try{
 await setDoc(doc(db,'settings','main'),{
 maintenance:{active:false,endTime:0,message:''}
@@ -1381,14 +1391,14 @@ showPopup('error','FAILED!','Could not load users');
 }
 
 async function banUser(ip){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 if(!confirm('Ban user with IP: '+ip+'?'))return;
 try{
 await setDoc(doc(db,'ban_list',ip),{
 status:'banned',
 reason:'Your access has been suspended by the administrator.',
 bannedAt:Date.now(),
-bannedBy:currentAdminEmail
+bannedBy:window.currentAdminEmail
 });
 showPopup('success','BANNED!','User '+ip+' has been banned');
 addHistory('admin','Banned IP: '+ip);
@@ -1399,7 +1409,7 @@ showPopup('error','FAILED!','Could not ban user');
 }
 
 async function unbanUser(ip){
-if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!window.isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
 if(!confirm('Unban user with IP: '+ip+'?'))return;
 try{
 await deleteDoc(doc(db,'ban_list',ip));
@@ -1459,6 +1469,7 @@ if(dupeCount>0){dupeWarningText.textContent='Warning Duplicate Found ('+dupeCoun
 copyAllBtn.disabled=false;
 renderTable(container,rowsData)
 }
+
 function renderTable(container,rowsData){
 if(rowsData.length===0){container.innerHTML='<div class="empty-msg">No data</div>';return}
 const hasBlock=rowsData.some(r=>r.status==='blocked'||r.status==='dupe');
@@ -1488,13 +1499,17 @@ html+='</tr>'});
 html+='</tbody></table></div>';
 container.innerHTML=html}
 function copyOTP(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.otp).then(()=>{playSound('copy');addHistory('copy','OTP copied: '+row.otp);showPopup('info','COPIED!','OTP copied');const el=document.getElementById('copy-otp-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+
 function copy2FA(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.output).then(()=>{playSound('copy');addHistory('copy','2FA key copied');showPopup('success','COPIED!','2FA copied');const el=document.getElementById('copy-2fa-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+
 function copyAllValid(){const copyable=rowsData.filter(r=>r.status==='valid');if(copyable.length===0)return alert('No valid lines to copy');const all=copyable.map(r=>r.output).join('\n');copyToClipboard(all).then(()=>{playSound('copyAll');addHistory('copy','Copy All: '+copyable.length+' lines');showPopup('success','COPIED!',copyable.length+' lines copied');const btn=document.getElementById('copyAllBtn');btn.classList.add('copied');const orig=btn.innerHTML;btn.innerHTML='✅ COPIED '+copyable.length+' LINES!';setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+
 const ringFill=document.getElementById('ringFill');
 const ringText=document.getElementById('ringText');
 const RADIUS=30;
 const CIRCUMFERENCE=2*Math.PI*RADIUS;
 ringFill.style.strokeDasharray=CIRCUMFERENCE;
+
 function updateRing(){
 const remaining=30-(Math.floor(Date.now()/1000)%30);
 ringText.textContent=remaining;
@@ -1506,6 +1521,7 @@ else{ringFill.style.stroke='#dc3545';ringText.style.color='#dc3545'}
 }
 updateRing();
 setInterval(updateRing,1000);
+
 setInterval(async()=>{
 if(rowsData.length===0)return;
 for(let i=0;i<rowsData.length;i++){
@@ -1525,9 +1541,9 @@ if(cell){const span=cell.querySelector('span');if(span)span.textContent=newOTP}
 }catch(e){}
 }
 },1000);
+
 window.adminLogin = adminLogin;
 window.adminLogout = adminLogout;
-window.loadAdminFields = loadAdminFields;
 window.saveNotice = saveNotice;
 window.saveAccessKeys = saveAccessKeys;
 window.startMaintenance = startMaintenance;
