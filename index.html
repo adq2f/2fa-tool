@@ -992,7 +992,42 @@ initAll();
 });
 </script>
 <script type="module">
+let rowsData = [];
+let currentMode = 1;
+let serviceOutputText = '';
+let isUnlocked = false;
+let isServiceUnlocked = false;
+let isAdminLoggedIn = false;
+let currentAdminEmail = '';
+let currentAttempts = 0;
+let serviceAttempts = 0;
+let countdownInterval = null;
+let unlockTimerInterval = null;
+let serviceUnlockTimerInterval = null;
+let maintenanceInterval = null;
+let userIP = 'unknown';
+const LOCK_DURATION = 12*60*60*1000;
+const MAX_ATTEMPTS = 3;
+const COUNTDOWN_SECONDS = 60;
+let ACCESS_KEYS = ['adq','ADQ'];
+let SERVICE_KEYS = ['adq1','ADQ1'];
+let liveMaintenance = { active: false, endTime: 0, message: '' };
+let liveNotice = '';
 function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
+function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
+function base64Decode(str){let clean=str.replace(/\s/g,'');while(clean.length%4!==0)clean+='=';if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw new Error('Invalid');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
+function isBase32(str){const raw=str.replace(/\s/g,'');if(/=/.test(raw))return false;if(/[a-z]/.test(raw))return false;if(/[+/]/.test(raw))return false;const clean=raw.toUpperCase();if(clean.length<16)return false;return /^[A-Z2-7]+$/.test(clean)}
+function isBase64(str){const clean=str.replace(/\s/g,'');if(clean.length<8||clean.length>200)return false;if(!/^[A-Za-z0-9+/]+=*$/.test(clean))return false;return /[a-z]/.test(clean)||/[+/]/.test(clean)}
+function formatBase32(str){const clean=str.replace(/\s/g,'').toUpperCase();const groups=clean.match(/.{1,4}/g)||[];return groups.join(' ')}
+async function hmacSHA1(key,message){const ck=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:'SHA-1'},false,['sign']);return new Uint8Array(await crypto.subtle.sign('HMAC',ck,message))}
+async function generateTOTP(keyBytes){const epoch=Math.floor(Date.now()/1000);const counter=Math.floor(epoch/30);const buffer=new ArrayBuffer(8);const view=new DataView(buffer);view.setUint32(4,counter,false);const hmac=await hmacSHA1(keyBytes,buffer);const offset=hmac[hmac.length-1]&0x0f;const binary=((hmac[offset]&0x7f)<<24)|((hmac[offset+1]&0xff)<<16)|((hmac[offset+2]&0xff)<<8)|(hmac[offset+3]&0xff);return (binary%1000000).toString().padStart(6,'0')}
+function switchMode(mode){
+if(currentMode===mode)return;
+currentMode=mode;
+document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+document.getElementById('tabMode'+mode).classList.add('active');
+playSound('page');
+if(navigator.vibrate)navigator.vibrate(30);
 function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
 function base64Decode(str){let clean=str.replace(/\s/g,'');while(clean.length%4!==0)clean+='=';if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw new Error('Invalid');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
 function isBase32(str){const raw=str.replace(/\s/g,'');if(/=/.test(raw))return false;if(/[a-z]/.test(raw))return false;if(/[+/]/.test(raw))return false;const clean=raw.toUpperCase();if(clean.length<16)return false;return /^[A-Z2-7]+$/.test(clean)}
