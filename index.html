@@ -992,8 +992,14 @@ window.clearAttempts = clearAttempts;
 window.clearServiceAttempts = clearServiceAttempts;
 window.saveUnlock = saveUnlock;
 window.saveServiceUnlock = saveServiceUnlock;
+onAuthStateChanged(auth,(user)=>{
+if(user){isAdminLoggedIn=true;currentAdminEmail=user.email||'';const el=document.getElementById('adminEmailShow');if(el)el.textContent=currentAdminEmail}else{isAdminLoggedIn=false;currentAdminEmail=''}
+});
 window.getLockKey = getLockKey;
 window.getServiceLockKey = getServiceLockKey;
+window.addEventListener('DOMContentLoaded',()=>{
+initAll();
+});
 </script>
 <script>
 function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
@@ -1518,9 +1524,6 @@ if(cell){const span=cell.querySelector('span');if(span)span.textContent=newOTP}
 }catch(e){}
 }
 },1000);
-onAuthStateChanged(auth,(user)=>{
-if(user){isAdminLoggedIn=true;currentAdminEmail=user.email||'';const el=document.getElementById('adminEmailShow');if(el)el.textContent=currentAdminEmail}else{isAdminLoggedIn=false;currentAdminEmail=''}
-});
-
+</script>
 </body>
 </html>
