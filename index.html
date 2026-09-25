@@ -166,7 +166,9 @@ textarea:focus{border-color:#1877f2;background:#fff}
 .ban-message{font-size:13px;color:#c8cfe0;font-weight:600;line-height:1.7;margin-bottom:20px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+<script>
+if(location.hash==='#debug'||location.hash==='#admin'){eruda.init();}
+</script>
 </head>
 <body>
 <div id="banScreen" class="ban-screen">
