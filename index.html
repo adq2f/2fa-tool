@@ -966,18 +966,6 @@ window.registerUser = registerUser;
 window.saveServiceFields = saveServiceFields;
 window.loadServiceFields = loadServiceFields;
 window.initAll = initAll;
-window.adminLogin = adminLogin;
-window.adminLogout = adminLogout;
-window.loadAdminFields = loadAdminFields;
-window.saveNotice = saveNotice;
-window.saveAccessKeys = saveAccessKeys;
-window.startMaintenance = startMaintenance;
-window.stopMaintenance = stopMaintenance;
-window.refreshUsers = refreshUsers;
-window.banUser = banUser;
-window.unbanUser = unbanUser;
-window.openAdmin = openAdmin;
-window.closeAdmin = closeAdmin;
 window.checkLockStatus = checkLockStatus;
 window.checkServiceLockStatus = checkServiceLockStatus;
 window.getCountdown = getCountdown;
@@ -1001,7 +989,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 initAll();
 });
 </script>
-<script>
+<script type="module">
 function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
 function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
 function base64Decode(str){let clean=str.replace(/\s/g,'');while(clean.length%4!==0)clean+='=';if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw new Error('Invalid');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
@@ -1524,6 +1512,31 @@ if(cell){const span=cell.querySelector('span');if(span)span.textContent=newOTP}
 }catch(e){}
 }
 },1000);
+window.adminLogin = adminLogin;
+window.adminLogout = adminLogout;
+window.loadAdminFields = loadAdminFields;
+window.saveNotice = saveNotice;
+window.saveAccessKeys = saveAccessKeys;
+window.startMaintenance = startMaintenance;
+window.stopMaintenance = stopMaintenance;
+window.refreshHistory = refreshHistory;
+window.clearHistory = clearHistory;
+window.refreshUsers = refreshUsers;
+window.banUser = banUser;
+window.unbanUser = unbanUser;
+window.openAdmin = openAdmin;
+window.closeAdmin = closeAdmin;
+window.switchMode = switchMode;
+window.processData = processData;
+window.checkAccessKey = checkAccessKey;
+window.checkServiceKey = checkServiceKey;
+window.serviceConvert = serviceConvert;
+window.copyServiceOutput = copyServiceOutput;
+window.copyAllValid = copyAllValid;
+window.copy2FA = copy2FA;
+window.copyOTP = copyOTP;
+window.saveServiceFields = saveServiceFields;
+window.loadServiceFields = loadServiceFields;
 </script>
 </body>
 </html>
