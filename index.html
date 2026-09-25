@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Facebook 2FA Tool</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0e27;color:#fff;min-height:100vh;padding:15px}
-.notice-bar{background:linear-gradient(135deg,#1877f2,#0a4d9e);border-radius:14px;padding:12px 16px;margin:0 auto 15px;max-width:900px;display:flex;align-items:center;gap:12px;overflow:hidden;box-shadow:0 8px 24px rgba(24,119,242,.4);border:2px solid rgba(255,255,255,.2)}
-.notice-icon{flex-shrink:0;width:44px;height:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));animation:iconPulse 2s infinite}
-@keyframes iconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0a0e27,#151a3d,#0a0e27);background-attachment:fixed;color:#fff;min-height:100vh;padding:15px}
+.notice-bar{background:linear-gradient(135deg,#1877f2,#0a4d9e);border-radius:14px;padding:12px 16px;margin:0 auto 15px;max-width:900px;display:flex;align-items:center;gap:12px;overflow:hidden;box-shadow:0 10px 30px rgba(24,119,242,.5)}
+.notice-icon{flex-shrink:0;width:48px;height:48px;animation:iconPulse 2s infinite}
+@keyframes iconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 .notice-scroll{flex:1;overflow:hidden;position:relative;height:24px}
-.notice-text{position:absolute;white-space:nowrap;font-size:13px;font-weight:700;color:#fff;line-height:24px;animation:scrollNotice 35s linear infinite;animation-delay:0.3s;text-shadow:0 2px 4px rgba(0,0,0,.3)}
+.notice-text{position:absolute;white-space:nowrap;font-size:13px;font-weight:700;color:#fff;line-height:24px;animation:scrollNotice 40s linear infinite}
 @keyframes scrollNotice{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
 .box{background:#fff;color:#1a1a1a;max-width:900px;margin:0 auto;padding:25px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .header{display:flex;align-items:center;justify-content:center;gap:12px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #f0f2f5}
@@ -21,6 +21,7 @@ h1{color:#1877f2;font-size:20px;font-weight:800}
 .mode-tabs{display:flex;background:#f0f2f5;border-radius:12px;padding:4px;margin-bottom:14px;gap:4px}
 .mode-tab{flex:1;padding:10px 8px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:800;color:#666;border:none;background:transparent;text-transform:uppercase;font-family:inherit;transition:.3s}
 .mode-tab.active{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;box-shadow:0 4px 12px rgba(40,167,69,.4)}
+.mode-tab.service-tab.active{background:linear-gradient(135deg,#fd7e14,#c25a04);box-shadow:0 4px 12px rgba(253,126,20,.4)}
 .stats-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;justify-content:center}
 .stat-card{padding:5px 10px;border-radius:8px;background:#f8f9fa;border:1px solid #e9ecef;display:flex;align-items:center;gap:5px;font-size:11px}
 .stat-card .number{font-size:14px;font-weight:800;color:#1877f2}
@@ -38,7 +39,7 @@ h1{color:#1877f2;font-size:20px;font-weight:800}
 .paste-wrap{flex:1;position:relative;min-width:0}
 .label{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#555;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
 .paste-icon{width:16px;height:16px;stroke:#1877f2;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.label small{font-size:10px;font-weight:600;color:#999;text-transform:none;letter-spacing:.5px;margin-left:2px}
+.label small{font-size:10px;font-weight:600;color:#999;text-transform:none;margin-left:2px}
 textarea{width:100%;padding:12px;border:2px solid #e4e6eb;border-radius:12px;font-size:12px;font-family:monospace;outline:none;resize:vertical;min-height:130px;background:#f8f9fa;line-height:1.8}
 textarea:focus{border-color:#1877f2;background:#fff}
 .ring-timer{position:relative;width:70px;height:70px;flex-shrink:0;align-self:center}
@@ -48,26 +49,25 @@ textarea:focus{border-color:#1877f2;background:#fff}
 .ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:#28a745}
 .copy-all-btn{width:100%;padding:14px;background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;box-shadow:0 4px 14px rgba(40,167,69,.3);transition:.3s;display:flex;align-items:center;justify-content:center;gap:10px}
 .copy-all-btn:hover{transform:translateY(-2px)}
-.copy-all-btn:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;transform:none}
+.copy-all-btn:disabled{background:#ccc;cursor:not-allowed;box-shadow:none}
 .copy-all-btn.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
 .copy-all-btn.blink-red{background:linear-gradient(135deg,#dc3545,#a71e2a)!important;animation:blinkRed 1s infinite}
 @keyframes blinkRed{0%,100%{opacity:1}50%{opacity:.5}}
 .copy-all-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.service-btn{background:linear-gradient(135deg,#fd7e14,#c25a04)!important;box-shadow:0 4px 14px rgba(253,126,20,.3)!important}
 .table-container{max-height:60vh;overflow-y:auto;border-radius:12px;border:1px solid #eee;background:#fff}
 .result-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
-.result-table th{background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;padding:10px 8px;text-align:left;font-size:9px;text-transform:uppercase;position:sticky;top:0;z-index:10}
+.result-table th{background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;padding:10px 8px;text-align:left;font-size:9px;text-transform:uppercase;position:sticky;top:0}
 .result-table td{padding:8px;border-bottom:1px solid #f0f0f0;font-family:monospace;font-size:11px;word-break:break-all;vertical-align:middle}
 .result-table th:nth-child(1),.result-table td:nth-child(1){width:50%}
 .result-table th:nth-child(2),.result-table td:nth-child(2){width:50%}
 .result-table .wrong-line-cell{color:#dc3545;font-weight:700}
 .result-table .dupe-cell{color:#fd7e14;font-weight:700}
 .copy-box-otp{background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;padding:10px 12px;border-radius:8px;text-align:center;font-weight:800;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .25s;box-shadow:0 3px 10px rgba(24,119,242,.3);white-space:nowrap;user-select:none;display:flex;align-items:center;justify-content:center;gap:8px}
-.copy-box-otp:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(24,119,242,.5)}
-.copy-box-otp:active{transform:scale(.97)}
+.copy-box-otp:hover{transform:translateY(-2px)}
 .copy-box-otp.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
 .copy-box-2fa{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;padding:10px 12px;border-radius:8px;text-align:center;font-weight:700;font-size:11px;cursor:pointer;transition:all .25s;box-shadow:0 3px 10px rgba(40,167,69,.3);word-break:break-all;user-select:none;display:flex;align-items:center;gap:8px;justify-content:flex-start}
-.copy-box-2fa:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(40,167,69,.5)}
-.copy-box-2fa:active{transform:scale(.97)}
+.copy-box-2fa:hover{transform:translateY(-2px)}
 .copy-box-2fa.copied{background:linear-gradient(135deg,#17a2b8,#117a8b)}
 .copy-box-2fa .key-text{flex:1;text-align:left}
 .copy-ico{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.85}
@@ -89,49 +89,207 @@ textarea:focus{border-color:#1877f2;background:#fff}
 .lock-input{width:100%;max-width:280px;padding:12px;border:2px solid #e4e6eb;border-radius:10px;font-size:14px;text-align:center;font-family:monospace;letter-spacing:2px;outline:none;margin-bottom:10px;background:#fff}
 .lock-input:focus{border-color:#1877f2}
 .lock-btn{padding:12px 32px;background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;box-shadow:0 4px 14px rgba(24,119,242,.3)}
-.lock-btn:hover{transform:translateY(-2px)}
 .countdown-box{background:#ffebee;border:2px solid #dc3545;border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;display:none}
 .countdown-box.show{display:block}
 .countdown-num{font-size:42px;font-weight:900;color:#dc3545;font-family:monospace;margin:8px 0}
 .countdown-label{font-size:12px;color:#666;font-weight:700;text-transform:uppercase}
 .attempts-left{font-size:11px;color:#fd7e14;font-weight:700;margin-top:8px}
+.service-grid{display:flex;flex-direction:row;gap:10px;margin-bottom:12px;align-items:flex-start}
+.service-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+.service-col textarea{min-height:180px;font-size:11px;padding:10px;width:100%}
+.service-col .label{font-size:10px;letter-spacing:.3px;margin-bottom:6px}
+@media(max-width:650px){.service-grid{flex-direction:column}.service-col{width:100%}}
+.service-output{background:#f8f9fa;border:2px solid #e4e6eb;border-radius:12px;padding:12px;font-family:monospace;font-size:11px;line-height:1.9;white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow-y:auto;color:#1a1a1a}
+.service-output .line-num{color:#999;font-weight:700;user-select:none;margin-right:8px;display:inline-block;min-width:28px}
+.service-output .sid{color:#c25a04;font-weight:800}
+.service-output .sep{color:#999;margin:0 6px}
+.service-output .link{color:#1877f2}
+.service-output .qty{color:#28a745;font-weight:800}
+.maintenance-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#0a0e27,#1a0e2e,#2d0a1e);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.maintenance-screen.show{display:flex}
+.maint-content{position:relative;max-width:600px;width:100%;text-align:center;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border:2px solid rgba(220,53,69,.4);border-radius:24px;padding:40px 30px;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.maint-icon{font-size:80px;margin-bottom:20px;animation:maintIconSpin 3s infinite}
+@keyframes maintIconSpin{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.1) rotate(10deg)}}
+.maint-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,#dc3545,#fd7e14);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.maint-subtitle{font-size:13px;color:#a0a8c0;font-weight:700;margin-bottom:24px}
+.maint-timer{display:flex;justify-content:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.maint-time-box{background:linear-gradient(180deg,rgba(220,53,69,.25),rgba(220,53,69,.1));border:2px solid rgba(220,53,69,.5);border-radius:14px;padding:14px 18px;min-width:80px}
+.maint-time-num{font-size:32px;font-weight:900;color:#fff;font-family:monospace;line-height:1}
+.maint-time-label{font-size:10px;color:#a0a8c0;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-top:6px}
+.maint-message{font-size:13px;color:#c8cfe0;font-weight:600;line-height:1.7;padding:16px;background:rgba(255,255,255,.05);border-radius:12px;margin-bottom:20px}
+.maint-footer{font-size:11px;color:#6a7080;font-weight:600}
+.admin-panel{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,14,39,.98);z-index:99999;display:none;padding:20px;overflow-y:auto}
+.admin-panel.show{display:block}
+.admin-content{max-width:600px;margin:40px auto;background:linear-gradient(180deg,#fff,#f8f9fc);color:#1a1a1a;border-radius:20px;padding:30px;box-shadow:0 25px 70px rgba(0,0,0,.6)}
+.admin-title{font-size:22px;font-weight:900;color:#1877f2;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.admin-subtitle{font-size:12px;color:#8892a6;font-weight:700;margin-bottom:22px}
+.admin-section{background:linear-gradient(180deg,#f8f9fc,#f0f3f8);border:2px solid #e4e8f0;border-radius:14px;padding:18px;margin-bottom:16px}
+.admin-section-title{font-size:14px;font-weight:900;color:#1877f2;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+.admin-label{display:block;font-size:11px;font-weight:800;color:#4a5468;margin-bottom:6px;margin-top:10px;text-transform:uppercase;letter-spacing:.8px}
+.admin-input{width:100%;padding:12px 14px;border:2px solid #e4e8f0;border-radius:10px;font-size:13px;outline:none;margin-bottom:12px;background:#fff;transition:all .3s;color:#1a1a1a;font-family:inherit}
+.admin-input:focus{border-color:#1877f2;box-shadow:0 0 0 4px rgba(24,119,242,.15)}
+.admin-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1877f2,#0a4d9e);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;box-shadow:0 6px 18px rgba(24,119,242,.35);transition:all .3s;font-family:inherit}
+.admin-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(24,119,242,.5)}
+.admin-btn.danger{background:linear-gradient(135deg,#dc3545,#a71e2a);box-shadow:0 6px 18px rgba(220,53,69,.35)}
+.admin-btn.success{background:linear-gradient(135deg,#28a745,#1e7e34);box-shadow:0 6px 18px rgba(40,167,69,.35)}
+.admin-info{font-size:12px;color:#6a7080;padding:12px;background:#fff;border-radius:10px;margin-bottom:14px;border-left:4px solid #1877f2;line-height:1.6;font-weight:600}
+.admin-status{font-size:12px;font-weight:900;padding:14px;border-radius:10px;margin-bottom:14px;text-align:center;letter-spacing:.8px}
+.admin-status.active{background:linear-gradient(135deg,#fff3e0,#ffe0b2);color:#c25a04;border:2px solid #ffcc80}
+.admin-status.inactive{background:linear-gradient(135deg,#e8f5e9,#d4ecda);color:#1e7e34;border:2px solid #b8dfc2}
+.admin-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.admin-stat-card{background:linear-gradient(135deg,#fff,#f8f9fc);border:2px solid #e4e8f0;border-radius:12px;padding:14px 10px;text-align:center}
+.admin-stat-num{font-size:24px;font-weight:900;color:#1877f2;line-height:1}
+.admin-stat-label{font-size:10px;color:#7a8699;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+.admin-history{max-height:300px;overflow-y:auto;background:#fff;border:2px solid #e4e8f0;border-radius:12px;padding:8px;margin-bottom:14px;min-height:80px}
+.history-item{display:flex;gap:10px;padding:10px;border-bottom:1px solid #f0f2f6;align-items:flex-start}
+.history-item:last-child{border-bottom:none}
+.history-icon{font-size:18px;flex-shrink:0}
+.history-content{flex:1;min-width:0}
+.history-type{font-size:10px;font-weight:900;color:#1877f2;text-transform:uppercase}
+.history-detail{font-size:11px;color:#4a5468;font-weight:600;margin-top:2px;word-break:break-all;line-height:1.4}
+.history-time{font-size:9px;color:#8892a6;font-weight:700;margin-top:4px}
+.user-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fff;border:2px solid #e4e8f0;border-radius:10px;margin-bottom:8px;gap:10px}
+.user-info{flex:1;min-width:0}
+.user-email{font-size:12px;font-weight:800;color:#1a1a1a;word-break:break-all}
+.user-uid{font-size:9px;color:#8892a6;font-weight:700;margin-top:2px;word-break:break-all}
+.user-status-badge{font-size:9px;font-weight:900;padding:3px 8px;border-radius:6px;text-transform:uppercase}
+.user-status-badge.active{background:#e8f5e9;color:#1e7e34}
+.user-status-badge.banned{background:#ffebee;color:#dc3545}
+.user-action-btn{padding:8px 14px;border:none;border-radius:8px;font-size:10px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;transition:all .3s}
+.user-action-btn.ban{background:linear-gradient(135deg,#dc3545,#a71e2a);color:#fff}
+.user-action-btn.unban{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff}
+.ban-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a0e2e,#2d0a1e,#0a0e27);z-index:99998;display:none;align-items:center;justify-content:center;padding:20px}
+.ban-screen.show{display:flex}
+.ban-content{max-width:500px;text-align:center;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border:2px solid rgba(220,53,69,.5);border-radius:24px;padding:40px 30px;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.ban-icon{font-size:80px;margin-bottom:20px;filter:drop-shadow(0 10px 30px rgba(220,53,69,.6));animation:maintIconSpin 3s infinite}
+.ban-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,#dc3545,#fd7e14);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.ban-message{font-size:13px;color:#c8cfe0;font-weight:600;line-height:1.7;margin-bottom:20px}
 </style>
 </head>
 <body>
+<div id="banScreen" class="ban-screen">
+<div class="ban-content">
+<div class="ban-icon">🚫</div>
+<div class="ban-title">Account Banned</div>
+<div class="ban-message" id="banMessage">Your access has been suspended by the administrator. Contact support if you think this is a mistake.</div>
+<div style="font-size:12px;color:#8892a6;font-weight:700;padding:12px;background:rgba(255,255,255,.05);border-radius:10px;">🔒 Facebook 2FA Tool — Access Denied</div>
+</div>
+</div>
 
-<div class="notice-bar">
-<svg class="notice-icon" viewBox="0 0 64 64">
-<defs>
-<linearGradient id="notifGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" stop-color="#ffd700"/>
-<stop offset="50%" stop-color="#ff9500"/>
-<stop offset="100%" stop-color="#ff6b00"/>
-</linearGradient>
-<linearGradient id="bellGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" stop-color="#fff"/>
-<stop offset="100%" stop-color="#ffe0b2"/>
-</linearGradient>
-<filter id="notifShadow" x="-50%" y="-50%" width="200%" height="200%">
-<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.4"/>
-</filter>
-</defs>
-<circle cx="32" cy="32" r="28" fill="url(#notifGrad)" filter="url(#notifShadow)"/>
-<circle cx="32" cy="32" r="22" fill="#fff" fill-opacity="0.15"/>
-<path d="M 32 16 C 26 16 22 20 22 26 L 22 34 L 19 40 L 45 40 L 42 34 L 42 26 C 42 20 38 16 32 16 Z" fill="url(#bellGrad)" filter="url(#notifShadow)"/>
-<circle cx="32" cy="44" r="3" fill="#ff6b00"/>
-<path d="M 28 12 L 36 12 L 35 15 L 29 15 Z" fill="url(#bellGrad)"/>
-<circle cx="28" cy="24" r="1.5" fill="#fff" opacity="0.9"/>
-<circle cx="32" cy="22" r="1.5" fill="#fff" opacity="0.9"/>
-<circle cx="36" cy="24" r="1.5" fill="#fff" opacity="0.9"/>
-</svg>
-<div class="notice-scroll">
-<div class="notice-text">📢 Notice: আসসালামু আলাইকুম আমাদের এই 2FA TOOL এর Fetuses হলো আপনি 2FA তো Normal ভাবে বের করতে পারবেন। এবং 2FA to Base64 2FA Convert করতে পারবেন। কিন্তু Base64 থেকে Base32 এ Convert করতে Access লাগবে যা সবার কাছে থাকে না। Security এর জন্য Base64 to Base32 Converter Lock করা আছে।</div>
+<div id="maintenanceScreen" class="maintenance-screen">
+<div class="maint-content">
+<div class="maint-icon">🔧</div>
+<div class="maint-title">Server Maintenance</div>
+<div class="maint-subtitle">We'll be back soon — Sorry for the inconvenience</div>
+<div class="maint-timer">
+<div class="maint-time-box"><div class="maint-time-num" id="maintDays">00</div><div class="maint-time-label">Days</div></div>
+<div class="maint-time-box"><div class="maint-time-num" id="maintHours">00</div><div class="maint-time-label">Hours</div></div>
+<div class="maint-time-box"><div class="maint-time-num" id="maintMins">00</div><div class="maint-time-label">Minutes</div></div>
+<div class="maint-time-box"><div class="maint-time-num" id="maintSecs">00</div><div class="maint-time-label">Seconds</div></div>
+</div>
+<div class="maint-message" id="maintMessage">Our server is currently under maintenance. Please wait until the countdown ends.</div>
+<div class="maint-footer">🔒 <strong>Facebook 2FA Tool</strong> — Maintenance Mode Active</div>
+</div>
+</div>
+
+<div id="adminLogin" class="admin-panel">
+<div class="admin-content">
+<div class="admin-title">🔐 Admin Login</div>
+<div class="admin-subtitle">Firebase Authentication Required</div>
+<div id="adminLoginStatus" class="admin-info">Enter your admin email and password</div>
+<label class="admin-label">Email</label>
+<input type="email" id="adminEmailInput" class="admin-input" placeholder="admin@example.com" autocomplete="username">
+<label class="admin-label">Password</label>
+<input type="password" id="adminPassInput" class="admin-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')adminLogin()">
+<button class="admin-btn" onclick="adminLogin()">🔓 LOGIN</button>
+<button class="admin-btn danger" onclick="closeAdmin()">✖️ CLOSE</button>
+</div>
+</div>
+
+<div id="adminPanel" class="admin-panel">
+<div class="admin-content">
+<div class="admin-title">⚙️ Admin Control Panel</div>
+<div class="admin-subtitle">Full Firebase System Control</div>
+<div id="adminInfoBar" class="admin-info">Logged in as Admin • <span id="adminEmailShow"></span></div>
+
+<div class="admin-section">
+<div class="admin-section-title">📢 Notice Management</div>
+<label class="admin-label">Notice Text</label>
+<textarea id="adminNotice" class="admin-input" style="min-height:80px;resize:vertical;"></textarea>
+<button class="admin-btn success" onclick="saveNotice()">💾 SAVE NOTICE</button>
+</div>
+
+<div class="admin-section">
+<div class="admin-section-title">🔧 Maintenance Control</div>
+<div id="adminStatus" class="admin-status inactive">✅ Maintenance is OFF</div>
+<label class="admin-label">End Date</label>
+<input type="date" id="adminDate" class="admin-input">
+<label class="admin-label">End Time (24h)</label>
+<input type="time" id="adminTime" class="admin-input">
+<label class="admin-label">Custom Message</label>
+<input type="text" id="adminMessage" class="admin-input" placeholder="Server is under maintenance...">
+<button class="admin-btn success" onclick="startMaintenance()">▶️ START MAINTENANCE</button>
+<button class="admin-btn danger" onclick="stopMaintenance()">⏹️ STOP MAINTENANCE</button>
+</div>
+
+<div class="admin-section">
+<div class="admin-section-title">🔑 Access Keys</div>
+<label class="admin-label">Base64 → 2FA Keys (comma separated)</label>
+<input type="text" id="adminAccessKey" class="admin-input" placeholder="adq,ADQ">
+<label class="admin-label">Service Page Keys (comma separated)</label>
+<input type="text" id="adminServiceKey" class="admin-input" placeholder="adq1,ADQ1">
+<button class="admin-btn success" onclick="saveAccessKeys()">💾 SAVE ALL KEYS</button>
+</div>
+
+<div class="admin-section">
+<div class="admin-section-title">📊 Activity History</div>
+<div class="admin-info">Real-time logs from all users</div>
+<div class="admin-stats-grid">
+<div class="admin-stat-card"><div class="admin-stat-num" id="statPaste">0</div><div class="admin-stat-label">2FA Pasted</div></div>
+<div class="admin-stat-card"><div class="admin-stat-num" id="statCopy">0</div><div class="admin-stat-label">Copies</div></div>
+<div class="admin-stat-card"><div class="admin-stat-num" id="statUnlock">0</div><div class="admin-stat-label">Unlocks</div></div>
+<div class="admin-stat-card"><div class="admin-stat-num" id="statService">0</div><div class="admin-stat-label">Service Uses</div></div>
+</div>
+<button class="admin-btn" onclick="refreshHistory()">🔄 REFRESH HISTORY</button>
+<div id="historyLog" class="admin-history"></div>
+<button class="admin-btn danger" onclick="clearHistory()">🗑️ CLEAR ALL HISTORY</button>
+</div>
+
+<div class="admin-section">
+<div class="admin-section-title">👥 User Management</div>
+<div class="admin-info">Ban/Unban users by their IP address</div>
+<button class="admin-btn" onclick="refreshUsers()">🔄 LOAD USERS</button>
+<div id="userList" class="admin-history"></div>
+</div>
+
+<button class="admin-btn danger" onclick="adminLogout()" style="margin-top:10px;">🚪 LOGOUT</button>
+<button class="admin-btn" onclick="closeAdmin()">✖️ CLOSE PANEL</button>
 </div>
 </div>
 
 <div class="popup" id="popup">
 <svg class="popup-icon" id="popupIcon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
 <div><div class="popup-title" id="popupTitle">Success</div><div class="popup-msg" id="popupMsg"></div></div>
+</div>
+<div class="notice-bar">
+<svg class="notice-icon" viewBox="0 0 64 64">
+<defs>
+<radialGradient id="notifRad" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#fff9c4"/><stop offset="40%" stop-color="#ffd700"/><stop offset="75%" stop-color="#ff9500"/><stop offset="100%" stop-color="#ff6b00"/></radialGradient>
+<linearGradient id="bellGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e0e0e0"/></linearGradient>
+<filter id="notifShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/></filter>
+</defs>
+<circle cx="32" cy="32" r="30" fill="url(#notifRad)" filter="url(#notifShadow)"/>
+<circle cx="32" cy="32" r="26" fill="none" stroke="#fff" stroke-opacity="0.3" stroke-width="1"/>
+<path d="M 32 14 C 24 14 19 19 19 27 L 19 37 L 15 44 L 49 44 L 45 37 L 45 27 C 45 19 40 14 32 14 Z" fill="url(#bellGrad)" filter="url(#notifShadow)"/>
+<path d="M 30 14 L 34 14 L 35 11 L 29 11 Z" fill="url(#bellGrad)"/>
+<circle cx="32" cy="47" r="3.5" fill="#ff6b00"/>
+<circle cx="26" cy="30" r="1.5" fill="#fff" fill-opacity="0.85"/>
+<circle cx="32" cy="28" r="1.8" fill="#fff" fill-opacity="0.85"/>
+<circle cx="38" cy="30" r="1.5" fill="#fff" fill-opacity="0.85"/>
+</svg>
+<div class="notice-scroll">
+<div class="notice-text" id="noticeText">📢 Notice: আসসালামু আলাইকুম আমাদের এই 2FA TOOL এর Fetuses হলো আপনি 2FA তো Normal ভাবে বের করতে পারবেন। এবং 2FA to Base64 2FA Convert করতে পারবেন। কিন্তু Base64 থেকে Base32 এ Convert করতে Access লাগবে যা সবার কাছে থাকে না। Security এর জন্য Base64 to Base32 Converter Lock করা আছে।</div>
+</div>
 </div>
 
 <div class="box">
@@ -152,8 +310,10 @@ textarea:focus{border-color:#1877f2;background:#fff}
 <div class="mode-tabs">
 <button class="mode-tab active" id="tabMode1" onclick="switchMode(1)">2FA → Base64</button>
 <button class="mode-tab" id="tabMode2" onclick="switchMode(2)">Base64 → 2FA</button>
+<button class="mode-tab service-tab" id="tabMode3" onclick="switchMode(3)">SERVICE</button>
 </div>
 
+<div id="mainTool">
 <div class="stats-row" id="statsRow" style="display:none;">
 <div class="stat-card"><span class="number" id="totalCount">0</span><span class="label-text">Total</span></div>
 <div class="stat-card valid"><span class="number" id="validCount">0</span><span class="label-text">✅ Valid</span></div>
@@ -208,6 +368,633 @@ COPY ALL (LINE BY LINE)
 
 <div id="resultContainer"><div class="empty-msg">Paste 2FA keys above to see results</div></div>
 </div>
+<div id="serviceTool" style="display:none;">
+<div id="serviceLock" class="lock-box" style="display:none;">
+<div class="lock-icon">🔒</div>
+<div class="lock-title">Service Locked</div>
+<div class="lock-msg">Enter Access Key to unlock Service</div>
+<input type="password" id="serviceKeyInput" class="lock-input" placeholder="Enter Service Key" onkeydown="if(event.key==='Enter')checkServiceKey()">
+<br>
+<button class="lock-btn" onclick="checkServiceKey()">UNLOCK</button>
+<div class="attempts-left" id="serviceAttemptsLeft" style="display:none;">Attempts left: 3</div>
+</div>
+
+<div id="serviceUnlockStatus" style="display:none;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border:2px solid #28a745;border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;font-size:11px;font-weight:800;color:#1e7e34;">
+✅ SERVICE UNLOCKED • ⏱️ <span id="serviceUnlockTimer">12:00:00</span> remaining
+</div>
+
+<div id="serviceCountdownBox" class="countdown-box">
+<div style="font-size:32px;">⏱️</div>
+<div class="countdown-label">Too Many Wrong Attempts</div>
+<div class="countdown-num" id="serviceCountdownNum">60</div>
+<div class="countdown-label">seconds remaining</div>
+</div>
+
+<div class="service-grid">
+<div class="service-col">
+<div class="label">Service ID (Once)</div>
+<textarea id="serviceIdInput" placeholder="SERVICE_ID" oninput="saveServiceFields()"></textarea>
+</div>
+<div class="service-col">
+<div class="label">Facebook UID (Line by Line)</div>
+<textarea id="uidInput" placeholder="100012345&#10;100067890"></textarea>
+</div>
+<div class="service-col">
+<div class="label">Quantity (Once)</div>
+<textarea id="qtyInput" placeholder="5" oninput="saveServiceFields()"></textarea>
+</div>
+</div>
+
+<button class="copy-all-btn service-btn" id="serviceConvertBtn" onclick="serviceConvert()">
+<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+CONVERT
+</button>
+
+<button class="copy-all-btn service-btn" id="serviceCopyBtn" onclick="copyServiceOutput()" style="display:none;background:linear-gradient(135deg,#1877f2,#0a4d9e)!important;box-shadow:0 4px 14px rgba(24,119,242,.3)!important;">
+<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+COPY ALL OUTPUT
+</button>
+
+<div id="serviceResultContainer"><div class="empty-msg">Paste Service ID, UID and Quantity then click Convert</div></div>
+</div>
+
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, limit, onSnapshot, serverTimestamp, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC7KS5Pb0snp24xbTDXrTB43hhpPNvomY7A",
+  authDomain: "adq2fa.firebaseapp.com",
+  projectId: "adq2fa",
+  storageBucket: "adq2fa.firebasestorage.app",
+  messagingSenderId: "741922457058",
+  appId: "1:741922457058:web:0c1f03a64c7845361b25bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let isAdminLoggedIn = false;
+let currentAdminEmail = '';
+let isBanned = false;
+let isUnlocked = false;
+let isServiceUnlocked = false;
+let ACCESS_KEYS = ['adq','ADQ'];
+let SERVICE_KEYS = ['adq1','ADQ1'];
+const LOCK_DURATION = 12*60*60*1000;
+const MAX_ATTEMPTS = 3;
+const COUNTDOWN_SECONDS = 60;
+let userIP = 'unknown';
+let countdownInterval = null;
+let unlockTimerInterval = null;
+let serviceUnlockTimerInterval = null;
+let maintenanceInterval = null;
+let currentAttempts = 0;
+let serviceAttempts = 0;
+let rowsData = [];
+let currentMode = 1;
+let serviceOutputText = '';
+let activityLog = [];
+let liveMaintenance = { active: false, endTime: 0, message: '' };
+let liveNotice = '';
+
+async function getIP(){
+  try{
+    const r = await fetch('https://api.ipify.org?format=json');
+    const d = await r.json();
+    userIP = d.ip;
+    return d.ip;
+  }catch(e){
+    userIP = 'unknown';
+    return 'unknown';
+  }
+}
+
+function getLockKey(){ return 'fb2fa_lock_'+userIP; }
+function getAttemptsKey(){ return 'fb2fa_attempts_'+userIP; }
+function getCountdownKey(){ return 'fb2fa_countdown_'+userIP; }
+function getServiceLockKey(){ return 'fb2fa_service_lock_'+userIP; }
+function getServiceAttemptsKey(){ return 'fb2fa_service_attempts_'+userIP; }
+function getServiceCountdownKey(){ return 'fb2fa_service_countdown_'+userIP; }
+
+function checkLockStatus(){
+  const d = localStorage.getItem(getLockKey());
+  if(!d) return false;
+  try{
+    const p = JSON.parse(d);
+    if(Date.now() - p.time < LOCK_DURATION) return true;
+    localStorage.removeItem(getLockKey());
+    return false;
+  }catch(e){ return false; }
+}
+
+function checkServiceLockStatus(){
+  const d = localStorage.getItem(getServiceLockKey());
+  if(!d) return false;
+  try{
+    const p = JSON.parse(d);
+    if(Date.now() - p.time < LOCK_DURATION) return true;
+    localStorage.removeItem(getServiceLockKey());
+    return false;
+  }catch(e){ return false; }
+}
+
+function saveUnlock(){ localStorage.setItem(getLockKey(), JSON.stringify({time: Date.now(), ip: userIP})); }
+function saveServiceUnlock(){ localStorage.setItem(getServiceLockKey(), JSON.stringify({time: Date.now(), ip: userIP})); }
+
+function getAttempts(){ const a = localStorage.getItem(getAttemptsKey()); return a ? parseInt(a) : 0; }
+function getServiceAttempts(){ const a = localStorage.getItem(getServiceAttemptsKey()); return a ? parseInt(a) : 0; }
+function saveAttempts(n){ localStorage.setItem(getAttemptsKey(), n.toString()); }
+function saveServiceAttempts(n){ localStorage.setItem(getServiceAttemptsKey(), n.toString()); }
+function clearAttempts(){ localStorage.removeItem(getAttemptsKey()); }
+function clearServiceAttempts(){ localStorage.removeItem(getServiceAttemptsKey()); }
+
+function getCountdown(){
+  const c = localStorage.getItem(getCountdownKey());
+  if(!c) return 0;
+  try{
+    const d = JSON.parse(c);
+    const remain = Math.ceil((d.end - Date.now())/1000);
+    if(remain > 0) return remain;
+    localStorage.removeItem(getCountdownKey());
+    return 0;
+  }catch(e){ return 0; }
+}
+
+function getServiceCountdown(){
+  const c = localStorage.getItem(getServiceCountdownKey());
+  if(!c) return 0;
+  try{
+    const d = JSON.parse(c);
+    const remain = Math.ceil((d.end - Date.now())/1000);
+    if(remain > 0) return remain;
+    localStorage.removeItem(getServiceCountdownKey());
+    return 0;
+  }catch(e){ return 0; }
+}
+
+function saveCountdown(sec){ localStorage.setItem(getCountdownKey(), JSON.stringify({end: Date.now() + sec*1000})); }
+function saveServiceCountdown(sec){ localStorage.setItem(getServiceCountdownKey(), JSON.stringify({end: Date.now() + sec*1000})); }
+function playSound(type){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(type === 'copy'){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+    }else if(type === 'copyAll'){
+      const notes = [659, 784, 988, 1175];
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i*0.07);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i*0.07);
+        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + i*0.07 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.07 + 0.15);
+        osc.start(ctx.currentTime + i*0.07); osc.stop(ctx.currentTime + i*0.07 + 0.2);
+      });
+    }else if(type === 'error'){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+    }else if(type === 'page'){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.06);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.22);
+    }
+    setTimeout(() => ctx.close(), 1500);
+  }catch(e){}
+}
+
+let popupTimer = null;
+function showPopup(type, title, msg){
+  const popup = document.getElementById('popup');
+  const popupTitle = document.getElementById('popupTitle');
+  const popupMsg = document.getElementById('popupMsg');
+  const popupIcon = document.getElementById('popupIcon');
+  popup.className = 'popup ' + type;
+  popupTitle.textContent = title;
+  popupMsg.textContent = msg || '';
+  if(type === 'success') popupIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+  else if(type === 'error') popupIcon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+  else if(type === 'warn') popupIcon.innerHTML = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
+  else popupIcon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
+  popup.classList.add('show');
+  if(popupTimer) clearTimeout(popupTimer);
+  popupTimer = setTimeout(() => popup.classList.remove('show'), 4000);
+}
+
+function copyToClipboard(text){
+  if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); document.body.removeChild(ta); resolve(); }
+    catch(e){ document.body.removeChild(ta); reject(e); }
+  });
+}
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function addHistory(type, detail){
+  try{
+    addDoc(collection(db, 'activity_logs'), {
+      type: type,
+      detail: detail || '',
+      ip: userIP,
+      time: Date.now()
+    }).catch(e => console.log('History error:', e));
+  }catch(e){}
+}
+
+async function loadActivityLogs(){
+  try{
+    const q = query(collection(db, 'activity_logs'), orderBy('time', 'desc'), limit(100));
+    const snap = await getDocs(q);
+    activityLog = [];
+    snap.forEach(d => activityLog.push(d.data()));
+    refreshHistoryDisplay();
+  }catch(e){
+    console.log('Load history error:', e);
+  }
+}
+
+function refreshHistoryDisplay(){
+  const log = document.getElementById('historyLog');
+  if(!log) return;
+  if(activityLog.length === 0){
+    log.innerHTML = '<div style="text-align:center;color:#999;padding:20px;font-size:12px;">No activity yet</div>';
+  }else{
+    let html = '';
+    activityLog.forEach(item => {
+      const date = new Date(item.time);
+      const timeStr = date.toLocaleString();
+      let icon = '📝';
+      if(item.type === 'paste') icon = '📋';
+      else if(item.type === 'copy') icon = '📎';
+      else if(item.type === 'unlock') icon = '🔓';
+      else if(item.type === 'service') icon = '⚙️';
+      html += '<div class="history-item"><span class="history-icon">'+icon+'</span><div class="history-content"><div class="history-type">'+(item.type || 'unknown').toUpperCase()+'</div><div class="history-detail">'+escapeHtml(item.detail || '')+'</div><div class="history-time">'+timeStr+' • IP: '+escapeHtml(item.ip || 'N/A')+'</div></div></div>';
+    });
+    log.innerHTML = html;
+  }
+  document.getElementById('statPaste').textContent = activityLog.filter(x => x.type === 'paste').length;
+  document.getElementById('statCopy').textContent = activityLog.filter(x => x.type === 'copy').length;
+  document.getElementById('statUnlock').textContent = activityLog.filter(x => x.type === 'unlock').length;
+  document.getElementById('statService').textContent = activityLog.filter(x => x.type === 'service').length;
+}
+
+async function refreshHistory(){
+  await loadActivityLogs();
+  showPopup('success', 'REFRESHED!', 'Activity history updated');
+}
+
+async function clearHistory(){
+  if(!confirm('Clear all history? This cannot be undone.')) return;
+  try{
+    const snap = await getDocs(collection(db, 'activity_logs'));
+    const promises = [];
+    snap.forEach(d => promises.push(deleteDoc(doc(db, 'activity_logs', d.id))));
+    await Promise.all(promises);
+    activityLog = [];
+    refreshHistoryDisplay();
+    showPopup('success', 'CLEARED!', 'All history deleted');
+  }catch(e){
+    showPopup('error', 'ERROR!', 'Failed to clear history');
+  }
+}
+
+function updateAttemptsDisplay(){
+  const el = document.getElementById('attemptsLeft');
+  if(el){ el.style.display = 'block'; el.textContent = 'Attempts left: ' + (MAX_ATTEMPTS - currentAttempts); }
+}
+
+function updateServiceAttemptsDisplay(){
+  const el = document.getElementById('serviceAttemptsLeft');
+  if(el){ el.style.display = 'block'; el.textContent = 'Attempts left: ' + (MAX_ATTEMPTS - serviceAttempts); }
+}
+
+function startCountdown(sec, isService){
+  const box = document.getElementById(isService ? 'serviceCountdownBox' : 'countdownBox');
+  const num = document.getElementById(isService ? 'serviceCountdownNum' : 'countdownNum');
+  const lock = document.getElementById(isService ? 'serviceLock' : 'accessLock');
+  lock.style.display = 'none';
+  box.classList.add('show');
+  let remaining = sec;
+  num.textContent = remaining;
+  const interval = setInterval(() => {
+    remaining--;
+    num.textContent = remaining;
+    if(isService){ saveServiceCountdown(remaining); } else { saveCountdown(remaining); }
+    if(remaining <= 0){
+      clearInterval(interval);
+      if(isService){
+        localStorage.removeItem(getServiceCountdownKey());
+        box.classList.remove('show');
+        lock.style.display = 'block';
+        serviceAttempts = 0;
+        clearServiceAttempts();
+        updateServiceAttemptsDisplay();
+      }else{
+        localStorage.removeItem(getCountdownKey());
+        box.classList.remove('show');
+        lock.style.display = 'block';
+        currentAttempts = 0;
+        clearAttempts();
+        updateAttemptsDisplay();
+      }
+    }
+  }, 1000);
+}
+
+function startUnlockTimer(){
+  if(unlockTimerInterval) clearInterval(unlockTimerInterval);
+  function tick(){
+    const el = document.getElementById('unlockTimer');
+    if(!el) return;
+    const d = localStorage.getItem(getLockKey());
+    if(!d){
+      el.textContent = '00:00:00';
+      document.getElementById('unlockStatus').style.display = 'none';
+      isUnlocked = false;
+      localStorage.removeItem(getLockKey());
+      if(currentMode === 2) switchMode(2);
+      return;
+    }
+    try{
+      const p = JSON.parse(d);
+      const remain = LOCK_DURATION - (Date.now() - p.time);
+      if(remain <= 0){
+        el.textContent = '00:00:00';
+        document.getElementById('unlockStatus').style.display = 'none';
+        isUnlocked = false;
+        localStorage.removeItem(getLockKey());
+        if(currentMode === 2) switchMode(2);
+        return;
+      }
+      const h = Math.floor(remain/3600000);
+      const m = Math.floor((remain%3600000)/60000);
+      const s = Math.floor((remain%60000)/1000);
+      el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }catch(e){}
+  }
+  tick();
+  unlockTimerInterval = setInterval(tick, 1000);
+}
+
+function startServiceUnlockTimer(){
+  if(serviceUnlockTimerInterval) clearInterval(serviceUnlockTimerInterval);
+  function tick(){
+    const el = document.getElementById('serviceUnlockTimer');
+    if(!el) return;
+    const d = localStorage.getItem(getServiceLockKey());
+    if(!d){
+      el.textContent = '00:00:00';
+      document.getElementById('serviceUnlockStatus').style.display = 'none';
+      isServiceUnlocked = false;
+      localStorage.removeItem(getServiceLockKey());
+      if(currentMode === 3) switchMode(3);
+      return;
+    }
+    try{
+      const p = JSON.parse(d);
+      const remain = LOCK_DURATION - (Date.now() - p.time);
+      if(remain <= 0){
+        el.textContent = '00:00:00';
+        document.getElementById('serviceUnlockStatus').style.display = 'none';
+        isServiceUnlocked = false;
+        localStorage.removeItem(getServiceLockKey());
+        if(currentMode === 3) switchMode(3);
+        return;
+      }
+      const h = Math.floor(remain/3600000);
+      const m = Math.floor((remain%3600000)/60000);
+      const s = Math.floor((remain%60000)/1000);
+      el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }catch(e){}
+  }
+  tick();
+  serviceUnlockTimerInterval = setInterval(tick, 1000);
+}
+let liveSettings = {notice:'', accessKeys:['adq','ADQ'], serviceKeys:['adq1','ADQ1']};
+
+function listenSettings(){
+  const ref = doc(db, 'settings', 'main');
+  onSnapshot(ref, (snap) => {
+    if(snap.exists()){
+      const d = snap.data();
+      liveSettings = d;
+      if(d.notice !== undefined){
+        const el = document.getElementById('noticeText');
+        if(el) el.textContent = d.notice;
+        const admNotice = document.getElementById('adminNotice');
+        if(admNotice && !admNotice.value) admNotice.value = d.notice;
+      }
+      if(d.accessKeys && Array.isArray(d.accessKeys)) ACCESS_KEYS = d.accessKeys;
+      if(d.serviceKeys && Array.isArray(d.serviceKeys)) SERVICE_KEYS = d.serviceKeys;
+      if(d.maintenance){
+        liveMaintenance = d.maintenance;
+        updateMaintenanceStatus();
+      }
+    }else{
+      setDoc(ref, {
+        notice: '📢 Notice: আসসালামু আলাইকুম আমাদের এই 2FA TOOL এর Fetuses হলো আপনি 2FA তো Normal ভাবে বের করতে পারবেন।',
+        accessKeys: ['adq','ADQ'],
+        serviceKeys: ['adq1','ADQ1'],
+        maintenance: {active:false, endTime:0, message:''}
+      });
+    }
+  }, (err) => {
+    console.log('Settings listener error:', err);
+  });
+}
+
+function updateMaintenanceStatus(){
+  const status = document.getElementById('adminStatus');
+  if(status){
+    if(liveMaintenance.active && Date.now() < liveMaintenance.endTime){
+      status.className = 'admin-status active';
+      status.textContent = '⚠️ Maintenance ACTIVE until ' + new Date(liveMaintenance.endTime).toLocaleString();
+    }else{
+      status.className = 'admin-status inactive';
+      status.textContent = '✅ Maintenance is OFF';
+    }
+  }
+  const screen = document.getElementById('maintenanceScreen');
+  if(!screen) return;
+  if(liveMaintenance.active && Date.now() < liveMaintenance.endTime){
+    screen.classList.add('show');
+    document.getElementById('maintMessage').textContent = liveMaintenance.message || 'Server is under maintenance';
+    if(maintenanceInterval) clearInterval(maintenanceInterval);
+    function tick(){
+      const remain = liveMaintenance.endTime - Date.now();
+      if(remain <= 0){
+        screen.classList.remove('show');
+        if(maintenanceInterval) clearInterval(maintenanceInterval);
+        return;
+      }
+      const d = Math.floor(remain/(1000*60*60*24));
+      const h = Math.floor((remain%(1000*60*60*24))/(1000*60*60));
+      const m = Math.floor((remain%(1000*60*60))/(1000*60));
+      const s = Math.floor((remain%(1000*60))/1000);
+      const elD = document.getElementById('maintDays');
+      const elH = document.getElementById('maintHours');
+      const elM = document.getElementById('maintMins');
+      const elS = document.getElementById('maintSecs');
+      if(elD) elD.textContent = String(d).padStart(2,'0');
+      if(elH) elH.textContent = String(h).padStart(2,'0');
+      if(elM) elM.textContent = String(m).padStart(2,'0');
+      if(elS) elS.textContent = String(s).padStart(2,'0');
+    }
+    tick();
+    maintenanceInterval = setInterval(tick, 1000);
+  }else{
+    screen.classList.remove('show');
+    if(maintenanceInterval) clearInterval(maintenanceInterval);
+  }
+}
+
+function checkBanStatus(){
+  if(!userIP || userIP === 'unknown') return;
+  const ref = doc(db, 'ban_list', userIP);
+  onSnapshot(ref, (snap) => {
+    const banScreen = document.getElementById('banScreen');
+    if(snap.exists()){
+      const d = snap.data();
+      if(d.status === 'banned'){
+        isBanned = true;
+        if(banScreen){
+          banScreen.classList.add('show');
+          if(d.reason) document.getElementById('banMessage').textContent = d.reason;
+        }
+      }else{
+        isBanned = false;
+        if(banScreen) banScreen.classList.remove('show');
+      }
+    }else{
+      isBanned = false;
+      if(banScreen) banScreen.classList.remove('show');
+    }
+  }, (err) => {
+    console.log('Ban listener error:', err);
+  });
+}
+async function registerUser(){
+if(!userIP || userIP === 'unknown') return;
+try{
+const ref = doc(db, 'users', userIP);
+const snap = await getDoc(ref);
+if(!snap.exists()){
+await setDoc(ref, {
+uid: userIP,
+status: 'active',
+createdAt: Date.now(),
+lastSeen: Date.now()
+});
+}else{
+await updateDoc(ref, {lastSeen: Date.now()});
+}
+}catch(e){
+console.log('Register user error:', e);
+}
+}
+function saveServiceFields(){
+localStorage.setItem('fb2fa_service_id',document.getElementById('serviceIdInput').value);
+localStorage.setItem('fb2fa_service_qty',document.getElementById('qtyInput').value);
+}
+function loadServiceFields(){
+const sid=localStorage.getItem('fb2fa_service_id');
+const qty=localStorage.getItem('fb2fa_service_qty');
+if(sid)document.getElementById('serviceIdInput').value=sid;
+if(qty)document.getElementById('qtyInput').value=qty;
+}
+async function initAll(){
+await getIP();
+isUnlocked=checkLockStatus();
+isServiceUnlocked=checkServiceLockStatus();
+await registerUser();
+listenSettings();
+checkBanStatus();
+}
+window.addHistory = addHistory;
+window.showPopup = showPopup;
+window.playSound = playSound;
+window.copyToClipboard = copyToClipboard;
+window.escapeHtml = escapeHtml;
+window.loadActivityLogs = loadActivityLogs;
+window.refreshHistoryDisplay = refreshHistoryDisplay;
+window.refreshHistory = refreshHistory;
+window.clearHistory = clearHistory;
+window.updateAttemptsDisplay = updateAttemptsDisplay;
+window.updateServiceAttemptsDisplay = updateServiceAttemptsDisplay;
+window.startCountdown = startCountdown;
+window.startUnlockTimer = startUnlockTimer;
+window.startServiceUnlockTimer = startServiceUnlockTimer;
+window.listenSettings = listenSettings;
+window.updateMaintenanceStatus = updateMaintenanceStatus;
+window.checkBanStatus = checkBanStatus;
+window.registerUser = registerUser;
+window.saveServiceFields = saveServiceFields;
+window.loadServiceFields = loadServiceFields;
+window.initAll = initAll;
+window.adminLogin = adminLogin;
+window.adminLogout = adminLogout;
+window.loadAdminFields = loadAdminFields;
+window.saveNotice = saveNotice;
+window.saveAccessKeys = saveAccessKeys;
+window.startMaintenance = startMaintenance;
+window.stopMaintenance = stopMaintenance;
+window.refreshUsers = refreshUsers;
+window.banUser = banUser;
+window.unbanUser = unbanUser;
+window.openAdmin = openAdmin;
+window.closeAdmin = closeAdmin;
+window.checkLockStatus = checkLockStatus;
+window.checkServiceLockStatus = checkServiceLockStatus;
+window.getCountdown = getCountdown;
+window.getServiceCountdown = getServiceCountdown;
+window.getAttempts = getAttempts;
+window.getServiceAttempts = getServiceAttempts;
+window.saveAttempts = saveAttempts;
+window.saveServiceAttempts = saveServiceAttempts;
+window.saveCountdown = saveCountdown;
+window.saveServiceCountdown = saveServiceCountdown;
+window.clearAttempts = clearAttempts;
+window.clearServiceAttempts = clearServiceAttempts;
+window.saveUnlock = saveUnlock;
+window.saveServiceUnlock = saveServiceUnlock;
+window.getLockKey = getLockKey;
+window.getServiceLockKey = getServiceLockKey;
+</script>
 <script>
 function base32Decode(str){const abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';str=str.toUpperCase().replace(/=+$/,'').replace(/\s/g,'');if(!str.length)throw new Error('Empty');let bits='';for(let i=0;i<str.length;i++){const v=abc.indexOf(str[i]);if(v===-1)throw new Error('Invalid');bits+=v.toString(2).padStart(5,'0')}const bytes=[];for(let i=0;i+8<=bits.length;i+=8)bytes.push(parseInt(bits.substr(i,8),2));if(!bytes.length)throw new Error('Invalid');return new Uint8Array(bytes)}
 function base64Encode(str){const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
@@ -217,39 +1004,410 @@ function isBase64(str){const clean=str.replace(/\s/g,'');if(clean.length<8||clea
 function formatBase32(str){const clean=str.replace(/\s/g,'').toUpperCase();const groups=clean.match(/.{1,4}/g)||[];return groups.join(' ')}
 async function hmacSHA1(key,message){const ck=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:'SHA-1'},false,['sign']);return new Uint8Array(await crypto.subtle.sign('HMAC',ck,message))}
 async function generateTOTP(keyBytes){const epoch=Math.floor(Date.now()/1000);const counter=Math.floor(epoch/30);const buffer=new ArrayBuffer(8);const view=new DataView(buffer);view.setUint32(4,counter,false);const hmac=await hmacSHA1(keyBytes,buffer);const offset=hmac[hmac.length-1]&0x0f;const binary=((hmac[offset]&0x7f)<<24)|((hmac[offset+1]&0xff)<<16)|((hmac[offset+2]&0xff)<<8)|(hmac[offset+3]&0xff);return (binary%1000000).toString().padStart(6,'0')}
-function escapeHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function playSound(type){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();if(type==='copy'){const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.15)}else if(type==='copyAll'){const notes=[659,784,988,1175];notes.forEach((freq,i)=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime+i*0.07);gain.gain.setValueAtTime(0,ctx.currentTime+i*0.07);gain.gain.linearRampToValueAtTime(0.12,ctx.currentTime+i*0.07+0.02);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.07+0.15);osc.start(ctx.currentTime+i*0.07);osc.stop(ctx.currentTime+i*0.07+0.2)})}else if(type==='error'){const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='square';osc.frequency.setValueAtTime(300,ctx.currentTime);gain.gain.setValueAtTime(0.1,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3)}setTimeout(()=>ctx.close(),1500)}catch(e){}}
-let popupTimer=null;
-function showPopup(type,title,msg){const popup=document.getElementById('popup');const popupTitle=document.getElementById('popupTitle');const popupMsg=document.getElementById('popupMsg');const popupIcon=document.getElementById('popupIcon');popup.className='popup '+type;popupTitle.textContent=title;popupMsg.textContent=msg||'';if(type==='success')popupIcon.innerHTML='<polyline points="20 6 9 17 4 12"></polyline>';else if(type==='error')popupIcon.innerHTML='<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';else if(type==='warn')popupIcon.innerHTML='<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';else popupIcon.innerHTML='<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';popup.classList.add('show');if(popupTimer)clearTimeout(popupTimer);popupTimer=setTimeout(()=>popup.classList.remove('show'),4000)}
-function copyToClipboard(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);return new Promise((resolve,reject)=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');document.body.removeChild(ta);resolve()}catch(e){document.body.removeChild(ta);reject(e)}})}
-let isUnlocked=false;
-const ACCESS_KEYS=['adq','ADQ'];
-const LOCK_DURATION=12*60*60*1000;
-const MAX_ATTEMPTS=3;
-const COUNTDOWN_SECONDS=60;
-let userIP='unknown';
-let countdownInterval=null;
-let unlockTimerInterval=null;
-let currentAttempts=0;
-let rowsData=[];
-let currentMode=1;
-function getIP(){return fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{userIP=d.ip;return d.ip}).catch(()=>{userIP='unknown';return 'unknown'})}
-function getLockKey(){return 'fb2fa_lock_'+userIP}
-function getAttemptsKey(){return 'fb2fa_attempts_'+userIP}
-function getCountdownKey(){return 'fb2fa_countdown_'+userIP}
-function checkLockStatus(){const lockData=localStorage.getItem(getLockKey());if(!lockData)return false;try{const d=JSON.parse(lockData);if(Date.now()-d.time<LOCK_DURATION){return true}else{localStorage.removeItem(getLockKey());return false}}catch(e){return false}}
-function saveUnlock(){localStorage.setItem(getLockKey(),JSON.stringify({time:Date.now(),ip:userIP}))}
-function getAttempts(){const a=localStorage.getItem(getAttemptsKey());return a?parseInt(a):0}
-function saveAttempts(n){localStorage.setItem(getAttemptsKey(),n.toString())}
-function clearAttempts(){localStorage.removeItem(getAttemptsKey())}
-function getCountdown(){const c=localStorage.getItem(getCountdownKey());if(!c)return 0;try{const d=JSON.parse(c);const remain=Math.ceil((d.end-Date.now())/1000);if(remain>0)return remain;localStorage.removeItem(getCountdownKey());return 0}catch(e){return 0}}
-function saveCountdown(sec){localStorage.setItem(getCountdownKey(),JSON.stringify({end:Date.now()+sec*1000}))}
-function updateAttemptsDisplay(){const el=document.getElementById('attemptsLeft');if(el){el.style.display='block';el.textContent='Attempts left: '+(MAX_ATTEMPTS-currentAttempts)}}
-function startCountdown(sec){const box=document.getElementById('countdownBox');const num=document.getElementById('countdownNum');const lock=document.getElementById('accessLock');lock.style.display='none';box.classList.add('show');let remaining=sec;num.textContent=remaining;if(countdownInterval)clearInterval(countdownInterval);countdownInterval=setInterval(()=>{remaining--;num.textContent=remaining;saveCountdown(remaining);if(remaining<=0){clearInterval(countdownInterval);countdownInterval=null;localStorage.removeItem(getCountdownKey());box.classList.remove('show');lock.style.display='block';currentAttempts=0;clearAttempts();updateAttemptsDisplay()}},1000)}
-function startUnlockTimer(){if(unlockTimerInterval)clearInterval(unlockTimerInterval);function tick(){const el=document.getElementById('unlockTimer');if(!el)return;const lockData=localStorage.getItem(getLockKey());if(!lockData){el.textContent='00:00:00';document.getElementById('unlockStatus').style.display='none';isUnlocked=false;localStorage.removeItem(getLockKey());if(currentMode===2)switchMode(2);return}try{const d=JSON.parse(lockData);const remain=LOCK_DURATION-(Date.now()-d.time);if(remain<=0){el.textContent='00:00:00';document.getElementById('unlockStatus').style.display='none';isUnlocked=false;localStorage.removeItem(getLockKey());if(currentMode===2)switchMode(2);return}const h=Math.floor(remain/3600000);const m=Math.floor((remain%3600000)/60000);const s=Math.floor((remain%60000)/1000);el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}catch(e){}}tick();unlockTimerInterval=setInterval(tick,1000)}
-async function initLock(){await getIP();if(checkLockStatus()){isUnlocked=true}else{isUnlocked=false}}
-function switchMode(mode){currentMode=mode;document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tabMode'+mode).classList.add('active');const lock=document.getElementById('accessLock');const input=document.getElementById('inputData');const pasteRow=document.querySelector('.paste-row');const copyBtn=document.getElementById('copyAllBtn');const countdownBox=document.getElementById('countdownBox');const unlockStatus=document.getElementById('unlockStatus');if(mode===2){if(unlockStatus&&isUnlocked)unlockStatus.style.display='block';else if(unlockStatus)unlockStatus.style.display='none'}else{if(unlockStatus)unlockStatus.style.display='none'}if(mode===1){input.placeholder='HD3T J6UX EL2Z WRP3\n7ZDU YGTD 5P3E LE7P'}else{input.placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA=='}if(mode===2&&!isUnlocked){const cd=getCountdown();if(cd>0){input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';lock.style.display='none';startCountdown(cd);document.getElementById('resultContainer').innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];return}lock.style.display='block';input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';countdownBox.classList.remove('show');document.getElementById('resultContainer').innerHTML='<div class="empty-msg">🔒 Page Locked — Enter Access Key</div>';document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];currentAttempts=getAttempts();updateAttemptsDisplay()}else{lock.style.display='none';countdownBox.classList.remove('show');input.style.display='';pasteRow.style.display='flex';copyBtn.style.display='';processData()}}
-function checkAccessKey(){const inp=document.getElementById('accessKeyInput');const val=inp.value.trim();if(ACCESS_KEYS.includes(val)){isUnlocked=true;saveUnlock();clearAttempts();currentAttempts=0;playSound('copyAll');showPopup('success','SUCCESS!','Page Unlocked for 12 hours');if(navigator.vibrate)navigator.vibrate([50,50,50]);document.getElementById('accessLock').style.display='none';document.getElementById('inputData').style.display='';document.getElementById('inputData').placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA==';document.getElementById('copyAllBtn').style.display='';document.querySelector('.paste-row').style.display='flex';document.getElementById('unlockStatus').style.display='block';inp.value='';startUnlockTimer();processData()}else{currentAttempts++;saveAttempts(currentAttempts);if(navigator.vibrate)navigator.vibrate([200,100,200]);playSound('error');if(currentAttempts>=MAX_ATTEMPTS){showPopup('error','LOCKED!','Too many wrong attempts. Wait 1 minute.');startCountdown(COUNTDOWN_SECONDS);saveCountdown(COUNTDOWN_SECONDS);inp.value=''}else{showPopup('error','WRONG KEY!','Attempts left: '+(MAX_ATTEMPTS-currentAttempts));inp.value='';inp.focus();updateAttemptsDisplay()}}}
+function switchMode(mode){
+if(currentMode===mode)return;
+currentMode=mode;
+document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+document.getElementById('tabMode'+mode).classList.add('active');
+playSound('page');
+if(navigator.vibrate)navigator.vibrate(30);
+const mainTool=document.getElementById('mainTool');
+const serviceTool=document.getElementById('serviceTool');
+const lock=document.getElementById('accessLock');
+const serviceLock=document.getElementById('serviceLock');
+const input=document.getElementById('inputData');
+const pasteRow=document.querySelector('.paste-row');
+const copyBtn=document.getElementById('copyAllBtn');
+const countdownBox=document.getElementById('countdownBox');
+const serviceCountdownBox=document.getElementById('serviceCountdownBox');
+const unlockStatus=document.getElementById('unlockStatus');
+const serviceUnlockStatus=document.getElementById('serviceUnlockStatus');
+const serviceGrid=document.querySelector('.service-grid');
+const serviceConvertBtn=document.getElementById('serviceConvertBtn');
+const serviceCopyBtn=document.getElementById('serviceCopyBtn');
+const serviceResultContainer=document.getElementById('serviceResultContainer');
+if(mode===3){
+showPopup('info','SERVICE PAGE','Welcome to Service Tool');
+mainTool.style.display='none';
+serviceTool.style.display='block';
+if(unlockStatus)unlockStatus.style.display='none';
+if(isServiceUnlocked){
+serviceLock.style.display='none';
+serviceCountdownBox.classList.remove('show');
+if(serviceUnlockStatus)serviceUnlockStatus.style.display='block';
+serviceGrid.style.display='flex';
+serviceConvertBtn.style.display='flex';
+loadServiceFields();
+startServiceUnlockTimer();
+}else{
+const cd=getServiceCountdown();
+if(cd>0){
+serviceGrid.style.display='none';
+serviceConvertBtn.style.display='none';
+serviceCopyBtn.style.display='none';
+serviceLock.style.display='none';
+serviceResultContainer.innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';
+startCountdown(cd,true);
+}else{
+serviceLock.style.display='block';
+serviceCountdownBox.classList.remove('show');
+serviceGrid.style.display='none';
+serviceConvertBtn.style.display='none';
+serviceCopyBtn.style.display='none';
+serviceResultContainer.innerHTML='<div class="empty-msg">🔒 Service Locked — Enter Access Key</div>';
+serviceAttempts=getServiceAttempts();
+updateServiceAttemptsDisplay();
+}
+}
+return;
+}else{
+mainTool.style.display='block';
+serviceTool.style.display='none';
+if(serviceUnlockStatus)serviceUnlockStatus.style.display='none';
+}
+if(mode===2){
+showPopup('info','BASE64 → 2FA','Page Opened');
+if(unlockStatus&&isUnlocked)unlockStatus.style.display='block';
+else if(unlockStatus)unlockStatus.style.display='none';
+}else{
+showPopup('success','2FA → BASE64','Page Opened');
+if(unlockStatus)unlockStatus.style.display='none';
+}
+if(mode===1){input.placeholder='HD3T J6UX EL2Z WRP3\n7ZDU YGTD 5P3E LE7P'}
+else{input.placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA=='}
+if(mode===2&&!isUnlocked){
+const cd=getCountdown();
+if(cd>0){
+input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';lock.style.display='none';
+startCountdown(cd,false);
+document.getElementById('resultContainer').innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';
+document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];
+return;
+}
+lock.style.display='block';input.style.display='none';pasteRow.style.display='none';copyBtn.style.display='none';
+countdownBox.classList.remove('show');
+document.getElementById('resultContainer').innerHTML='<div class="empty-msg">🔒 Page Locked — Enter Access Key</div>';
+document.getElementById('statsRow').style.display='none';document.getElementById('dupeWarning').classList.remove('show');rowsData=[];
+currentAttempts=getAttempts();updateAttemptsDisplay();
+}else{
+lock.style.display='none';countdownBox.classList.remove('show');
+input.style.display='';pasteRow.style.display='flex';copyBtn.style.display='';
+processData();
+}
+}
+
+function checkAccessKey(){
+const inp=document.getElementById('accessKeyInput');
+const val=inp.value.trim();
+if(ACCESS_KEYS.includes(val)){
+isUnlocked=true;
+saveUnlock();
+clearAttempts();
+currentAttempts=0;
+playSound('copyAll');
+showPopup('success','SUCCESS!','Page Unlocked for 12 hours');
+if(navigator.vibrate)navigator.vibrate([50,50,50]);
+addHistory('unlock','Base64→2FA Unlocked');
+document.getElementById('accessLock').style.display='none';
+document.getElementById('inputData').style.display='';
+document.getElementById('inputData').placeholder='SERaVEo2VVhFTDJaV1JQMw==\nN1pEVVlHVEQ1UDNFTEU3UA==';
+document.getElementById('copyAllBtn').style.display='';
+document.querySelector('.paste-row').style.display='flex';
+document.getElementById('unlockStatus').style.display='block';
+inp.value='';
+startUnlockTimer();
+processData();
+}else{
+currentAttempts++;
+saveAttempts(currentAttempts);
+if(navigator.vibrate)navigator.vibrate([200,100,200]);
+playSound('error');
+if(currentAttempts>=MAX_ATTEMPTS){
+showPopup('error','LOCKED!','Too many wrong attempts. Wait 1 minute.');
+startCountdown(COUNTDOWN_SECONDS,false);
+saveCountdown(COUNTDOWN_SECONDS);
+inp.value='';
+}else{
+showPopup('error','WRONG KEY!','Attempts left: '+(MAX_ATTEMPTS-currentAttempts));
+inp.value='';
+inp.focus();
+updateAttemptsDisplay();
+}
+}
+}
+
+function checkServiceKey(){
+const inp=document.getElementById('serviceKeyInput');
+const val=inp.value.trim();
+if(SERVICE_KEYS.includes(val)){
+isServiceUnlocked=true;
+saveServiceUnlock();
+clearServiceAttempts();
+serviceAttempts=0;
+playSound('copyAll');
+showPopup('success','SUCCESS!','Service Page Unlocked');
+if(navigator.vibrate)navigator.vibrate([50,50,50]);
+addHistory('unlock','Service Unlocked');
+document.getElementById('serviceLock').style.display='none';
+document.getElementById('serviceUnlockStatus').style.display='block';
+document.querySelector('.service-grid').style.display='flex';
+document.getElementById('serviceConvertBtn').style.display='flex';
+inp.value='';
+loadServiceFields();
+startServiceUnlockTimer();
+}else{
+serviceAttempts++;
+saveServiceAttempts(serviceAttempts);
+if(navigator.vibrate)navigator.vibrate([200,100,200]);
+playSound('error');
+if(serviceAttempts>=MAX_ATTEMPTS){
+showPopup('error','LOCKED!','Too many wrong attempts. Wait 1 minute.');
+startCountdown(COUNTDOWN_SECONDS,true);
+saveServiceCountdown(COUNTDOWN_SECONDS);
+inp.value='';
+}else{
+showPopup('error','WRONG KEY!','Attempts left: '+(MAX_ATTEMPTS-serviceAttempts));
+inp.value='';
+inp.focus();
+updateServiceAttemptsDisplay();
+}
+}
+}
+
+function serviceConvert(){
+const sid=document.getElementById('serviceIdInput').value.trim();
+const uidRaw=document.getElementById('uidInput').value;
+const qty=document.getElementById('qtyInput').value.trim();
+saveServiceFields();
+const container=document.getElementById('serviceResultContainer');
+const copyBtn=document.getElementById('serviceCopyBtn');
+if(!sid){playSound('error');showPopup('error','MISSING!','Service ID required');return}
+if(!qty){playSound('error');showPopup('error','MISSING!','Quantity required');return}
+const uids=uidRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+if(uids.length===0){playSound('error');showPopup('error','MISSING!','Facebook UID required');return}
+let lines=[];
+uids.forEach((uid)=>{
+const cleanUid=uid.replace(/[^0-9]/g,'');
+if(!cleanUid)return;
+const link='https://facebook.com/profile.php?id='+cleanUid;
+lines.push(sid+' | '+link+' | '+qty);
+});
+if(lines.length===0){playSound('error');showPopup('error','INVALID!','No valid UID found');return}
+serviceOutputText=lines.join('\n');
+let html='<div class="service-output" id="serviceOutputBox">';
+lines.forEach((line,i)=>{
+const parts=line.split(' | ');
+html+='<div><span class="line-num">'+(i+1)+'.</span><span class="sid">'+escapeHtml(parts[0])+'</span><span class="sep">|</span><span class="link">'+escapeHtml(parts[1])+'</span><span class="sep">|</span><span class="qty">'+escapeHtml(parts[2])+'</span></div>';
+});
+html+='</div>';
+container.innerHTML=html;
+copyBtn.style.display='flex';
+playSound('copyAll');
+if(navigator.vibrate)navigator.vibrate([50,50,50]);
+addHistory('service','Converted '+lines.length+' lines | SID: '+sid);
+showPopup('success','CONVERTED!',lines.length+' lines generated');
+}
+
+function copyServiceOutput(){
+if(!serviceOutputText)return;
+copyToClipboard(serviceOutputText).then(()=>{
+playSound('copyAll');
+addHistory('copy','Service output copied ('+serviceOutputText.split('\n').length+' lines)');
+showPopup('success','COPIED!',serviceOutputText.split('\n').length+' lines copied');
+const btn=document.getElementById('serviceCopyBtn');
+btn.classList.add('copied');
+const orig=btn.innerHTML;
+btn.innerHTML='✅ COPIED!';
+setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500);
+}).catch(()=>showPopup('error','COPY FAILED!','Try again'));
+}
+function openAdmin(){
+document.getElementById('adminLogin').classList.add('show');
+document.getElementById('adminPanel').classList.remove('show');
+}
+function closeAdmin(){
+document.getElementById('adminLogin').classList.remove('show');
+document.getElementById('adminPanel').classList.remove('show');
+}
+
+async function adminLogin(){
+const email=document.getElementById('adminEmailInput').value.trim();
+const pass=document.getElementById('adminPassInput').value;
+const status=document.getElementById('adminLoginStatus');
+if(!email||!pass){status.textContent='❌ Email and password required';playSound('error');return}
+status.textContent='⏳ Logging in...';
+try{
+await signInWithEmailAndPassword(auth,email,pass);
+currentAdminEmail=email;
+isAdminLoggedIn=true;
+document.getElementById('adminEmailShow').textContent=email;
+document.getElementById('adminLogin').classList.remove('show');
+document.getElementById('adminPanel').classList.add('show');
+document.getElementById('adminEmailInput').value='';
+document.getElementById('adminPassInput').value='';
+status.textContent='Enter your admin email and password';
+playSound('copyAll');
+showPopup('success','WELCOME!','Admin Panel Opened');
+await loadAdminFields();
+await loadActivityLogs();
+}catch(e){
+playSound('error');
+let msg='Login failed';
+if(e.code==='auth/user-not-found')msg='User not found';
+else if(e.code==='auth/wrong-password')msg='Wrong password';
+else if(e.code==='auth/invalid-credential')msg='Invalid credentials';
+else if(e.code==='auth/too-many-requests')msg='Too many attempts. Try later';
+status.textContent='❌ '+msg;
+showPopup('error','LOGIN FAILED!',msg);
+}
+}
+
+async function adminLogout(){
+try{
+await signOut(auth);
+}catch(e){}
+isAdminLoggedIn=false;
+currentAdminEmail='';
+closeAdmin();
+showPopup('success','LOGGED OUT!','Admin session ended');
+}
+
+async function loadAdminFields(){
+try{
+const ref=doc(db,'settings','main');
+const snap=await getDoc(ref);
+if(snap.exists()){
+const d=snap.data();
+if(d.notice)document.getElementById('adminNotice').value=d.notice;
+if(d.accessKeys)document.getElementById('adminAccessKey').value=d.accessKeys.join(',');
+if(d.serviceKeys)document.getElementById('adminServiceKey').value=d.serviceKeys.join(',');
+}
+}catch(e){
+console.log('Load admin fields error:',e);
+}
+updateMaintenanceStatus();
+}
+
+async function saveNotice(){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+const val=document.getElementById('adminNotice').value.trim();
+if(!val){showPopup('error','EMPTY!','Notice cannot be empty');return}
+try{
+await setDoc(doc(db,'settings','main'),{notice:val},{merge:true});
+showPopup('success','SAVED!','Notice updated');
+}catch(e){
+showPopup('error','FAILED!','Could not save notice');
+}
+}
+
+async function saveAccessKeys(){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+const a=document.getElementById('adminAccessKey').value.trim();
+const s=document.getElementById('adminServiceKey').value.trim();
+if(!a||!s){showPopup('error','MISSING!','Both keys required');return}
+try{
+const accessArr=a.split(',').map(x=>x.trim()).filter(x=>x);
+const serviceArr=s.split(',').map(x=>x.trim()).filter(x=>x);
+await setDoc(doc(db,'settings','main'),{accessKeys:accessArr,serviceKeys:serviceArr},{merge:true});
+showPopup('success','SAVED!','All keys updated');
+}catch(e){
+showPopup('error','FAILED!','Could not save keys');
+}
+}
+
+async function startMaintenance(){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+const dateVal=document.getElementById('adminDate').value;
+const timeVal=document.getElementById('adminTime').value;
+const msg=document.getElementById('adminMessage').value.trim();
+if(!dateVal||!timeVal){showPopup('error','MISSING!','Set date and time');return}
+const endTime=new Date(dateVal+'T'+timeVal+':00+06:00').getTime();
+if(endTime<=Date.now()){showPopup('error','INVALID!','End time must be in future');return}
+try{
+await setDoc(doc(db,'settings','main'),{
+maintenance:{active:true,endTime:endTime,message:msg||'Server is under maintenance'}
+},{merge:true});
+showPopup('success','MAINTENANCE ON','Server locked');
+}catch(e){
+showPopup('error','FAILED!','Could not start maintenance');
+}
+}
+
+async function stopMaintenance(){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+try{
+await setDoc(doc(db,'settings','main'),{
+maintenance:{active:false,endTime:0,message:''}
+},{merge:true});
+showPopup('success','MAINTENANCE OFF','Users can now access');
+}catch(e){
+showPopup('error','FAILED!','Could not stop maintenance');
+}
+}
+
+async function refreshUsers(){
+try{
+const snap=await getDocs(collection(db,'users'));
+const list=document.getElementById('userList');
+if(snap.empty){
+list.innerHTML='<div style="text-align:center;color:#999;padding:20px;font-size:12px;">No users yet</div>';
+return;
+}
+let html='';
+const banSnap=await getDocs(collection(db,'ban_list'));
+const bannedIPs=[];
+banSnap.forEach(d=>bannedIPs.push(d.id));
+const users=[];
+snap.forEach(d=>users.push({id:d.id,...d.data()}));
+users.sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
+users.forEach(u=>{
+const isBanned=bannedIPs.includes(u.id);
+const statusBadge=isBanned?'<span class="user-status-badge banned">BANNED</span>':'<span class="user-status-badge active">ACTIVE</span>';
+const actionBtn=isBanned?'<button class="user-action-btn unban" onclick="unbanUser(\''+u.id+'\')">UNBAN</button>':'<button class="user-action-btn ban" onclick="banUser(\''+u.id+'\')">BAN</button>';
+const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleString():'Never';
+html+='<div class="user-item"><div class="user-info"><div class="user-email">'+escapeHtml(u.id)+'</div><div class="user-uid">Last seen: '+lastSeen+'</div></div>'+statusBadge+actionBtn+'</div>';
+});
+list.innerHTML=html;
+}catch(e){
+showPopup('error','FAILED!','Could not load users');
+}
+}
+
+async function banUser(ip){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!confirm('Ban user with IP: '+ip+'?'))return;
+try{
+await setDoc(doc(db,'ban_list',ip),{
+status:'banned',
+reason:'Your access has been suspended by the administrator.',
+bannedAt:Date.now(),
+bannedBy:currentAdminEmail
+});
+showPopup('success','BANNED!','User '+ip+' has been banned');
+addHistory('admin','Banned IP: '+ip);
+refreshUsers();
+}catch(e){
+showPopup('error','FAILED!','Could not ban user');
+}
+}
+
+async function unbanUser(ip){
+if(!isAdminLoggedIn){showPopup('error','DENIED!','Admin login required');return}
+if(!confirm('Unban user with IP: '+ip+'?'))return;
+try{
+await deleteDoc(doc(db,'ban_list',ip));
+showPopup('success','UNBANNED!','User '+ip+' has been unbanned');
+addHistory('admin','Unbanned IP: '+ip);
+refreshUsers();
+}catch(e){
+showPopup('error','FAILED!','Could not unban user');
+}
+}
+
+window.addEventListener('hashchange',()=>{
+if(location.hash==='#admin'){openAdmin();}else{closeAdmin();}
+});
+if(location.hash==='#admin'){setTimeout(openAdmin,500);}
 async function processData(){
 const input=document.getElementById('inputData').value;
 const container=document.getElementById('resultContainer');
@@ -284,6 +1442,7 @@ try{const keyBytes=base32Decode(line);const otp=await generateTOTP(keyBytes);row
 else{rowsData.push({original:line,output:'⚠️ Wrong 2FA❗',otp:'⚠️ Wrong 2FA❗',status:'wrong'});wrongCount++}
 }
 }
+if(lines.length>0&&dupeCount===0){addHistory('paste','Mode '+currentMode+' | '+lines.length+' lines | Valid: '+validCount+' | Wrong: '+wrongCount)}
 document.getElementById('totalCount').textContent=lines.length;
 document.getElementById('validCount').textContent=validCount;
 document.getElementById('wrongCount').textContent=wrongCount;
@@ -321,9 +1480,9 @@ html+='<td class="wrong-line-cell">⚠️ Wrong 2FA❗</td>'}
 html+='</tr>'});
 html+='</tbody></table></div>';
 container.innerHTML=html}
-function copyOTP(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.otp).then(()=>{playSound('copy');showPopup('info','COPIED!','OTP copied');const el=document.getElementById('copy-otp-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
-function copy2FA(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.output).then(()=>{playSound('copy');showPopup('success','COPIED!','2FA copied');const el=document.getElementById('copy-2fa-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
-function copyAllValid(){const copyable=rowsData.filter(r=>r.status==='valid');if(copyable.length===0)return alert('No valid lines to copy');const all=copyable.map(r=>r.output).join('\n');copyToClipboard(all).then(()=>{playSound('copyAll');showPopup('success','COPIED!',copyable.length+' lines copied');const btn=document.getElementById('copyAllBtn');btn.classList.add('copied');const orig=btn.innerHTML;btn.innerHTML='✅ COPIED '+copyable.length+' LINES!';setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+function copyOTP(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.otp).then(()=>{playSound('copy');addHistory('copy','OTP copied: '+row.otp);showPopup('info','COPIED!','OTP copied');const el=document.getElementById('copy-otp-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+function copy2FA(idx){const row=rowsData[idx];if(!row||row.status!=='valid')return;copyToClipboard(row.output).then(()=>{playSound('copy');addHistory('copy','2FA key copied');showPopup('success','COPIED!','2FA copied');const el=document.getElementById('copy-2fa-'+idx);el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),800)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
+function copyAllValid(){const copyable=rowsData.filter(r=>r.status==='valid');if(copyable.length===0)return alert('No valid lines to copy');const all=copyable.map(r=>r.output).join('\n');copyToClipboard(all).then(()=>{playSound('copyAll');addHistory('copy','Copy All: '+copyable.length+' lines');showPopup('success','COPIED!',copyable.length+' lines copied');const btn=document.getElementById('copyAllBtn');btn.classList.add('copied');const orig=btn.innerHTML;btn.innerHTML='✅ COPIED '+copyable.length+' LINES!';setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},1500)}).catch(()=>showPopup('error','COPY FAILED!','Try again'))}
 const ringFill=document.getElementById('ringFill');
 const ringText=document.getElementById('ringText');
 const RADIUS=30;
@@ -359,33 +1518,9 @@ if(cell){const span=cell.querySelector('span');if(span)span.textContent=newOTP}
 }catch(e){}
 }
 },1000);
-(async function init(){
-await initLock();
-if(isUnlocked){startUnlockTimer()}
-if(currentMode===2){
-if(isUnlocked){
-document.getElementById('unlockStatus').style.display='block';
-}else{
-const cd=getCountdown();
-if(cd>0){
-document.getElementById('inputData').style.display='none';
-document.querySelector('.paste-row').style.display='none';
-document.getElementById('copyAllBtn').style.display='none';
-document.getElementById('accessLock').style.display='none';
-startCountdown(cd);
-document.getElementById('resultContainer').innerHTML='<div class="empty-msg">⏱️ Please wait — Locked</div>';
-}else{
-document.getElementById('accessLock').style.display='block';
-document.getElementById('inputData').style.display='none';
-document.querySelector('.paste-row').style.display='none';
-document.getElementById('copyAllBtn').style.display='none';
-document.getElementById('resultContainer').innerHTML='<div class="empty-msg">🔒 Page Locked — Enter Access Key</div>';
-currentAttempts=getAttempts();
-updateAttemptsDisplay();
-}
-}
-}
-})();
-</script>
+onAuthStateChanged(auth,(user)=>{
+if(user){isAdminLoggedIn=true;currentAdminEmail=user.email||'';const el=document.getElementById('adminEmailShow');if(el)el.textContent=currentAdminEmail}else{isAdminLoggedIn=false;currentAdminEmail=''}
+});
+
 </body>
 </html>
