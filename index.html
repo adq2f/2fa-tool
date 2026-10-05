@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Manager (Test)</title>
+<title>2FA Manager (SaaSKo Style)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -21,17 +21,6 @@
   .logo { font-size: 32px; margin-bottom: 8px; }
   h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
   .subtitle { font-size: 12px; color: #64748b; }
-  .warning-banner {
-    background: #7f1d1d;
-    color: #fecaca;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    text-align: center;
-    margin-bottom: 16px;
-    font-weight: 600;
-    border: 1px solid #ef4444;
-  }
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
     border-radius: 16px;
@@ -96,7 +85,6 @@
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
   .btn-secondary { background: #334155; color: #e2e8f0; }
-  .btn-danger { background: #dc2626; color: white; }
 
   .code-card {
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
@@ -188,10 +176,15 @@
     user-select: all;
     font-weight: 600;
   }
-  .key-value.fake {
-    color: #f87171;
-    text-decoration: line-through;
-    text-decoration-color: rgba(248,113,113,0.3);
+  .key-value.formatted {
+    color: #fbbf24;
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+  .key-value.base64 {
+    font-size: 12px;
+    color: #64748b;
+    letter-spacing: 1px;
   }
 
   .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
@@ -283,6 +276,17 @@
   .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
 
   .hidden { display: none !important; }
+  .paste-helper {
+    background: #0f172a;
+    border: 1px dashed #334155;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+  .paste-helper strong { color: #38bdf8; }
 </style>
 </head>
 <body>
@@ -290,12 +294,8 @@
 
   <div class="header">
     <div class="logo">🔐</div>
-    <h1>2FA Manager (Test)</h1>
-    <div class="subtitle">Learning/Test only</div>
-  </div>
-
-  <div class="warning-banner">
-    ⚠️ TEST ONLY — Fake key display for learning purpose
+    <h1>2FA Manager</h1>
+    <div class="subtitle">Base32 → Base64 → TOTP (SaaSKo Style)</div>
   </div>
 
   <div class="card">
@@ -336,21 +336,29 @@
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
 
-      <!-- FAKE KEY (User দেখে — SaaSKo Meta style) -->
+      <!-- ⭐ SaaSKo Meta Style Conversion Display -->
+
+      <!-- Step 1: Base32 continuous (real) -->
       <div class="key-section">
-        <div class="key-section-label">🔑 2FA KEY (User দেখে) — FAKE</div>
-        <div class="key-value fake" id="keyDisplayFake">----</div>
+        <div class="key-section-label">🔑 Step 1: Base32 (Real key)</div>
+        <div class="key-value" id="keyBase32">----</div>
       </div>
 
-      <!-- REAL KEY (hidden, শুধু test-এর জন্য visible) -->
-      <div class="key-section" style="border-color:#7f1d1d;">
-        <div class="key-section-label" style="color:#f87171;">🔒 REAL KEY (App ব্যবহার করে) — HIDDEN</div>
-        <div class="key-value" id="keyDisplayReal">----</div>
+      <!-- Step 2: Base32 formatted (4-4 chars) -->
+      <div class="key-section">
+        <div class="key-section-label">🔑 Step 2: Base32 Formatted (4-4)</div>
+        <div class="key-value formatted" id="keyFormatted">----</div>
+      </div>
+
+      <!-- Step 3: Base64 (storage-এ যা) -->
+      <div class="key-section">
+        <div class="key-section-label">💾 Step 3: Base64 (Storage)</div>
+        <div class="key-value base64" id="keyBase64">----</div>
       </div>
 
       <div class="quick-actions">
         <button class="btn btn-primary" onclick="copyCode()">📋 Copy Code</button>
-        <button class="btn btn-secondary" onclick="copyFakeKey()">🔑 Copy Fake</button>
+        <button class="btn btn-secondary" onclick="copyFormatted()">🔑 Copy Key</button>
       </div>
       <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
     </div>
@@ -412,18 +420,42 @@ function base32Decode(input) {
 }
 
 // ═══════════════════════════════════════════════════
-// FAKE KEY Generator (SaaSKo Meta style)
+// CONVERSION (SaaSKo Meta style)
 // ═══════════════════════════════════════════════════
-async function generateFakeKey(realKey) {
-  // SHA-256 hash of real key → derive 16-char Base32 fake
-  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(realKey));
-  const bytes = new Uint8Array(hash);
+
+// Base32 → Base64 (SaaSKo Meta does this for storage)
+function base32ToBase64(base32Str) {
+  // Step 1: Base32 decode → raw bytes
+  const bytes = base32Decode(base32Str);
+  // Step 2: Bytes → Base64
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
+// Base64 → Base32 (for reading from storage)
+function base64ToBase32(base64Str) {
+  const binary = atob(base64Str);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  // Bytes → Base32
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-  let fake = "";
-  for (let i = 0; i < 16; i++) {
-    fake += alphabet[bytes[i] % 32];
+  let bits = 0, value = 0, output = "";
+  for (const b of bytes) {
+    value = (value << 8) | b;
+    bits += 8;
+    while (bits >= 5) {
+      output += alphabet[(value >>> (bits - 5)) & 31];
+      bits -= 5;
+    }
   }
-  return fake;
+  if (bits > 0) output += alphabet[(value << (5 - bits)) & 31];
+  return output;
+}
+
+// Format 4-4 chars (SaaSKo Meta style)
+function formatKey(secret) {
+  return secret.match(/.{1,4}/g).join(" ");
 }
 
 // ═══════════════════════════════════════════════════
@@ -457,29 +489,39 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // ═══════════════════════════════════════════════════
-// Formatting
+// Storage (SaaSKo Meta style — Base64 encoded)
 // ═══════════════════════════════════════════════════
-function formatBase32(secret) {
-  return secret.match(/.{1,4}/g).join(" ");
-}
-
-// ═══════════════════════════════════════════════════
-// Storage
-// ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_test_v1";
+const STORAGE_KEY = "totp_saasko_style";
 
 function loadKeys() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-  catch (e) { return []; }
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    // Storage-এ Base64 → Base32 decode করে load করব
+    return parsed.map(item => ({
+      id: item.id,
+      platform: item.platform,
+      secret: base64ToBase32(item.b64)  // ← Base64 → Base32
+    }));
+  } catch (e) { return []; }
 }
-function saveKeys(keys) { localStorage.setItem(STORAGE_KEY, JSON.stringify(keys)); }
+
+function saveKeys(keys) {
+  // Base32 → Base64 encode করে save (SaaSKo Meta style)
+  const encoded = keys.map(k => ({
+    id: k.id,
+    platform: k.platform,
+    b64: base32ToBase64(k.secret)  // ← Base32 → Base64
+  }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(encoded));
+}
 
 // ═══════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════
 let keys = loadKeys();
 let activeKey = null;
-let activeFake = null;
 let tickInterval = null;
 
 // ═══════════════════════════════════════════════════
@@ -523,16 +565,16 @@ async function addKey() {
   saveKeys(keys);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ " + platform + " saved (fake key generated)", "success");
+  showStatus("✅ " + platform + " saved (Base64 encoded in storage)", "success");
 
   renderSaved();
-  await showCode(newKey);
+  showCode(newKey);
 }
 
 // ═══════════════════════════════════════════════════
-// Show Code + FAKE + REAL
+// Show Code with Conversion Steps
 // ═══════════════════════════════════════════════════
-async function showCode(key) {
+function showCode(key) {
   activeKey = key;
   const info = getPlatformInfo(key.platform);
 
@@ -540,14 +582,14 @@ async function showCode(key) {
   document.getElementById("activeAccountLabel").textContent =
     info.icon + " " + key.platform.toUpperCase();
 
-  // Generate FAKE key from real key
-  activeFake = await generateFakeKey(key.secret);
+  // Step 1: Base32 real
+  document.getElementById("keyBase32").textContent = key.secret;
 
-  // Display FAKE key (user দেখে)
-  document.getElementById("keyDisplayFake").textContent = formatBase32(activeFake);
+  // Step 2: Base32 formatted (4-4)
+  document.getElementById("keyFormatted").textContent = formatKey(key.secret);
 
-  // Display REAL key (hidden — test only)
-  document.getElementById("keyDisplayReal").textContent = formatBase32(key.secret);
+  // Step 3: Base64 (storage)
+  document.getElementById("keyBase64").textContent = base32ToBase64(key.secret);
 
   renderSaved();
   clearInterval(tickInterval);
@@ -557,7 +599,6 @@ async function showCode(key) {
 
 function closeCode() {
   activeKey = null;
-  activeFake = null;
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
@@ -567,7 +608,6 @@ function closeCode() {
 async function tick() {
   if (!activeKey) return;
   try {
-    // ⭐ IMPORTANT: Code generate হয় REAL key দিয়ে, not fake
     const code = await generateTOTP(activeKey.secret);
     const display = document.getElementById("codeDisplay");
     display.textContent = code.slice(0, 3) + " " + code.slice(3);
@@ -589,25 +629,25 @@ async function tick() {
   }
 }
 
+// ═══════════════════════════════════════════════════
+// Copy
+// ═══════════════════════════════════════════════════
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
   try {
     await navigator.clipboard.writeText(code);
     showStatus("✅ Code copied: " + code, "success");
-  } catch (e) {
-    fallbackCopy(code);
-  }
+  } catch (e) { fallbackCopy(code); }
 }
 
-async function copyFakeKey() {
-  if (!activeFake) return;
+async function copyFormatted() {
+  if (!activeKey) return;
+  const formatted = formatKey(activeKey.secret);
   try {
-    await navigator.clipboard.writeText(activeFake);
-    showStatus("✅ Fake key copied (user দেখবে)", "info");
-  } catch (e) {
-    fallbackCopy(activeFake);
-  }
+    await navigator.clipboard.writeText(formatted);
+    showStatus("✅ Key copied: " + formatted, "success");
+  } catch (e) { fallbackCopy(formatted); }
 }
 
 function fallbackCopy(text) {
@@ -619,6 +659,9 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
+// ═══════════════════════════════════════════════════
+// Render Saved
+// ═══════════════════════════════════════════════════
 function renderSaved() {
   const card = document.getElementById("savedCard");
   const list = document.getElementById("savedList");
@@ -633,7 +676,6 @@ function renderSaved() {
 
   list.innerHTML = keys.map(k => {
     const info = getPlatformInfo(k.platform);
-    // Show FAKE preview in saved list (not real!)
     const preview = k.secret.slice(0, 4) + " " + k.secret.slice(4, 8) + " ...";
     const isActive = activeKey && activeKey.id === k.id;
     return `
