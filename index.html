@@ -128,7 +128,6 @@
     margin-bottom: 12px;
     text-shadow: 0 0 20px rgba(56,189,248,0.5);
     user-select: all;
-    transition: color 0.3s;
   }
   .code-display.expiring { color: #f59e0b; }
   .code-display.critical { color: #ef4444; animation: pulse 0.5s infinite; }
@@ -162,7 +161,6 @@
     text-align: left;
   }
   .info-section.green { border-color: #166534; }
-  .info-section.yellow { border-color: #854d0e; }
   .info-section.blue { border-color: #1e40af; }
   .info-label {
     font-size: 10px;
@@ -195,53 +193,7 @@
     letter-spacing: 2px;
   }
   .info-value.green { color: #4ade80; }
-  .info-value.yellow { color: #fbbf24; font-size: 15px; }
   .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
-
-  /* Chain list */
-  .chain-list { max-height: 200px; overflow-y: auto; }
-  .chain-item {
-    background: #0a0e1a;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    font-size: 12px;
-    font-family: 'Courier New', monospace;
-    color: #64748b;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-  }
-  .chain-item.active {
-    border-color: #38bdf8;
-    background: #0f172a;
-    color: #38bdf8;
-  }
-  .chain-item-num {
-    color: #f59e0b;
-    font-weight: 700;
-    margin-right: 8px;
-  }
-  .chain-item-b64 {
-    font-size: 9px;
-    color: #475569;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 180px;
-  }
-  .chain-item-del {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    cursor: pointer;
-    font-size: 14px;
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-  .chain-item-del:hover { background: #7f1d1d; color: #fecaca; }
 
   .saved-header {
     display: flex;
@@ -264,6 +216,33 @@
     border-radius: 10px;
     font-weight: 700;
   }
+  .chain-item {
+    background: #0a0e1a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .chain-item.active {
+    border-color: #38bdf8;
+    background: #0f172a;
+    color: #38bdf8;
+  }
+  .chain-item-b64 {
+    font-size: 9px;
+    color: #475569;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+  }
 
   .status {
     font-size: 13px;
@@ -272,11 +251,6 @@
     margin-top: 12px;
     text-align: center;
     font-weight: 600;
-    animation: slideIn 0.3s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
   }
   .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
   .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
@@ -291,7 +265,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">Multi-account chain</div>
+    <div class="subtitle">String → Base64</div>
   </div>
 
   <div class="card">
@@ -340,24 +314,16 @@
         <div class="info-value green" id="originalKey">----</div>
       </div>
 
-      <div class="info-section yellow">
-        <div class="info-label">
-          <span>🔑 Modified (Copy)</span>
-          <button class="info-copy" onclick="copyModified()">Copy</button>
-        </div>
-        <div class="info-value yellow" id="changedKey">----</div>
-      </div>
-
       <div class="info-section blue">
         <div class="info-label">
-          <span>💾 Base64 (Main Copy)</span>
-          <button class="info-copy accent" onclick="copyBase64()">COPY</button>
+          <span>💾 Base64 Output (Copy)</span>
+          <button class="info-copy accent" onclick="copyOutput()">COPY</button>
         </div>
-        <div class="info-value blue" id="base64Key">----</div>
+        <div class="info-value blue" id="outputKey">----</div>
       </div>
 
-      <div class="quick-actions" style="display:flex; gap:8px; margin-top:8px;">
-        <button class="btn btn-accent" onclick="copyBase64()" style="flex:1; margin-top:0;">💾 Copy Base64</button>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn btn-accent" onclick="copyOutput()" style="flex:1; margin-top:0;">💾 Copy Base64</button>
         <button class="btn btn-primary" onclick="copyCode()" style="flex:1; margin-top:0;">📋 Copy Code</button>
       </div>
       <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
@@ -365,10 +331,10 @@
 
     <div class="card">
       <div class="saved-header">
-        <div class="saved-title">🔗 Chain of Keys</div>
+        <div class="saved-title">🔗 Chain</div>
         <div class="saved-count" id="chainCount">0</div>
       </div>
-      <div class="chain-list" id="chainList"></div>
+      <div id="chainList"></div>
     </div>
   </div>
 
@@ -376,28 +342,26 @@
 
 <script>
 const PLATFORMS = {
-  "Facebook":  { icon: "📘", color: "#1877f2" },
-  "Instagram": { icon: "📷", color: "#e1306c" },
-  "LinkedIn":  { icon: "💼", color: "#0077b5" },
-  "Google":    { icon: "🔍", color: "#4285f4" },
-  "GitHub":    { icon: "🐙", color: "#24292e" },
-  "Twitter/X": { icon: "🐦", color: "#000000" },
-  "WhatsApp":  { icon: "💬", color: "#25d366" },
-  "Telegram":  { icon: "✈️", color: "#0088cc" },
-  "Discord":   { icon: "🎮", color: "#5865f2" },
-  "Microsoft": { icon: "🪟", color: "#00a4ef" },
-  "Apple":     { icon: "🍎", color: "#555555" },
-  "Amazon":    { icon: "📦", color: "#ff9900" },
-  "Other":     { icon: "🔧", color: "#64748b" }
+  "Facebook":  { icon: "📘" },
+  "Instagram": { icon: "📷" },
+  "LinkedIn":  { icon: "💼" },
+  "Google":    { icon: "🔍" },
+  "GitHub":    { icon: "🐙" },
+  "Twitter/X": { icon: "🐦" },
+  "WhatsApp":  { icon: "💬" },
+  "Telegram":  { icon: "✈️" },
+  "Discord":   { icon: "🎮" },
+  "Microsoft": { icon: "🪟" },
+  "Apple":     { icon: "🍎" },
+  "Amazon":    { icon: "📦" },
+  "Other":     { icon: "🔧" }
 };
 
 function getPlatformInfo(name) {
   return PLATFORMS[name] || PLATFORMS["Other"];
 }
 
-// ═══════════════════════════════════════════════════
-// Base32
-// ═══════════════════════════════════════════════════
+// Base32 decode (শুধু TOTP-এর জন্য)
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -418,49 +382,17 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-function bytesToBase32(bytes) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-  let bits = 0, value = 0, output = "";
-  for (const b of bytes) {
-    value = (value << 8) | b;
-    bits += 8;
-    while (bits >= 5) {
-      output += alphabet[(value >>> (bits - 5)) & 31];
-      bits -= 5;
-    }
-  }
-  if (bits > 0) output += alphabet[(value << (5 - bits)) & 31];
-  return output;
-}
-
-function base32ToBase64(base32Str) {
-  const bytes = base32Decode(base32Str);
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
-}
-
-function base64ToBase32(base64Str) {
-  const binary = atob(base64Str);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return bytesToBase32(bytes);
-}
-
-// ⭐ SaaSKo Meta style — random char insert
-function insertRandomAfterFifth(secret) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
-  return secret.slice(0, 5) + randomChar + secret.slice(5);
+// ⭐⭐⭐ MAIN CONVERSION — SaaSKo Meta style
+// String → Base64 (direct, no Base32 decode)
+function convertToBase64(secret) {
+  return btoa(secret);  // e.g., btoa("CP6XQ7HMYGP42BGP") = "Q1A2WFFaN0hNWUdQNDJCR1A="
 }
 
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
-// ═══════════════════════════════════════════════════
-// TOTP
-// ═══════════════════════════════════════════════════
+// TOTP generation
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -485,19 +417,14 @@ async function generateTOTP(secret, timeMs = Date.now()) {
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
-// ═══════════════════════════════════════════════════
 // Storage
-// ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_chain_v2";
-
+const STORAGE_KEY = "totp_v3";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw);
+    return raw ? JSON.parse(raw) : [];
   } catch (e) { return []; }
 }
-
 function saveChain(chain) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(chain));
 }
@@ -520,46 +447,33 @@ function escapeHtml(s) {
   }[c]));
 }
 
-// ═══════════════════════════════════════════════════
-// Add Key
-// ═══════════════════════════════════════════════════
 async function addKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
 
   if (!secret) return showStatus("❌ Key paste করুন", "error");
+  try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
 
-  try {
-    base32Decode(secret);
-  } catch (e) {
-    return showStatus("❌ " + e.message, "error");
-  }
-
-  // ⭐ SaaSKo Meta style: modify + Base64
-  const modified = insertRandomAfterFifth(secret);
-  const b64 = base32ToBase64(modified);
+  // ⭐ String → Base64 (SaaSKo Meta exactly)
+  const output = convertToBase64(secret);
 
   chain.push({
     id: Date.now(),
     platform,
     original: secret,
-    modified: modified,
-    b64: b64,
+    output: output,
     timestamp: Date.now()
   });
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ Added to chain (" + chain.length + " keys)", "success");
+  showStatus("✅ Added", "success");
 
   activeIndex = chain.length - 1;
   showCode(activeIndex);
 }
 
-// ═══════════════════════════════════════════════════
-// Show Code
-// ═══════════════════════════════════════════════════
-function showCode(index) {
+async function showCode(index) {
   if (index < 0 || index >= chain.length) return;
   activeIndex = index;
   const key = chain[index];
@@ -570,8 +484,7 @@ function showCode(index) {
     info.icon + " " + key.platform.toUpperCase() + " (Key #" + (index + 1) + ")";
 
   document.getElementById("originalKey").textContent = formatKey(key.original);
-  document.getElementById("changedKey").textContent = formatKey(key.modified);
-  document.getElementById("base64Key").textContent = key.b64;
+  document.getElementById("outputKey").textContent = key.output;
 
   renderChain();
   clearInterval(tickInterval);
@@ -610,9 +523,6 @@ async function tick() {
   }
 }
 
-// ═══════════════════════════════════════════════════
-// Copy
-// ═══════════════════════════════════════════════════
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
@@ -631,23 +541,13 @@ async function copyOriginal() {
   } catch (e) { fallbackCopy(key.original); }
 }
 
-async function copyModified() {
+async function copyOutput() {
   if (activeIndex < 0) return;
   const key = chain[activeIndex];
   try {
-    await navigator.clipboard.writeText(key.modified);
-    showStatus("✅ Modified copied", "success");
-  } catch (e) { fallbackCopy(key.modified); }
-}
-
-// ⭐ MAIN COPY — Base64 (SaaSKo Meta style)
-async function copyBase64() {
-  if (activeIndex < 0) return;
-  const key = chain[activeIndex];
-  try {
-    await navigator.clipboard.writeText(key.b64);
-    showStatus("✅ Base64 copied: " + key.b64, "success");
-  } catch (e) { fallbackCopy(key.b64); }
+    await navigator.clipboard.writeText(key.output);
+    showStatus("✅ Base64 copied: " + key.output, "success");
+  } catch (e) { fallbackCopy(key.output); }
 }
 
 function fallbackCopy(text) {
@@ -659,9 +559,6 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ═══════════════════════════════════════════════════
-// Render Chain
-// ═══════════════════════════════════════════════════
 function renderChain() {
   const list = document.getElementById("chainList");
   const count = document.getElementById("chainCount");
@@ -678,30 +575,13 @@ function renderChain() {
     return `
       <div class="chain-item ${isActive ? 'active' : ''}" onclick="showCode(${i})">
         <div>
-          <span class="chain-item-num">#${i + 1}</span>
+          <span style="color:#f59e0b; font-weight:700; margin-right:8px;">#${i + 1}</span>
           <span>${info.icon} ${escapeHtml(k.platform)}</span>
         </div>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <div class="chain-item-b64">${k.b64.slice(0, 20)}...</div>
-          <button class="chain-item-del" onclick="event.stopPropagation(); deleteKey(${i})">🗑</button>
-        </div>
+        <div class="chain-item-b64">${k.output.slice(0, 22)}...</div>
       </div>
     `;
   }).join("");
-}
-
-function deleteKey(index) {
-  if (!confirm("Delete this key?")) return;
-  chain.splice(index, 1);
-  saveChain(chain);
-  if (activeIndex === index) {
-    activeIndex = -1;
-    document.getElementById("codeSection").classList.add("hidden");
-  } else if (activeIndex > index) {
-    activeIndex--;
-  }
-  renderChain();
-  showStatus("🗑 Deleted", "info");
 }
 
 window.addEventListener("load", () => {
