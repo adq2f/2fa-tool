@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Manager</title>
+<title>2FA Manager (Test)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -21,6 +21,17 @@
   .logo { font-size: 32px; margin-bottom: 8px; }
   h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
   .subtitle { font-size: 12px; color: #64748b; }
+  .warning-banner {
+    background: #7f1d1d;
+    color: #fecaca;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: 600;
+    border: 1px solid #ef4444;
+  }
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
     border-radius: 16px;
@@ -85,8 +96,8 @@
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
   .btn-secondary { background: #334155; color: #e2e8f0; }
+  .btn-danger { background: #dc2626; color: white; }
 
-  /* Code Card */
   .code-card {
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
     border: 2px solid #1e40af;
@@ -129,7 +140,7 @@
     user-select: all;
     transition: color 0.3s;
   }
-  .code-display.expiring { color: #f59e0b; text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+  .code-display.expiring { color: #f59e0b; }
   .code-display.critical { color: #ef4444; animation: pulse 0.5s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
@@ -152,7 +163,6 @@
   }
   .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
 
-  /* ⭐ KEY DISPLAY SECTION */
   .key-section {
     background: #0a0e1a;
     border: 1px solid #334155;
@@ -178,11 +188,15 @@
     user-select: all;
     font-weight: 600;
   }
+  .key-value.fake {
+    color: #f87171;
+    text-decoration: line-through;
+    text-decoration-color: rgba(248,113,113,0.3);
+  }
 
   .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
   .quick-actions .btn { margin-top: 0; flex: 1; padding: 12px; font-size: 13px; }
 
-  /* Saved Keys */
   .saved-header {
     display: flex;
     justify-content: space-between;
@@ -269,17 +283,6 @@
   .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
 
   .hidden { display: none !important; }
-  .paste-helper {
-    background: #0f172a;
-    border: 1px dashed #334155;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 12px;
-    color: #94a3b8;
-    line-height: 1.6;
-  }
-  .paste-helper strong { color: #38bdf8; }
 </style>
 </head>
 <body>
@@ -287,11 +290,14 @@
 
   <div class="header">
     <div class="logo">🔐</div>
-    <h1>2FA Manager</h1>
-    <div class="subtitle">Key + Code — both visible</div>
+    <h1>2FA Manager (Test)</h1>
+    <div class="subtitle">Learning/Test only</div>
   </div>
 
-  <!-- Add Key -->
+  <div class="warning-banner">
+    ⚠️ TEST ONLY — Fake key display for learning purpose
+  </div>
+
   <div class="card">
     <label>📱 Select Platform</label>
     <select id="platformSelect">
@@ -310,7 +316,7 @@
       <option value="Other">🔧 Other</option>
     </select>
 
-    <label style="margin-top:14px;">🔑 Paste 2FA Key</label>
+    <label style="margin-top:14px;">🔑 Paste 2FA Key (Base32)</label>
     <input type="text" id="secretInput" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
 
     <button class="btn btn-primary" onclick="addKey()">➕ Add Key</button>
@@ -318,7 +324,6 @@
     <div class="status hidden" id="status"></div>
   </div>
 
-  <!-- Code Card (with KEY display) -->
   <div id="codeSection" class="hidden">
     <div class="code-card">
       <div class="code-label" id="activeAccountLabel">TOTP CODE</div>
@@ -331,21 +336,26 @@
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
 
-      <!-- ⭐ KEY DISPLAY -->
+      <!-- FAKE KEY (User দেখে — SaaSKo Meta style) -->
       <div class="key-section">
-        <div class="key-section-label">🔑 2FA KEY (Base32)</div>
-        <div class="key-value" id="keyDisplay">----</div>
+        <div class="key-section-label">🔑 2FA KEY (User দেখে) — FAKE</div>
+        <div class="key-value fake" id="keyDisplayFake">----</div>
+      </div>
+
+      <!-- REAL KEY (hidden, শুধু test-এর জন্য visible) -->
+      <div class="key-section" style="border-color:#7f1d1d;">
+        <div class="key-section-label" style="color:#f87171;">🔒 REAL KEY (App ব্যবহার করে) — HIDDEN</div>
+        <div class="key-value" id="keyDisplayReal">----</div>
       </div>
 
       <div class="quick-actions">
         <button class="btn btn-primary" onclick="copyCode()">📋 Copy Code</button>
-        <button class="btn btn-secondary" onclick="copyKey()">🔑 Copy Key</button>
+        <button class="btn btn-secondary" onclick="copyFakeKey()">🔑 Copy Fake</button>
       </div>
       <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
     </div>
   </div>
 
-  <!-- Saved Keys -->
   <div class="card hidden" id="savedCard">
     <div class="saved-header">
       <div class="saved-title">💾 Saved Keys</div>
@@ -357,9 +367,6 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// Platforms
-// ═══════════════════════════════════════════════════
 const PLATFORMS = {
   "Facebook":  { icon: "📘", color: "#1877f2" },
   "Instagram": { icon: "📷", color: "#e1306c" },
@@ -386,7 +393,6 @@ function getPlatformInfo(name) {
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
-
   if (cleaned.length < 16) throw new Error("Key too short (min 16)");
   if (cleaned.length > 128) throw new Error("Key too long");
 
@@ -403,6 +409,21 @@ function base32Decode(input) {
     }
   }
   return new Uint8Array(output);
+}
+
+// ═══════════════════════════════════════════════════
+// FAKE KEY Generator (SaaSKo Meta style)
+// ═══════════════════════════════════════════════════
+async function generateFakeKey(realKey) {
+  // SHA-256 hash of real key → derive 16-char Base32 fake
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(realKey));
+  const bytes = new Uint8Array(hash);
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let fake = "";
+  for (let i = 0; i < 16; i++) {
+    fake += alphabet[bytes[i] % 32];
+  }
+  return fake;
 }
 
 // ═══════════════════════════════════════════════════
@@ -436,17 +457,16 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // ═══════════════════════════════════════════════════
-// Formatting — 4-4 chars (SaaSKo Meta style)
+// Formatting
 // ═══════════════════════════════════════════════════
-function formatKey(secret) {
-  // 4-4 chars করে space
+function formatBase32(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
 // ═══════════════════════════════════════════════════
 // Storage
 // ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_keys_v3";
+const STORAGE_KEY = "totp_test_v1";
 
 function loadKeys() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
@@ -459,6 +479,7 @@ function saveKeys(keys) { localStorage.setItem(STORAGE_KEY, JSON.stringify(keys)
 // ═══════════════════════════════════════════════════
 let keys = loadKeys();
 let activeKey = null;
+let activeFake = null;
 let tickInterval = null;
 
 // ═══════════════════════════════════════════════════
@@ -478,9 +499,6 @@ function escapeHtml(s) {
   }[c]));
 }
 
-// ═══════════════════════════════════════════════════
-// Add Key
-// ═══════════════════════════════════════════════════
 async function addKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase();
@@ -505,16 +523,16 @@ async function addKey() {
   saveKeys(keys);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ " + platform + " saved", "success");
+  showStatus("✅ " + platform + " saved (fake key generated)", "success");
 
   renderSaved();
-  showCode(newKey);
+  await showCode(newKey);
 }
 
 // ═══════════════════════════════════════════════════
-// Show Code + Key
+// Show Code + FAKE + REAL
 // ═══════════════════════════════════════════════════
-function showCode(key) {
+async function showCode(key) {
   activeKey = key;
   const info = getPlatformInfo(key.platform);
 
@@ -522,8 +540,14 @@ function showCode(key) {
   document.getElementById("activeAccountLabel").textContent =
     info.icon + " " + key.platform.toUpperCase();
 
-  // ⭐ KEY Display (formatted, SaaSKo Meta style)
-  document.getElementById("keyDisplay").textContent = formatKey(key.secret);
+  // Generate FAKE key from real key
+  activeFake = await generateFakeKey(key.secret);
+
+  // Display FAKE key (user দেখে)
+  document.getElementById("keyDisplayFake").textContent = formatBase32(activeFake);
+
+  // Display REAL key (hidden — test only)
+  document.getElementById("keyDisplayReal").textContent = formatBase32(key.secret);
 
   renderSaved();
   clearInterval(tickInterval);
@@ -533,18 +557,17 @@ function showCode(key) {
 
 function closeCode() {
   activeKey = null;
+  activeFake = null;
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
   renderSaved();
 }
 
-// ═══════════════════════════════════════════════════
-// Tick
-// ═══════════════════════════════════════════════════
 async function tick() {
   if (!activeKey) return;
   try {
+    // ⭐ IMPORTANT: Code generate হয় REAL key দিয়ে, not fake
     const code = await generateTOTP(activeKey.secret);
     const display = document.getElementById("codeDisplay");
     display.textContent = code.slice(0, 3) + " " + code.slice(3);
@@ -566,9 +589,6 @@ async function tick() {
   }
 }
 
-// ═══════════════════════════════════════════════════
-// Copy
-// ═══════════════════════════════════════════════════
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
@@ -577,18 +597,16 @@ async function copyCode() {
     showStatus("✅ Code copied: " + code, "success");
   } catch (e) {
     fallbackCopy(code);
-    showStatus("✅ Code copied", "success");
   }
 }
 
-async function copyKey() {
-  if (!activeKey) return;
+async function copyFakeKey() {
+  if (!activeFake) return;
   try {
-    await navigator.clipboard.writeText(activeKey.secret);
-    showStatus("✅ Key copied (Base32)", "success");
+    await navigator.clipboard.writeText(activeFake);
+    showStatus("✅ Fake key copied (user দেখবে)", "info");
   } catch (e) {
-    fallbackCopy(activeKey.secret);
-    showStatus("✅ Key copied", "success");
+    fallbackCopy(activeFake);
   }
 }
 
@@ -601,9 +619,6 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ═══════════════════════════════════════════════════
-// Render Saved
-// ═══════════════════════════════════════════════════
 function renderSaved() {
   const card = document.getElementById("savedCard");
   const list = document.getElementById("savedList");
@@ -618,6 +633,7 @@ function renderSaved() {
 
   list.innerHTML = keys.map(k => {
     const info = getPlatformInfo(k.platform);
+    // Show FAKE preview in saved list (not real!)
     const preview = k.secret.slice(0, 4) + " " + k.secret.slice(4, 8) + " ...";
     const isActive = activeKey && activeKey.id === k.id;
     return `
@@ -649,9 +665,6 @@ function deleteKey(id) {
   showStatus("🗑 Deleted", "info");
 }
 
-// ═══════════════════════════════════════════════════
-// Init
-// ═══════════════════════════════════════════════════
 window.addEventListener("load", () => renderSaved());
 window.addEventListener("beforeunload", () => {
   activeKey = null;
