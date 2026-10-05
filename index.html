@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Auto Generator</title>
+<title>2FA Manager</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -16,28 +16,11 @@
     align-items: center;
     justify-content: center;
   }
-  .app {
-    max-width: 420px;
-    width: 100%;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .logo {
-    font-size: 32px;
-    margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 20px;
-    color: #38bdf8;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .subtitle {
-    font-size: 12px;
-    color: #64748b;
-  }
+  .app { max-width: 420px; width: 100%; }
+  .header { text-align: center; margin-bottom: 24px; }
+  .logo { font-size: 32px; margin-bottom: 8px; }
+  h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 12px; color: #64748b; }
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
     border-radius: 16px;
@@ -50,12 +33,30 @@
     display: block;
     font-size: 12px;
     color: #94a3b8;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
   }
-  input {
+  select {
+    width: 100%;
+    padding: 14px 16px;
+    background: #0a0e1a;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 600;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2338bdf8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    cursor: pointer;
+  }
+  select:focus { outline: none; border-color: #38bdf8; }
+  select option { background: #0a0e1a; color: #e2e8f0; }
+
+  input[type="text"] {
     width: 100%;
     padding: 14px 16px;
     background: #0a0e1a;
@@ -65,14 +66,10 @@
     font-size: 16px;
     font-family: 'Courier New', monospace;
     letter-spacing: 2px;
-    transition: border-color 0.2s;
   }
-  input:focus {
-    outline: none;
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  }
+  input[type="text"]:focus { outline: none; border-color: #38bdf8; }
   input::placeholder { color: #475569; letter-spacing: 1px; }
+
   .btn {
     width: 100%;
     padding: 14px;
@@ -82,32 +79,19 @@
     font-weight: 700;
     cursor: pointer;
     margin-top: 12px;
-    transition: transform 0.1s, background 0.2s;
+    transition: transform 0.1s;
     letter-spacing: 0.5px;
   }
   .btn:active { transform: scale(0.98); }
-  .btn-primary {
-    background: linear-gradient(135deg, #38bdf8, #6366f1);
-    color: white;
-  }
-  .btn-primary:hover { background: linear-gradient(135deg, #0ea5e9, #4f46e5); }
-  .btn-secondary {
-    background: #334155;
-    color: #e2e8f0;
-  }
-  .btn-secondary:hover { background: #475569; }
-  .btn-danger {
-    background: #dc2626;
-    color: white;
-  }
-  .btn-danger:hover { background: #b91c1c; }
+  .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
+  .btn-secondary { background: #334155; color: #e2e8f0; }
 
-  /* Code Display */
+  /* Code Card */
   .code-card {
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
     border: 2px solid #1e40af;
     border-radius: 16px;
-    padding: 28px 20px;
+    padding: 24px 20px;
     text-align: center;
     margin-bottom: 16px;
     position: relative;
@@ -135,29 +119,20 @@
     font-weight: 600;
   }
   .code-display {
-    font-size: 48px;
+    font-size: 44px;
     font-weight: 800;
     font-family: 'Courier New', monospace;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     color: #38bdf8;
     margin-bottom: 12px;
     text-shadow: 0 0 20px rgba(56,189,248,0.5);
     user-select: all;
     transition: color 0.3s;
   }
-  .code-display.expiring {
-    color: #f59e0b;
-    text-shadow: 0 0 20px rgba(245,158,11,0.5);
-  }
-  .code-display.critical {
-    color: #ef4444;
-    text-shadow: 0 0 20px rgba(239,68,68,0.5);
-    animation: pulse 0.5s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
+  .code-display.expiring { color: #f59e0b; text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+  .code-display.critical { color: #ef4444; animation: pulse 0.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
   .timer-row {
     display: flex;
     justify-content: center;
@@ -168,29 +143,43 @@
     margin-bottom: 12px;
   }
   .timer-value { color: #38bdf8; font-weight: 700; font-family: 'Courier New', monospace; }
-  .progress-track {
-    height: 6px;
-    background: #1e293b;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
+  .progress-track { height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #38bdf8, #818cf8);
     transition: width 0.1s linear;
     border-radius: 3px;
   }
-  .progress-fill.warning {
-    background: linear-gradient(90deg, #f59e0b, #ef4444);
+  .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+
+  /* ⭐ KEY DISPLAY SECTION */
+  .key-section {
+    background: #0a0e1a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .key-section-label {
+    font-size: 10px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .key-value {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    color: #a5b4fc;
+    letter-spacing: 2px;
+    word-break: break-all;
+    user-select: all;
+    font-weight: 600;
   }
 
-  /* Quick Actions */
-  .quick-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-  }
+  .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
   .quick-actions .btn { margin-top: 0; flex: 1; padding: 12px; font-size: 13px; }
 
   /* Saved Keys */
@@ -227,26 +216,29 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  .saved-key:hover {
-    border-color: #38bdf8;
-    background: #0f172a;
+  .saved-key:hover { border-color: #38bdf8; background: #0f172a; }
+  .saved-key.active { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,0.2); }
+  .saved-key-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .saved-key-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
   }
-  .saved-key.active {
-    border-color: #38bdf8;
-    background: #0f172a;
-    box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
-  }
-  .saved-key-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #e2e8f0;
-  }
+  .saved-key-info { min-width: 0; flex: 1; }
+  .saved-key-name { font-size: 14px; font-weight: 600; color: #e2e8f0; }
   .saved-key-preview {
     font-size: 10px;
     color: #64748b;
     font-family: 'Courier New', monospace;
     margin-top: 2px;
     letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .saved-key-del {
     background: transparent;
@@ -256,14 +248,9 @@
     font-size: 16px;
     padding: 4px 8px;
     border-radius: 6px;
-    transition: all 0.2s;
   }
-  .saved-key-del:hover {
-    background: #7f1d1d;
-    color: #fecaca;
-  }
+  .saved-key-del:hover { background: #7f1d1d; color: #fecaca; }
 
-  /* Status */
   .status {
     font-size: 13px;
     padding: 10px 14px;
@@ -282,14 +269,6 @@
   .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
 
   .hidden { display: none !important; }
-  .empty-state {
-    text-align: center;
-    padding: 24px;
-    color: #64748b;
-    font-size: 13px;
-  }
-
-  /* Paste Helper */
   .paste-helper {
     background: #0f172a;
     border: 1px dashed #334155;
@@ -308,28 +287,38 @@
 
   <div class="header">
     <div class="logo">🔐</div>
-    <h1>2FA Auto Generator</h1>
-    <div class="subtitle">Paste key → Auto generate code</div>
+    <h1>2FA Manager</h1>
+    <div class="subtitle">Key + Code — both visible</div>
   </div>
 
   <!-- Add Key -->
   <div class="card">
-    <label>Account Name</label>
-    <input type="text" id="accountName" placeholder="Facebook / LinkedIn / GitHub" autocomplete="off">
+    <label>📱 Select Platform</label>
+    <select id="platformSelect">
+      <option value="Facebook">📘 Facebook</option>
+      <option value="Instagram">📷 Instagram</option>
+      <option value="LinkedIn">💼 LinkedIn</option>
+      <option value="Google">🔍 Google</option>
+      <option value="GitHub">🐙 GitHub</option>
+      <option value="Twitter/X">🐦 Twitter / X</option>
+      <option value="WhatsApp">💬 WhatsApp</option>
+      <option value="Telegram">✈️ Telegram</option>
+      <option value="Discord">🎮 Discord</option>
+      <option value="Microsoft">🪟 Microsoft</option>
+      <option value="Apple">🍎 Apple</option>
+      <option value="Amazon">📦 Amazon</option>
+      <option value="Other">🔧 Other</option>
+    </select>
 
-    <label style="margin-top:14px;">Paste 2FA Key</label>
+    <label style="margin-top:14px;">🔑 Paste 2FA Key</label>
     <input type="text" id="secretInput" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
 
-    <button class="btn btn-primary" onclick="addKey()">➕ Add & Auto-Generate</button>
-
-    <div class="paste-helper">
-      💡 <strong>Tip:</strong> Facebook setup page থেকে key copy করে এখানে paste করুন। App automatically code generate করবে।
-    </div>
+    <button class="btn btn-primary" onclick="addKey()">➕ Add Key</button>
 
     <div class="status hidden" id="status"></div>
   </div>
 
-  <!-- Code Display -->
+  <!-- Code Card (with KEY display) -->
   <div id="codeSection" class="hidden">
     <div class="code-card">
       <div class="code-label" id="activeAccountLabel">TOTP CODE</div>
@@ -341,10 +330,18 @@
       <div class="progress-track">
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
-      <div class="quick-actions">
-        <button class="btn btn-primary" onclick="copyCode()">📋 Copy</button>
-        <button class="btn btn-secondary" onclick="closeCode()">✖ Close</button>
+
+      <!-- ⭐ KEY DISPLAY -->
+      <div class="key-section">
+        <div class="key-section-label">🔑 2FA KEY (Base32)</div>
+        <div class="key-value" id="keyDisplay">----</div>
       </div>
+
+      <div class="quick-actions">
+        <button class="btn btn-primary" onclick="copyCode()">📋 Copy Code</button>
+        <button class="btn btn-secondary" onclick="copyKey()">🔑 Copy Key</button>
+      </div>
+      <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
     </div>
   </div>
 
@@ -361,24 +358,43 @@
 
 <script>
 // ═══════════════════════════════════════════════════
+// Platforms
+// ═══════════════════════════════════════════════════
+const PLATFORMS = {
+  "Facebook":  { icon: "📘", color: "#1877f2" },
+  "Instagram": { icon: "📷", color: "#e1306c" },
+  "LinkedIn":  { icon: "💼", color: "#0077b5" },
+  "Google":    { icon: "🔍", color: "#4285f4" },
+  "GitHub":    { icon: "🐙", color: "#24292e" },
+  "Twitter/X": { icon: "🐦", color: "#000000" },
+  "WhatsApp":  { icon: "💬", color: "#25d366" },
+  "Telegram":  { icon: "✈️", color: "#0088cc" },
+  "Discord":   { icon: "🎮", color: "#5865f2" },
+  "Microsoft": { icon: "🪟", color: "#00a4ef" },
+  "Apple":     { icon: "🍎", color: "#555555" },
+  "Amazon":    { icon: "📦", color: "#ff9900" },
+  "Other":     { icon: "🔧", color: "#64748b" }
+};
+
+function getPlatformInfo(name) {
+  return PLATFORMS[name] || PLATFORMS["Other"];
+}
+
+// ═══════════════════════════════════════════════════
 // Base32 Decode
 // ═══════════════════════════════════════════════════
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-  let cleaned = input.toUpperCase()
-    .replace(/\s+/g, "")
-    .replace(/-/g, "")
-    .replace(/=/g, "");
+  let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
 
-  if (cleaned.length < 16) throw new Error("Key too short (min 16 chars)");
+  if (cleaned.length < 16) throw new Error("Key too short (min 16)");
   if (cleaned.length > 128) throw new Error("Key too long");
 
   let bits = 0, value = 0;
   const output = [];
-
   for (const c of cleaned) {
     const idx = alphabet.indexOf(c);
-    if (idx === -1) throw new Error("Invalid Base32 character: " + c);
+    if (idx === -1) throw new Error("Invalid char: " + c);
     value = (value << 5) | idx;
     bits += 5;
     if (bits >= 8) {
@@ -390,12 +406,11 @@ function base32Decode(input) {
 }
 
 // ═══════════════════════════════════════════════════
-// TOTP Generation
+// TOTP
 // ═══════════════════════════════════════════════════
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
-
   const counterBytes = new Uint8Array(8);
   let temp = counter;
   for (let i = 7; i >= 0; i--) {
@@ -412,47 +427,49 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 
   const offset = hash[hash.length - 1] & 0x0F;
   const binary =
-    ((hash[offset]     & 0x7F) << 24) |
+    ((hash[offset] & 0x7F) << 24) |
     ((hash[offset + 1] & 0xFF) << 16) |
-    ((hash[offset + 2] & 0xFF) << 8)  |
-    ((hash[offset + 3] & 0xFF));
+    ((hash[offset + 2] & 0xFF) << 8) |
+    (hash[offset + 3] & 0xFF);
 
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
 // ═══════════════════════════════════════════════════
-// Storage (LocalStorage — simple)
+// Formatting — 4-4 chars (SaaSKo Meta style)
 // ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_keys_v1";
+function formatKey(secret) {
+  // 4-4 chars করে space
+  return secret.match(/.{1,4}/g).join(" ");
+}
+
+// ═══════════════════════════════════════════════════
+// Storage
+// ═══════════════════════════════════════════════════
+const STORAGE_KEY = "totp_keys_v3";
 
 function loadKeys() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch (e) {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch (e) { return []; }
 }
-
-function saveKeys(keys) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
-}
+function saveKeys(keys) { localStorage.setItem(STORAGE_KEY, JSON.stringify(keys)); }
 
 // ═══════════════════════════════════════════════════
-// App State
+// State
 // ═══════════════════════════════════════════════════
 let keys = loadKeys();
-let activeKey = null;      // { name, secret, id }
+let activeKey = null;
 let tickInterval = null;
 
 // ═══════════════════════════════════════════════════
-// UI Functions
+// UI
 // ═══════════════════════════════════════════════════
 function showStatus(msg, type = "info") {
   const el = document.getElementById("status");
   el.textContent = msg;
   el.className = "status " + type;
   el.classList.remove("hidden");
-  setTimeout(() => el.classList.add("hidden"), 3000);
+  setTimeout(() => el.classList.add("hidden"), 3500);
 }
 
 function escapeHtml(s) {
@@ -465,45 +482,50 @@ function escapeHtml(s) {
 // Add Key
 // ═══════════════════════════════════════════════════
 async function addKey() {
-  const name = document.getElementById("accountName").value.trim();
+  const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase();
 
-  if (!name) return showStatus("❌ Account name required", "error");
-  if (!secret) return showStatus("❌ Paste the key", "error");
+  if (!secret) return showStatus("❌ Key paste করুন", "error");
 
-  // Validate
   try {
     base32Decode(secret);
   } catch (e) {
     return showStatus("❌ " + e.message, "error");
   }
 
-  // Save
-  const id = Date.now();
-  keys.push({ id, name, secret });
+  const existing = keys.find(k => k.platform === platform);
+  const id = existing ? existing.id : Date.now();
+  const newKey = { id, platform, secret };
+
+  if (existing) {
+    keys = keys.map(k => k.id === id ? newKey : k);
+  } else {
+    keys.push(newKey);
+  }
   saveKeys(keys);
 
-  document.getElementById("accountName").value = "";
   document.getElementById("secretInput").value = "";
-
-  showStatus("✅ Key saved! Code generating...", "success");
+  showStatus("✅ " + platform + " saved", "success");
 
   renderSaved();
-  showCode({ id, name, secret });
+  showCode(newKey);
 }
 
 // ═══════════════════════════════════════════════════
-// Show Code (AUTO-GENERATE)
+// Show Code + Key
 // ═══════════════════════════════════════════════════
 function showCode(key) {
   activeKey = key;
+  const info = getPlatformInfo(key.platform);
+
   document.getElementById("codeSection").classList.remove("hidden");
-  document.getElementById("activeAccountLabel").textContent = key.name.toUpperCase();
+  document.getElementById("activeAccountLabel").textContent =
+    info.icon + " " + key.platform.toUpperCase();
 
-  // Highlight active in saved list
+  // ⭐ KEY Display (formatted, SaaSKo Meta style)
+  document.getElementById("keyDisplay").textContent = formatKey(key.secret);
+
   renderSaved();
-
-  // Start tick loop
   clearInterval(tickInterval);
   tick();
   tickInterval = setInterval(tick, 100);
@@ -518,11 +540,10 @@ function closeCode() {
 }
 
 // ═══════════════════════════════════════════════════
-// Tick — auto-refresh code every 30s
+// Tick
 // ═══════════════════════════════════════════════════
 async function tick() {
   if (!activeKey) return;
-
   try {
     const code = await generateTOTP(activeKey.secret);
     const display = document.getElementById("codeDisplay");
@@ -530,53 +551,58 @@ async function tick() {
 
     const now = Date.now();
     const remaining = 30 - (now / 1000) % 30;
-
     document.getElementById("timerValue").textContent = remaining.toFixed(1) + "s";
 
     const pct = (remaining / 30) * 100;
     const fill = document.getElementById("progressFill");
     fill.style.width = pct + "%";
 
-    // Color-coded warnings
     display.classList.remove("expiring", "critical");
     fill.classList.remove("warning");
-
-    if (remaining <= 5) {
-      display.classList.add("critical");
-      fill.classList.add("warning");
-    } else if (remaining <= 10) {
-      display.classList.add("expiring");
-      fill.classList.add("warning");
-    }
+    if (remaining <= 5) { display.classList.add("critical"); fill.classList.add("warning"); }
+    else if (remaining <= 10) { display.classList.add("expiring"); fill.classList.add("warning"); }
   } catch (e) {
     document.getElementById("codeDisplay").textContent = "ERROR";
   }
 }
 
 // ═══════════════════════════════════════════════════
-// Copy Code
+// Copy
 // ═══════════════════════════════════════════════════
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
-
   try {
     await navigator.clipboard.writeText(code);
     showStatus("✅ Code copied: " + code, "success");
   } catch (e) {
-    // Fallback
-    const ta = document.createElement("textarea");
-    ta.value = code;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
+    fallbackCopy(code);
     showStatus("✅ Code copied", "success");
   }
 }
 
+async function copyKey() {
+  if (!activeKey) return;
+  try {
+    await navigator.clipboard.writeText(activeKey.secret);
+    showStatus("✅ Key copied (Base32)", "success");
+  } catch (e) {
+    fallbackCopy(activeKey.secret);
+    showStatus("✅ Key copied", "success");
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+}
+
 // ═══════════════════════════════════════════════════
-// Render Saved Keys
+// Render Saved
 // ═══════════════════════════════════════════════════
 function renderSaved() {
   const card = document.getElementById("savedCard");
@@ -587,18 +613,21 @@ function renderSaved() {
     card.classList.add("hidden");
     return;
   }
-
   card.classList.remove("hidden");
   count.textContent = keys.length;
 
   list.innerHTML = keys.map(k => {
+    const info = getPlatformInfo(k.platform);
     const preview = k.secret.slice(0, 4) + " " + k.secret.slice(4, 8) + " ...";
     const isActive = activeKey && activeKey.id === k.id;
     return `
       <div class="saved-key ${isActive ? 'active' : ''}" onclick='showCodeById(${k.id})'>
-        <div>
-          <div class="saved-key-name">${escapeHtml(k.name)}</div>
-          <div class="saved-key-preview">${preview}</div>
+        <div class="saved-key-left">
+          <div class="saved-key-icon" style="background:${info.color}">${info.icon}</div>
+          <div class="saved-key-info">
+            <div class="saved-key-name">${escapeHtml(k.platform)}</div>
+            <div class="saved-key-preview">${preview}</div>
+          </div>
         </div>
         <button class="saved-key-del" onclick="event.stopPropagation(); deleteKey(${k.id})">🗑</button>
       </div>
@@ -623,11 +652,7 @@ function deleteKey(id) {
 // ═══════════════════════════════════════════════════
 // Init
 // ═══════════════════════════════════════════════════
-window.addEventListener("load", () => {
-  renderSaved();
-});
-
-// Clear sensitive data on close
+window.addEventListener("load", () => renderSaved());
 window.addEventListener("beforeunload", () => {
   activeKey = null;
   clearInterval(tickInterval);
