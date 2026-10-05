@@ -21,7 +21,6 @@
   .logo { font-size: 32px; margin-bottom: 8px; }
   h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
   .subtitle { font-size: 12px; color: #64748b; }
-
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
     border-radius: 16px;
@@ -56,7 +55,6 @@
   }
   select:focus { outline: none; border-color: #38bdf8; }
   select option { background: #0a0e1a; color: #e2e8f0; }
-
   input[type="text"] {
     width: 100%;
     padding: 14px 16px;
@@ -70,7 +68,6 @@
   }
   input[type="text"]:focus { outline: none; border-color: #38bdf8; }
   input::placeholder { color: #475569; letter-spacing: 1px; }
-
   .btn {
     width: 100%;
     padding: 14px;
@@ -87,7 +84,7 @@
   .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
   .btn-secondary { background: #334155; color: #e2e8f0; }
   .btn-accent { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
-
+  .btn-danger { background: #dc2626; color: white; }
   .code-card {
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
     border: 2px solid #1e40af;
@@ -132,7 +129,6 @@
   .code-display.expiring { color: #f59e0b; }
   .code-display.critical { color: #ef4444; animation: pulse 0.5s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
   .timer-row {
     display: flex;
     justify-content: center;
@@ -151,7 +147,6 @@
     border-radius: 3px;
   }
   .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
-
   .info-section {
     background: #0a0e1a;
     border: 1px solid #334155;
@@ -196,7 +191,6 @@
   .info-value.green { color: #4ade80; }
   .info-value.yellow { color: #fbbf24; font-size: 15px; }
   .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
-
   .saved-header {
     display: flex;
     justify-content: space-between;
@@ -245,7 +239,6 @@
     white-space: nowrap;
     max-width: 160px;
   }
-
   .status {
     font-size: 13px;
     padding: 10px 14px;
@@ -257,7 +250,6 @@
   .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
   .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
   .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
-
   .hidden { display: none !important; }
 </style>
 </head>
@@ -267,7 +259,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">Modified + Base64 (SaaSKo style)</div>
+    <div class="subtitle">Modified + Base64</div>
   </div>
 
   <div class="card">
@@ -292,6 +284,7 @@
     <input type="text" id="secretInput" placeholder="CP6X Q7HM YGP4 2BGP" autocomplete="off" spellcheck="false">
 
     <button class="btn btn-primary" onclick="addKey()">➕ Add to Chain</button>
+    <button class="btn btn-danger" onclick="clearAll()">🗑 Clear All (Fix bug)</button>
 
     <div class="status hidden" id="status"></div>
   </div>
@@ -350,7 +343,6 @@
 
 </div>
 
-<!-- Eruda Console -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   eruda.init();
@@ -378,7 +370,6 @@ function getPlatformInfo(name) {
   return PLATFORMS[name] || PLATFORMS["Other"];
 }
 
-// Base32 decode
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -399,28 +390,19 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ⭐⭐⭐ SaaSKo Meta style: Random char at position 6 (after 5th char)
-function insertRandomChar(secret) {
+// ⭐ ONLY ONE function — Insert random char at position 5
+function modifySecret(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
   const modified = secret.slice(0, 5) + randomChar + secret.slice(5);
-  console.log("🎲 Modified:", secret, "→", modified, "(inserted '" + randomChar + "')");
+  console.log("🎲 Modified:", secret, "→", modified);
   return modified;
-}
-
-// Main conversion
-function convertToOutput(secret) {
-  const modified = insertRandomChar(secret);
-  const output = btoa(modified);  // String → Base64
-  console.log("💾 Output:", output);
-  return { modified, output };
 }
 
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
-// TOTP
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -445,8 +427,7 @@ async function generateTOTP(secret, timeMs = Date.now()) {
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
-// Storage
-const STORAGE_KEY = "totp_v1";
+const STORAGE_KEY = "totp_v3";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -482,13 +463,21 @@ async function addKey() {
   if (!secret) return showStatus("❌ Key paste করুন", "error");
   try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
 
-  const { modified, output } = convertToOutput(secret);
+  // ⭐ IMPORTANT: Use "secret" AS-IS (no double modification)
+  // Modified = ONE random char insert
+  const modified = modifySecret(secret);
+  // Output = btoa(modified)
+  const output = btoa(modified);
+
+  console.log("📝 Original:", secret);
+  console.log("✏️ Modified:", modified);
+  console.log("💾 Output:", output);
 
   chain.push({
     id: Date.now(),
     platform,
-    original: secret,
-    modified: modified,
+    original: secret,     // ✅ 16 chars (original)
+    modified: modified,   // ✅ 17 chars (one modification)
     output: output,
     timestamp: Date.now()
   });
@@ -620,6 +609,17 @@ function renderChain() {
       </div>
     `;
   }).join("");
+}
+
+// ⭐ Clear All (fix bug)
+function clearAll() {
+  if (!confirm("Clear all saved keys? (Fix bug)")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  chain = [];
+  activeIndex = -1;
+  document.getElementById("codeSection").classList.add("hidden");
+  renderChain();
+  showStatus("🗑 Cleared all", "info");
 }
 
 window.addEventListener("load", () => {
