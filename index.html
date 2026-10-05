@@ -265,7 +265,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">String → Base64</div>
+    <div class="subtitle">String → Base64 (SaaSKo style)</div>
   </div>
 
   <div class="card">
@@ -340,6 +340,15 @@
 
 </div>
 
+<!-- ⭐ Eruda Console (Mobile Browser Console) -->
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>
+  eruda.init();
+  console.log("🔐 2FA Manager loaded — Eruda console ready");
+  console.log("Test korte paren: btoa('CP6XQ7HMYGP42BGP')");
+  console.log("Expected: Q1A2WFFaN0hNWUdQNDJCR1A=");
+</script>
+
 <script>
 const PLATFORMS = {
   "Facebook":  { icon: "📘" },
@@ -361,7 +370,7 @@ function getPlatformInfo(name) {
   return PLATFORMS[name] || PLATFORMS["Other"];
 }
 
-// Base32 decode (শুধু TOTP-এর জন্য)
+// Base32 decode
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -382,17 +391,18 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ⭐⭐⭐ MAIN CONVERSION — SaaSKo Meta style
-// String → Base64 (direct, no Base32 decode)
+// ⭐ MAIN: String → Base64
 function convertToBase64(secret) {
-  return btoa(secret);  // e.g., btoa("CP6XQ7HMYGP42BGP") = "Q1A2WFFaN0hNWUdQNDJCR1A="
+  const result = btoa(secret);
+  console.log("🔄 Convert:", secret, "→", result);
+  return result;
 }
 
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
-// TOTP generation
+// TOTP
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -418,7 +428,7 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // Storage
-const STORAGE_KEY = "totp_v3";
+const STORAGE_KEY = "totp_v4";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -454,7 +464,6 @@ async function addKey() {
   if (!secret) return showStatus("❌ Key paste করুন", "error");
   try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
 
-  // ⭐ String → Base64 (SaaSKo Meta exactly)
   const output = convertToBase64(secret);
 
   chain.push({
