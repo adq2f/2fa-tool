@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Manager (SaaSKo Style)</title>
+<title>2FA Manager</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -17,10 +17,11 @@
     justify-content: center;
   }
   .app { max-width: 420px; width: 100%; }
-  .header { text-align: center; margin-bottom: 24px; }
+  .header { text-align: center; margin-bottom: 20px; }
   .logo { font-size: 32px; margin-bottom: 8px; }
   h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
   .subtitle { font-size: 12px; color: #64748b; }
+
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
     border-radius: 16px;
@@ -85,6 +86,7 @@
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
   .btn-secondary { background: #334155; color: #e2e8f0; }
+  .btn-accent { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
 
   .code-card {
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
@@ -151,41 +153,51 @@
   }
   .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
 
-  .key-section {
+  /* Info sections */
+  .info-section {
     background: #0a0e1a;
     border: 1px solid #334155;
     border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
     text-align: left;
   }
-  .key-section-label {
+  .info-section.green { border-color: #166534; }
+  .info-section.yellow { border-color: #854d0e; }
+  .info-section.blue { border-color: #1e40af; }
+  .info-label {
     font-size: 10px;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 6px;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .key-value {
+  .info-copy {
+    background: #1e40af;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .info-copy:active { background: #1e3a8a; }
+  .info-value {
     font-family: 'Courier New', monospace;
-    font-size: 15px;
-    color: #a5b4fc;
-    letter-spacing: 2px;
+    font-size: 14px;
     word-break: break-all;
     user-select: all;
     font-weight: 600;
+    letter-spacing: 2px;
   }
-  .key-value.formatted {
-    color: #fbbf24;
-    font-size: 16px;
-    letter-spacing: 3px;
-  }
-  .key-value.base64 {
-    font-size: 12px;
-    color: #64748b;
-    letter-spacing: 1px;
-  }
+  .info-value.green { color: #4ade80; }
+  .info-value.yellow { color: #fbbf24; font-size: 15px; }
+  .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
 
   .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
   .quick-actions .btn { margin-top: 0; flex: 1; padding: 12px; font-size: 13px; }
@@ -276,17 +288,6 @@
   .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
 
   .hidden { display: none !important; }
-  .paste-helper {
-    background: #0f172a;
-    border: 1px dashed #334155;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 12px;
-    color: #94a3b8;
-    line-height: 1.6;
-  }
-  .paste-helper strong { color: #38bdf8; }
 </style>
 </head>
 <body>
@@ -295,7 +296,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">Base32 → Base64 → TOTP (SaaSKo Style)</div>
+    <div class="subtitle">Auto-convert on paste</div>
   </div>
 
   <div class="card">
@@ -316,8 +317,8 @@
       <option value="Other">🔧 Other</option>
     </select>
 
-    <label style="margin-top:14px;">🔑 Paste 2FA Key (Base32)</label>
-    <input type="text" id="secretInput" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
+    <label style="margin-top:14px;">🔑 Paste 2FA Key</label>
+    <input type="text" id="secretInput" placeholder="6YHZ 77OR SMWO XSBB" autocomplete="off" spellcheck="false">
 
     <button class="btn btn-primary" onclick="addKey()">➕ Add Key</button>
 
@@ -336,29 +337,36 @@
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
 
-      <!-- ⭐ SaaSKo Meta Style Conversion Display -->
-
-      <!-- Step 1: Base32 continuous (real) -->
-      <div class="key-section">
-        <div class="key-section-label">🔑 Step 1: Base32 (Real key)</div>
-        <div class="key-value" id="keyBase32">----</div>
+      <!-- Original key (Facebook-এ যা active) -->
+      <div class="info-section green">
+        <div class="info-label">
+          <span>✅ Original (Facebook)</span>
+          <button class="info-copy" onclick="copyOriginal()">Copy</button>
+        </div>
+        <div class="info-value green" id="originalKey">----</div>
       </div>
 
-      <!-- Step 2: Base32 formatted (4-4 chars) -->
-      <div class="key-section">
-        <div class="key-section-label">🔑 Step 2: Base32 Formatted (4-4)</div>
-        <div class="key-value formatted" id="keyFormatted">----</div>
+      <!-- Modified key (SaaSKo style — random char insert) -->
+      <div class="info-section yellow">
+        <div class="info-label">
+          <span>🔑 Modified (User দেখে)</span>
+          <button class="info-copy" onclick="copyModified()">Copy</button>
+        </div>
+        <div class="info-value yellow" id="changedKey">----</div>
       </div>
 
-      <!-- Step 3: Base64 (storage-এ যা) -->
-      <div class="key-section">
-        <div class="key-section-label">💾 Step 3: Base64 (Storage)</div>
-        <div class="key-value base64" id="keyBase64">----</div>
+      <!-- Base64 encoded (storage/copy) -->
+      <div class="info-section blue">
+        <div class="info-label">
+          <span>💾 Base64 (Copy করে)</span>
+          <button class="info-copy" onclick="copyBase64()">Copy</button>
+        </div>
+        <div class="info-value blue" id="base64Key">----</div>
       </div>
 
       <div class="quick-actions">
+        <button class="btn btn-accent" onclick="copyBase64()">💾 Copy Base64</button>
         <button class="btn btn-primary" onclick="copyCode()">📋 Copy Code</button>
-        <button class="btn btn-secondary" onclick="copyFormatted()">🔑 Copy Key</button>
       </div>
       <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
     </div>
@@ -396,7 +404,7 @@ function getPlatformInfo(name) {
 }
 
 // ═══════════════════════════════════════════════════
-// Base32 Decode
+// Base32
 // ═══════════════════════════════════════════════════
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -419,26 +427,7 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ═══════════════════════════════════════════════════
-// CONVERSION (SaaSKo Meta style)
-// ═══════════════════════════════════════════════════
-
-// Base32 → Base64 (SaaSKo Meta does this for storage)
-function base32ToBase64(base32Str) {
-  // Step 1: Base32 decode → raw bytes
-  const bytes = base32Decode(base32Str);
-  // Step 2: Bytes → Base64
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
-}
-
-// Base64 → Base32 (for reading from storage)
-function base64ToBase32(base64Str) {
-  const binary = atob(base64Str);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  // Bytes → Base32
+function bytesToBase32(bytes) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = 0, value = 0, output = "";
   for (const b of bytes) {
@@ -453,7 +442,33 @@ function base64ToBase32(base64Str) {
   return output;
 }
 
-// Format 4-4 chars (SaaSKo Meta style)
+// ═══════════════════════════════════════════════════
+// Base32 ↔ Base64
+// ═══════════════════════════════════════════════════
+function base32ToBase64(base32Str) {
+  const bytes = base32Decode(base32Str);
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
+function base64ToBase32(base64Str) {
+  const binary = atob(base64Str);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytesToBase32(bytes);
+}
+
+// ═══════════════════════════════════════════════════
+// ⭐ SaaSKo Meta Trick: Insert random char after 5th position
+// ═══════════════════════════════════════════════════
+function insertRandomAfterFifth(secret) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+  return secret.slice(0, 5) + randomChar + secret.slice(5);
+}
+
+// Format 4-4 chars
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
@@ -489,30 +504,28 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // ═══════════════════════════════════════════════════
-// Storage (SaaSKo Meta style — Base64 encoded)
+// Storage
 // ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_saasko_style";
+const STORAGE_KEY = "totp_vault_v1";
 
 function loadKeys() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    // Storage-এ Base64 → Base32 decode করে load করব
     return parsed.map(item => ({
       id: item.id,
       platform: item.platform,
-      secret: base64ToBase32(item.b64)  // ← Base64 → Base32
+      secret: base64ToBase32(item.b64)
     }));
   } catch (e) { return []; }
 }
 
 function saveKeys(keys) {
-  // Base32 → Base64 encode করে save (SaaSKo Meta style)
   const encoded = keys.map(k => ({
     id: k.id,
     platform: k.platform,
-    b64: base32ToBase64(k.secret)  // ← Base32 → Base64
+    b64: base32ToBase64(k.secret)
   }));
   localStorage.setItem(STORAGE_KEY, JSON.stringify(encoded));
 }
@@ -522,6 +535,7 @@ function saveKeys(keys) {
 // ═══════════════════════════════════════════════════
 let keys = loadKeys();
 let activeKey = null;
+let activeModified = null;
 let tickInterval = null;
 
 // ═══════════════════════════════════════════════════
@@ -543,7 +557,7 @@ function escapeHtml(s) {
 
 async function addKey() {
   const platform = document.getElementById("platformSelect").value;
-  const secret = document.getElementById("secretInput").value.trim().toUpperCase();
+  const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
 
   if (!secret) return showStatus("❌ Key paste করুন", "error");
 
@@ -565,14 +579,14 @@ async function addKey() {
   saveKeys(keys);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ " + platform + " saved (Base64 encoded in storage)", "success");
+  showStatus("✅ " + platform + " saved", "success");
 
   renderSaved();
   showCode(newKey);
 }
 
 // ═══════════════════════════════════════════════════
-// Show Code with Conversion Steps
+// Show Code — SaaSKo Meta Style
 // ═══════════════════════════════════════════════════
 function showCode(key) {
   activeKey = key;
@@ -582,14 +596,13 @@ function showCode(key) {
   document.getElementById("activeAccountLabel").textContent =
     info.icon + " " + key.platform.toUpperCase();
 
-  // Step 1: Base32 real
-  document.getElementById("keyBase32").textContent = key.secret;
+  // ⭐ Generate MODIFIED key (SaaSKo Meta style)
+  activeModified = insertRandomAfterFifth(key.secret);
 
-  // Step 2: Base32 formatted (4-4)
-  document.getElementById("keyFormatted").textContent = formatKey(key.secret);
-
-  // Step 3: Base64 (storage)
-  document.getElementById("keyBase64").textContent = base32ToBase64(key.secret);
+  // Display
+  document.getElementById("originalKey").textContent = formatKey(key.secret);
+  document.getElementById("changedKey").textContent = formatKey(activeModified);
+  document.getElementById("base64Key").textContent = base32ToBase64(activeModified);
 
   renderSaved();
   clearInterval(tickInterval);
@@ -599,6 +612,7 @@ function showCode(key) {
 
 function closeCode() {
   activeKey = null;
+  activeModified = null;
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
@@ -608,6 +622,7 @@ function closeCode() {
 async function tick() {
   if (!activeKey) return;
   try {
+    // ⭐ Code generate হয় ORIGINAL key দিয়ে (Facebook-এ যা active)
     const code = await generateTOTP(activeKey.secret);
     const display = document.getElementById("codeDisplay");
     display.textContent = code.slice(0, 3) + " " + code.slice(3);
@@ -641,13 +656,34 @@ async function copyCode() {
   } catch (e) { fallbackCopy(code); }
 }
 
-async function copyFormatted() {
+// ⭐ Copy ORIGINAL key (Facebook-এ যা active)
+async function copyOriginal() {
   if (!activeKey) return;
   const formatted = formatKey(activeKey.secret);
   try {
     await navigator.clipboard.writeText(formatted);
-    showStatus("✅ Key copied: " + formatted, "success");
+    showStatus("✅ Original key copied: " + formatted, "success");
   } catch (e) { fallbackCopy(formatted); }
+}
+
+// ⭐ Copy MODIFIED key (SaaSKo style — user দেখে)
+async function copyModified() {
+  if (!activeModified) return;
+  const formatted = formatKey(activeModified);
+  try {
+    await navigator.clipboard.writeText(formatted);
+    showStatus("✅ Modified key copied: " + formatted, "success");
+  } catch (e) { fallbackCopy(formatted); }
+}
+
+// ⭐ Copy BASE64 (SaaSKo style — copy করে) ← MAIN COPY
+async function copyBase64() {
+  if (!activeModified) return;
+  const b64 = base32ToBase64(activeModified);
+  try {
+    await navigator.clipboard.writeText(b64);
+    showStatus("✅ Base64 copied: " + b64, "success");
+  } catch (e) { fallbackCopy(b64); }
 }
 
 function fallbackCopy(text) {
