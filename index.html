@@ -16,7 +16,7 @@
     align-items: center;
     justify-content: center;
   }
-  .app { max-width: 420px; width: 100%; }
+  .app { max-width: 440px; width: 100%; }
   .header { text-align: center; margin-bottom: 20px; }
   .logo { font-size: 32px; margin-bottom: 8px; }
   h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
@@ -153,7 +153,6 @@
   }
   .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
 
-  /* Info sections */
   .info-section {
     background: #0a0e1a;
     border: 1px solid #334155;
@@ -186,7 +185,7 @@
     cursor: pointer;
     font-weight: 700;
   }
-  .info-copy:active { background: #1e3a8a; }
+  .info-copy.accent { background: #f59e0b; }
   .info-value {
     font-family: 'Courier New', monospace;
     font-size: 14px;
@@ -199,8 +198,50 @@
   .info-value.yellow { color: #fbbf24; font-size: 15px; }
   .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
 
-  .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
-  .quick-actions .btn { margin-top: 0; flex: 1; padding: 12px; font-size: 13px; }
+  /* Chain list */
+  .chain-list { max-height: 200px; overflow-y: auto; }
+  .chain-item {
+    background: #0a0e1a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .chain-item.active {
+    border-color: #38bdf8;
+    background: #0f172a;
+    color: #38bdf8;
+  }
+  .chain-item-num {
+    color: #f59e0b;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .chain-item-b64 {
+    font-size: 9px;
+    color: #475569;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+  }
+  .chain-item-del {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .chain-item-del:hover { background: #7f1d1d; color: #fecaca; }
 
   .saved-header {
     display: flex;
@@ -223,52 +264,6 @@
     border-radius: 10px;
     font-weight: 700;
   }
-  .saved-key {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    background: #0a0e1a;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .saved-key:hover { border-color: #38bdf8; background: #0f172a; }
-  .saved-key.active { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,0.2); }
-  .saved-key-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-  .saved-key-icon {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-  .saved-key-info { min-width: 0; flex: 1; }
-  .saved-key-name { font-size: 14px; font-weight: 600; color: #e2e8f0; }
-  .saved-key-preview {
-    font-size: 10px;
-    color: #64748b;
-    font-family: 'Courier New', monospace;
-    margin-top: 2px;
-    letter-spacing: 1px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .saved-key-del {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-  .saved-key-del:hover { background: #7f1d1d; color: #fecaca; }
 
   .status {
     font-size: 13px;
@@ -296,7 +291,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">Auto-convert on paste</div>
+    <div class="subtitle">Multi-account chain</div>
   </div>
 
   <div class="card">
@@ -317,10 +312,10 @@
       <option value="Other">🔧 Other</option>
     </select>
 
-    <label style="margin-top:14px;">🔑 Paste 2FA Key</label>
-    <input type="text" id="secretInput" placeholder="6YHZ 77OR SMWO XSBB" autocomplete="off" spellcheck="false">
+    <label style="margin-top:14px;">🔑 Paste 2FA Key (Base32)</label>
+    <input type="text" id="secretInput" placeholder="CP6X Q7HM YGP4 2BGP" autocomplete="off" spellcheck="false">
 
-    <button class="btn btn-primary" onclick="addKey()">➕ Add Key</button>
+    <button class="btn btn-primary" onclick="addKey()">➕ Add to Chain</button>
 
     <div class="status hidden" id="status"></div>
   </div>
@@ -337,7 +332,6 @@
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
 
-      <!-- Original key (Facebook-এ যা active) -->
       <div class="info-section green">
         <div class="info-label">
           <span>✅ Original (Facebook)</span>
@@ -346,38 +340,36 @@
         <div class="info-value green" id="originalKey">----</div>
       </div>
 
-      <!-- Modified key (SaaSKo style — random char insert) -->
       <div class="info-section yellow">
         <div class="info-label">
-          <span>🔑 Modified (User দেখে)</span>
+          <span>🔑 Modified (Copy)</span>
           <button class="info-copy" onclick="copyModified()">Copy</button>
         </div>
         <div class="info-value yellow" id="changedKey">----</div>
       </div>
 
-      <!-- Base64 encoded (storage/copy) -->
       <div class="info-section blue">
         <div class="info-label">
-          <span>💾 Base64 (Copy করে)</span>
-          <button class="info-copy" onclick="copyBase64()">Copy</button>
+          <span>💾 Base64 (Main Copy)</span>
+          <button class="info-copy accent" onclick="copyBase64()">COPY</button>
         </div>
         <div class="info-value blue" id="base64Key">----</div>
       </div>
 
-      <div class="quick-actions">
-        <button class="btn btn-accent" onclick="copyBase64()">💾 Copy Base64</button>
-        <button class="btn btn-primary" onclick="copyCode()">📋 Copy Code</button>
+      <div class="quick-actions" style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn btn-accent" onclick="copyBase64()" style="flex:1; margin-top:0;">💾 Copy Base64</button>
+        <button class="btn btn-primary" onclick="copyCode()" style="flex:1; margin-top:0;">📋 Copy Code</button>
       </div>
       <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
     </div>
-  </div>
 
-  <div class="card hidden" id="savedCard">
-    <div class="saved-header">
-      <div class="saved-title">💾 Saved Keys</div>
-      <div class="saved-count" id="savedCount">0</div>
+    <div class="card">
+      <div class="saved-header">
+        <div class="saved-title">🔗 Chain of Keys</div>
+        <div class="saved-count" id="chainCount">0</div>
+      </div>
+      <div class="chain-list" id="chainList"></div>
     </div>
-    <div id="savedList"></div>
   </div>
 
 </div>
@@ -411,7 +403,6 @@ function base32Decode(input) {
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
   if (cleaned.length < 16) throw new Error("Key too short (min 16)");
   if (cleaned.length > 128) throw new Error("Key too long");
-
   let bits = 0, value = 0;
   const output = [];
   for (const c of cleaned) {
@@ -442,9 +433,6 @@ function bytesToBase32(bytes) {
   return output;
 }
 
-// ═══════════════════════════════════════════════════
-// Base32 ↔ Base64
-// ═══════════════════════════════════════════════════
 function base32ToBase64(base32Str) {
   const bytes = base32Decode(base32Str);
   let binary = "";
@@ -459,16 +447,13 @@ function base64ToBase32(base64Str) {
   return bytesToBase32(bytes);
 }
 
-// ═══════════════════════════════════════════════════
-// ⭐ SaaSKo Meta Trick: Insert random char after 5th position
-// ═══════════════════════════════════════════════════
+// ⭐ SaaSKo Meta style — random char insert
 function insertRandomAfterFifth(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
   return secret.slice(0, 5) + randomChar + secret.slice(5);
 }
 
-// Format 4-4 chars
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
@@ -485,62 +470,42 @@ async function generateTOTP(secret, timeMs = Date.now()) {
     counterBytes[i] = temp & 0xFF;
     temp = Math.floor(temp / 256);
   }
-
   const key = await crypto.subtle.importKey(
     "raw", keyBytes,
     { name: "HMAC", hash: "SHA-1" },
     false, ["sign"]
   );
   const hash = new Uint8Array(await crypto.subtle.sign("HMAC", key, counterBytes));
-
   const offset = hash[hash.length - 1] & 0x0F;
   const binary =
     ((hash[offset] & 0x7F) << 24) |
     ((hash[offset + 1] & 0xFF) << 16) |
     ((hash[offset + 2] & 0xFF) << 8) |
     (hash[offset + 3] & 0xFF);
-
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
 // ═══════════════════════════════════════════════════
 // Storage
 // ═══════════════════════════════════════════════════
-const STORAGE_KEY = "totp_vault_v1";
+const STORAGE_KEY = "totp_chain_v2";
 
-function loadKeys() {
+function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return parsed.map(item => ({
-      id: item.id,
-      platform: item.platform,
-      secret: base64ToBase32(item.b64)
-    }));
+    return JSON.parse(raw);
   } catch (e) { return []; }
 }
 
-function saveKeys(keys) {
-  const encoded = keys.map(k => ({
-    id: k.id,
-    platform: k.platform,
-    b64: base32ToBase64(k.secret)
-  }));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(encoded));
+function saveChain(chain) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(chain));
 }
 
-// ═══════════════════════════════════════════════════
-// State
-// ═══════════════════════════════════════════════════
-let keys = loadKeys();
-let activeKey = null;
-let activeModified = null;
+let chain = loadChain();
+let activeIndex = -1;
 let tickInterval = null;
 
-// ═══════════════════════════════════════════════════
-// UI
-// ═══════════════════════════════════════════════════
 function showStatus(msg, type = "info") {
   const el = document.getElementById("status");
   el.textContent = msg;
@@ -555,6 +520,9 @@ function escapeHtml(s) {
   }[c]));
 }
 
+// ═══════════════════════════════════════════════════
+// Add Key
+// ═══════════════════════════════════════════════════
 async function addKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
@@ -567,70 +535,68 @@ async function addKey() {
     return showStatus("❌ " + e.message, "error");
   }
 
-  const existing = keys.find(k => k.platform === platform);
-  const id = existing ? existing.id : Date.now();
-  const newKey = { id, platform, secret };
+  // ⭐ SaaSKo Meta style: modify + Base64
+  const modified = insertRandomAfterFifth(secret);
+  const b64 = base32ToBase64(modified);
 
-  if (existing) {
-    keys = keys.map(k => k.id === id ? newKey : k);
-  } else {
-    keys.push(newKey);
-  }
-  saveKeys(keys);
+  chain.push({
+    id: Date.now(),
+    platform,
+    original: secret,
+    modified: modified,
+    b64: b64,
+    timestamp: Date.now()
+  });
+  saveChain(chain);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ " + platform + " saved", "success");
+  showStatus("✅ Added to chain (" + chain.length + " keys)", "success");
 
-  renderSaved();
-  showCode(newKey);
+  activeIndex = chain.length - 1;
+  showCode(activeIndex);
 }
 
 // ═══════════════════════════════════════════════════
-// Show Code — SaaSKo Meta Style
+// Show Code
 // ═══════════════════════════════════════════════════
-function showCode(key) {
-  activeKey = key;
+function showCode(index) {
+  if (index < 0 || index >= chain.length) return;
+  activeIndex = index;
+  const key = chain[index];
   const info = getPlatformInfo(key.platform);
 
   document.getElementById("codeSection").classList.remove("hidden");
   document.getElementById("activeAccountLabel").textContent =
-    info.icon + " " + key.platform.toUpperCase();
+    info.icon + " " + key.platform.toUpperCase() + " (Key #" + (index + 1) + ")";
 
-  // ⭐ Generate MODIFIED key (SaaSKo Meta style)
-  activeModified = insertRandomAfterFifth(key.secret);
+  document.getElementById("originalKey").textContent = formatKey(key.original);
+  document.getElementById("changedKey").textContent = formatKey(key.modified);
+  document.getElementById("base64Key").textContent = key.b64;
 
-  // Display
-  document.getElementById("originalKey").textContent = formatKey(key.secret);
-  document.getElementById("changedKey").textContent = formatKey(activeModified);
-  document.getElementById("base64Key").textContent = base32ToBase64(activeModified);
-
-  renderSaved();
+  renderChain();
   clearInterval(tickInterval);
   tick();
   tickInterval = setInterval(tick, 100);
 }
 
 function closeCode() {
-  activeKey = null;
-  activeModified = null;
+  activeIndex = -1;
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
-  renderSaved();
 }
 
 async function tick() {
-  if (!activeKey) return;
+  if (activeIndex < 0) return;
   try {
-    // ⭐ Code generate হয় ORIGINAL key দিয়ে (Facebook-এ যা active)
-    const code = await generateTOTP(activeKey.secret);
+    const key = chain[activeIndex];
+    const code = await generateTOTP(key.original);
     const display = document.getElementById("codeDisplay");
     display.textContent = code.slice(0, 3) + " " + code.slice(3);
 
     const now = Date.now();
     const remaining = 30 - (now / 1000) % 30;
     document.getElementById("timerValue").textContent = remaining.toFixed(1) + "s";
-
     const pct = (remaining / 30) * 100;
     const fill = document.getElementById("progressFill");
     fill.style.width = pct + "%";
@@ -656,34 +622,32 @@ async function copyCode() {
   } catch (e) { fallbackCopy(code); }
 }
 
-// ⭐ Copy ORIGINAL key (Facebook-এ যা active)
 async function copyOriginal() {
-  if (!activeKey) return;
-  const formatted = formatKey(activeKey.secret);
+  if (activeIndex < 0) return;
+  const key = chain[activeIndex];
   try {
-    await navigator.clipboard.writeText(formatted);
-    showStatus("✅ Original key copied: " + formatted, "success");
-  } catch (e) { fallbackCopy(formatted); }
+    await navigator.clipboard.writeText(key.original);
+    showStatus("✅ Original copied", "success");
+  } catch (e) { fallbackCopy(key.original); }
 }
 
-// ⭐ Copy MODIFIED key (SaaSKo style — user দেখে)
 async function copyModified() {
-  if (!activeModified) return;
-  const formatted = formatKey(activeModified);
+  if (activeIndex < 0) return;
+  const key = chain[activeIndex];
   try {
-    await navigator.clipboard.writeText(formatted);
-    showStatus("✅ Modified key copied: " + formatted, "success");
-  } catch (e) { fallbackCopy(formatted); }
+    await navigator.clipboard.writeText(key.modified);
+    showStatus("✅ Modified copied", "success");
+  } catch (e) { fallbackCopy(key.modified); }
 }
 
-// ⭐ Copy BASE64 (SaaSKo style — copy করে) ← MAIN COPY
+// ⭐ MAIN COPY — Base64 (SaaSKo Meta style)
 async function copyBase64() {
-  if (!activeModified) return;
-  const b64 = base32ToBase64(activeModified);
+  if (activeIndex < 0) return;
+  const key = chain[activeIndex];
   try {
-    await navigator.clipboard.writeText(b64);
-    showStatus("✅ Base64 copied: " + b64, "success");
-  } catch (e) { fallbackCopy(b64); }
+    await navigator.clipboard.writeText(key.b64);
+    showStatus("✅ Base64 copied: " + key.b64, "success");
+  } catch (e) { fallbackCopy(key.b64); }
 }
 
 function fallbackCopy(text) {
@@ -696,56 +660,57 @@ function fallbackCopy(text) {
 }
 
 // ═══════════════════════════════════════════════════
-// Render Saved
+// Render Chain
 // ═══════════════════════════════════════════════════
-function renderSaved() {
-  const card = document.getElementById("savedCard");
-  const list = document.getElementById("savedList");
-  const count = document.getElementById("savedCount");
+function renderChain() {
+  const list = document.getElementById("chainList");
+  const count = document.getElementById("chainCount");
+  count.textContent = chain.length;
 
-  if (keys.length === 0) {
-    card.classList.add("hidden");
+  if (chain.length === 0) {
+    list.innerHTML = '<div style="color:#64748b; font-size:12px; text-align:center; padding:12px;">No keys yet</div>';
     return;
   }
-  card.classList.remove("hidden");
-  count.textContent = keys.length;
 
-  list.innerHTML = keys.map(k => {
+  list.innerHTML = chain.map((k, i) => {
     const info = getPlatformInfo(k.platform);
-    const preview = k.secret.slice(0, 4) + " " + k.secret.slice(4, 8) + " ...";
-    const isActive = activeKey && activeKey.id === k.id;
+    const isActive = i === activeIndex;
     return `
-      <div class="saved-key ${isActive ? 'active' : ''}" onclick='showCodeById(${k.id})'>
-        <div class="saved-key-left">
-          <div class="saved-key-icon" style="background:${info.color}">${info.icon}</div>
-          <div class="saved-key-info">
-            <div class="saved-key-name">${escapeHtml(k.platform)}</div>
-            <div class="saved-key-preview">${preview}</div>
-          </div>
+      <div class="chain-item ${isActive ? 'active' : ''}" onclick="showCode(${i})">
+        <div>
+          <span class="chain-item-num">#${i + 1}</span>
+          <span>${info.icon} ${escapeHtml(k.platform)}</span>
         </div>
-        <button class="saved-key-del" onclick="event.stopPropagation(); deleteKey(${k.id})">🗑</button>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="chain-item-b64">${k.b64.slice(0, 20)}...</div>
+          <button class="chain-item-del" onclick="event.stopPropagation(); deleteKey(${i})">🗑</button>
+        </div>
       </div>
     `;
   }).join("");
 }
 
-function showCodeById(id) {
-  const key = keys.find(k => k.id === id);
-  if (key) showCode(key);
-}
-
-function deleteKey(id) {
+function deleteKey(index) {
   if (!confirm("Delete this key?")) return;
-  keys = keys.filter(k => k.id !== id);
-  saveKeys(keys);
-  if (activeKey && activeKey.id === id) closeCode();
-  renderSaved();
+  chain.splice(index, 1);
+  saveChain(chain);
+  if (activeIndex === index) {
+    activeIndex = -1;
+    document.getElementById("codeSection").classList.add("hidden");
+  } else if (activeIndex > index) {
+    activeIndex--;
+  }
+  renderChain();
   showStatus("🗑 Deleted", "info");
 }
 
-window.addEventListener("load", () => renderSaved());
+window.addEventListener("load", () => {
+  if (chain.length > 0) {
+    document.getElementById("codeSection").classList.remove("hidden");
+    showCode(chain.length - 1);
+  }
+});
 window.addEventListener("beforeunload", () => {
-  activeKey = null;
   clearInterval(tickInterval);
 });
 </script>
