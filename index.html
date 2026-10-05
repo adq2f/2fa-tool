@@ -161,6 +161,7 @@
     text-align: left;
   }
   .info-section.green { border-color: #166534; }
+  .info-section.yellow { border-color: #854d0e; }
   .info-section.blue { border-color: #1e40af; }
   .info-label {
     font-size: 10px;
@@ -193,6 +194,7 @@
     letter-spacing: 2px;
   }
   .info-value.green { color: #4ade80; }
+  .info-value.yellow { color: #fbbf24; font-size: 15px; }
   .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
 
   .saved-header {
@@ -265,7 +267,7 @@
   <div class="header">
     <div class="logo">🔐</div>
     <h1>2FA Manager</h1>
-    <div class="subtitle">String → Base64 (SaaSKo style)</div>
+    <div class="subtitle">Modified + Base64 (SaaSKo style)</div>
   </div>
 
   <div class="card">
@@ -314,6 +316,14 @@
         <div class="info-value green" id="originalKey">----</div>
       </div>
 
+      <div class="info-section yellow">
+        <div class="info-label">
+          <span>🔑 Modified (SaaSKo style)</span>
+          <button class="info-copy accent" onclick="copyModified()">Copy</button>
+        </div>
+        <div class="info-value yellow" id="modifiedKey">----</div>
+      </div>
+
       <div class="info-section blue">
         <div class="info-label">
           <span>💾 Base64 Output (Copy)</span>
@@ -340,13 +350,11 @@
 
 </div>
 
-<!-- ⭐ Eruda Console (Mobile Browser Console) -->
+<!-- Eruda Console -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   eruda.init();
-  console.log("🔐 2FA Manager loaded — Eruda console ready");
-  console.log("Test korte paren: btoa('CP6XQ7HMYGP42BGP')");
-  console.log("Expected: Q1A2WFFaN0hNWUdQNDJCR1A=");
+  console.log("🔐 2FA Manager loaded");
 </script>
 
 <script>
@@ -391,11 +399,21 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ⭐ MAIN: String → Base64
-function convertToBase64(secret) {
-  const result = btoa(secret);
-  console.log("🔄 Convert:", secret, "→", result);
-  return result;
+// ⭐⭐⭐ SaaSKo Meta style: Random char at position 6 (after 5th char)
+function insertRandomChar(secret) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+  const modified = secret.slice(0, 5) + randomChar + secret.slice(5);
+  console.log("🎲 Modified:", secret, "→", modified, "(inserted '" + randomChar + "')");
+  return modified;
+}
+
+// Main conversion
+function convertToOutput(secret) {
+  const modified = insertRandomChar(secret);
+  const output = btoa(modified);  // String → Base64
+  console.log("💾 Output:", output);
+  return { modified, output };
 }
 
 function formatKey(secret) {
@@ -428,7 +446,7 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // Storage
-const STORAGE_KEY = "totp_v4";
+const STORAGE_KEY = "totp_v1";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -464,12 +482,13 @@ async function addKey() {
   if (!secret) return showStatus("❌ Key paste করুন", "error");
   try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
 
-  const output = convertToBase64(secret);
+  const { modified, output } = convertToOutput(secret);
 
   chain.push({
     id: Date.now(),
     platform,
     original: secret,
+    modified: modified,
     output: output,
     timestamp: Date.now()
   });
@@ -493,6 +512,7 @@ async function showCode(index) {
     info.icon + " " + key.platform.toUpperCase() + " (Key #" + (index + 1) + ")";
 
   document.getElementById("originalKey").textContent = formatKey(key.original);
+  document.getElementById("modifiedKey").textContent = formatKey(key.modified);
   document.getElementById("outputKey").textContent = key.output;
 
   renderChain();
@@ -548,6 +568,15 @@ async function copyOriginal() {
     await navigator.clipboard.writeText(key.original);
     showStatus("✅ Original copied", "success");
   } catch (e) { fallbackCopy(key.original); }
+}
+
+async function copyModified() {
+  if (activeIndex < 0) return;
+  const key = chain[activeIndex];
+  try {
+    await navigator.clipboard.writeText(key.modified);
+    showStatus("✅ Modified copied", "success");
+  } catch (e) { fallbackCopy(key.modified); }
 }
 
 async function copyOutput() {
