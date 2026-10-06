@@ -506,7 +506,7 @@
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   if (window.eruda) eruda.init();
-  console.log("🔐 2FA Manager Pro — SaaSKo Rules");
+  console.log("🔐 2FA Manager Pro — SaaSKo Rules + Base64 Padding");
 </script>
 
 <script>
@@ -553,8 +553,12 @@ function base32Decode(input) {
 // RULES:
 //   1. 50% chance to modify the secret
 //   2. If modify: position 5 (index 5) — insert random A-Z char
-//   3. Encode with Base64 (btoa)
+//   3. Encode with Base64 (btoa) — automatic `=` / `==` padding
 //   4. Same original key — different modified — each time
+//   5. Padding rule:
+//        length % 3 == 0  →  0 ta `=`
+//        length % 3 == 1  →  2 ta `==`
+//        length % 3 == 2  →  1 ta `=`
 // ============================================================
 
 function modifySecret(secret) {
@@ -564,8 +568,24 @@ function modifySecret(secret) {
   return secret.slice(0, 5) + randomChar + secret.slice(5);
 }
 
+// ⭐ NEW: Base64 padding info — `=` / `==` rule
+function getBase64PaddingInfo(modified) {
+  const mod = modified.length % 3;
+  let padding = "";
+  if (mod === 1) padding = "==";   // 2 ta equal
+  else if (mod === 2) padding = "="; // 1 ta equal
+  else padding = "";                // 0 ta equal
+
+  return {
+    length: modified.length,
+    mod3: mod,
+    padding: padding,
+    paddingCount: padding.length
+  };
+}
+
 function convertToOutput(secret) {
-  // ⭐ RULE: 50% probability modify or not
+  // ⭐ RULE 1: 50% probability modify or not
   const shouldModify = Math.random() < 0.5;
 
   let modified;
@@ -577,11 +597,21 @@ function convertToOutput(secret) {
     console.log("✓ No modification");
   }
 
-  // ⭐ RULE: Base64 encode
+  // ⭐ RULE 2: Base64 encode (btoa automatic `=` / `==` dey)
   const output = btoa(modified);
-  console.log("💾 Output:", output);
 
-  return { modified, output, wasModified: shouldModify };
+  // ⭐ RULE 3: Padding analysis
+  const paddingInfo = getBase64PaddingInfo(modified);
+
+  console.log("💾 Output:", output);
+  console.log("📏 Length:", paddingInfo.length, "| mod3:", paddingInfo.mod3, "| padding:", paddingInfo.padding || "none");
+
+  return {
+    modified,
+    output,
+    wasModified: shouldModify,
+    paddingInfo: paddingInfo   // ⭐ extra info
+  };
 }
 
 // ===== MASK KEY (50% show) =====
@@ -723,8 +753,8 @@ async function autoAddKey() {
   }
 
   // ⭐ SaaSKo Rules applied
-  const { modified, output } = convertToOutput(secret);
-  chain.push({ id: Date.now(), platform, original: secret, modified, output, timestamp: Date.now() });
+  const { modified, output, paddingInfo } = convertToOutput(secret);
+  chain.push({ id: Date.now(), platform, original: secret, modified, output, paddingInfo, timestamp: Date.now() });
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
