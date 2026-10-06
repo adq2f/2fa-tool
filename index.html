@@ -9,56 +9,101 @@
   
   body {
     font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
-    background: radial-gradient(ellipse at top, #0f172a 0%, #0a0e1a 60%, #050810 100%);
+    background: #050810;
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(56,189,248,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(129,140,248,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(15,23,42,0.5) 0%, transparent 70%);
     color: #e2e8f0;
     min-height: 100vh;
-    padding: 20px;
+    padding: 20px 16px 40px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    position: relative;
+    overflow-x: hidden;
   }
   
-  .app { max-width: 440px; width: 100%; padding-top: 10px; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(56,189,248,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56,189,248,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .app {
+    max-width: 460px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    padding-top: 8px;
+  }
 
   /* ===== HEADER ===== */
-  .header { text-align: center; margin-bottom: 24px; position: relative; }
-  .logo {
-    font-size: 38px;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 20px rgba(56,189,248,0.6));
-    animation: float 3s ease-in-out infinite;
+  .header {
+    text-align: center;
+    margin-bottom: 26px;
+    position: relative;
   }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, rgba(56,189,248,0.15), rgba(99,102,241,0.15));
+    border: 1px solid rgba(56,189,248,0.3);
+    margin-bottom: 14px;
+    position: relative;
+    box-shadow: 
+      0 0 40px rgba(56,189,248,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+    50% { box-shadow: 0 0 60px rgba(56,189,248,0.5), inset 0 1px 0 rgba(255,255,255,0.15); }
+  }
+  .logo {
+    font-size: 32px;
+    filter: drop-shadow(0 0 12px rgba(56,189,248,0.8));
   }
   h1 {
-    font-size: 22px;
-    background: linear-gradient(135deg, #38bdf8, #818cf8, #38bdf8);
+    font-size: 26px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #38bdf8 0%, #a5b4fc 50%, #38bdf8 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-weight: 800;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.5px;
   }
   .subtitle {
-    font-size: 11px;
+    font-size: 10px;
     color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
+    letter-spacing: 3px;
+    font-weight: 700;
   }
 
-  /* ===== CARD ===== */
+  /* ===== PREMIUM CARD ===== */
   .card {
-    background: linear-gradient(145deg, #1e293b, #151c2e);
-    border-radius: 18px;
-    padding: 20px;
+    background: linear-gradient(145deg, rgba(30,41,59,0.85), rgba(15,23,42,0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 22px;
     margin-bottom: 16px;
-    border: 1px solid rgba(51,65,85,0.6);
+    border: 1px solid rgba(51,65,85,0.5);
     box-shadow: 
-      0 10px 40px rgba(0,0,0,0.5),
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(56,189,248,0.05),
       inset 0 1px 0 rgba(255,255,255,0.05);
     position: relative;
     overflow: hidden;
@@ -67,240 +112,321 @@
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(56,189,248,0.5), transparent);
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
   }
 
-  label {
-    display: block;
+  /* ===== INPUT LABEL ===== */
+  .input-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 11px;
     color: #94a3b8;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+  }
+  .input-label .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
   }
 
-  select {
+  /* ===== SELECT ===== */
+  .platform-select {
     width: 100%;
-    padding: 14px 16px;
-    background: #0a0e1a;
-    border: 2px solid #334155;
-    border-radius: 12px;
+    padding: 15px 18px;
+    background: linear-gradient(145deg, #0a0e1a, #050810);
+    border: 1.5px solid #1e293b;
+    border-radius: 14px;
     color: #e2e8f0;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2338bdf8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 16px center;
+    background-position: right 18px center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  select:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
-  select option { background: #0a0e1a; color: #e2e8f0; }
-
-  input[type="text"] {
-    width: 100%;
-    padding: 14px 16px;
-    background: #0a0e1a;
-    border: 2px solid #334155;
-    border-radius: 12px;
-    color: #e2e8f0;
-    font-size: 16px;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 2px;
-    transition: all 0.2s;
-    font-weight: 600;
-  }
-  input[type="text"]:focus {
+  .platform-select:focus {
     outline: none;
     border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.15), inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  input::placeholder { color: #475569; letter-spacing: 1px; font-weight: 400; }
+  .platform-select option { background: #0a0e1a; color: #e2e8f0; }
 
-  /* ===== BUTTONS ===== */
-  .btn {
+  /* ===== INPUT ===== */
+  .key-input {
     width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 12px;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
+    padding: 16px 18px;
+    background: linear-gradient(145deg, #0a0e1a, #050810);
+    border: 1.5px solid #1e293b;
+    border-radius: 14px;
+    color: #e2e8f0;
+    font-size: 16px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    letter-spacing: 3px;
+    transition: all 0.3s;
+    font-weight: 600;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary {
-    background: linear-gradient(135deg, #38bdf8, #6366f1);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+  .key-input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.15), inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  .btn-primary:hover { box-shadow: 0 6px 20px rgba(56,189,248,0.5); }
-  .btn-secondary { background: #334155; color: #e2e8f0; }
-  .btn-accent {
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    color: white;
-    box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+  .key-input::placeholder {
+    color: #334155;
+    letter-spacing: 2px;
+    font-weight: 500;
   }
-  .btn-danger { background: #dc2626; color: white; }
 
-  /* ===== RESULT CARDS ===== */
+  .input-hint {
+    font-size: 11px;
+    color: #64748b;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .input-hint .live-dot {
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #22c55e;
+    animation: dotPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ===== RESULT CARD ===== */
   .result-card {
-    background: linear-gradient(145deg, #0f172a, #0a0e1a);
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 12px;
+    background: linear-gradient(145deg, rgba(15,23,42,0.9), rgba(5,8,16,0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
     position: relative;
     overflow: hidden;
     transition: all 0.3s;
   }
   .result-card.code-card {
-    border: 2px solid #1e40af;
-    box-shadow: 0 8px 30px rgba(30,64,175,0.25);
-  }
-  .result-card.key-card {
-    border: 2px solid #166534;
-    box-shadow: 0 8px 30px rgba(22,101,52,0.25);
-  }
-  .result-card.modified-card {
-    border: 2px solid #b45309;
-    box-shadow: 0 8px 30px rgba(180,83,9,0.25);
+    border: 1.5px solid rgba(30,64,175,0.6);
+    box-shadow: 
+      0 15px 50px rgba(30,64,175,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.05);
   }
   .result-card.code-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #38bdf8, #818cf8, #38bdf8);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, #38bdf8, transparent);
     background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
+    animation: shimmer 2.5s linear infinite;
   }
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-
-  .result-label {
-    font-size: 10px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 10px;
-    font-weight: 700;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .result-card.key-card {
+    border: 1.5px solid rgba(22,101,52,0.6);
+    box-shadow: 
+      0 15px 50px rgba(22,101,52,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .result-card.modified-card {
+    border: 1.5px solid rgba(180,83,9,0.6);
+    box-shadow: 
+      0 15px 50px rgba(180,83,9,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.05);
   }
 
-  .result-copy-icon {
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .result-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 800;
+  }
+  .result-label .icon-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+  .result-label .icon-dot.blue { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+  .result-label .icon-dot.green { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+  .result-label .icon-dot.amber { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+
+  .copy-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, #16a34a, #22c55e);
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 14px;
     color: white;
-    box-shadow: 0 2px 8px rgba(34,197,94,0.4);
+    box-shadow: 
+      0 4px 12px rgba(34,197,94,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.2);
     transition: all 0.15s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
   }
-  .result-copy-icon:active { transform: scale(0.9); }
+  .copy-icon::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .copy-icon:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 6px rgba(34,197,94,0.6);
+  }
+  .copy-icon:active::after { opacity: 1; }
 
   /* ===== OTP DISPLAY ===== */
   .otp-display {
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 900;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 8px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    letter-spacing: 10px;
     color: #38bdf8;
     text-align: center;
-    margin: 8px 0 12px;
-    text-shadow: 0 0 25px rgba(56,189,248,0.6);
+    margin: 4px 0 16px;
+    text-shadow: 
+      0 0 30px rgba(56,189,248,0.7),
+      0 0 60px rgba(56,189,248,0.3);
     user-select: none;
     cursor: pointer;
-    transition: all 0.15s;
-    padding: 10px;
-    border-radius: 12px;
+    transition: all 0.2s;
+    padding: 12px;
+    border-radius: 14px;
+    position: relative;
   }
   .otp-display:hover {
     background: rgba(56,189,248,0.08);
     transform: scale(1.02);
   }
   .otp-display:active { transform: scale(0.98); }
-  .otp-display.expiring { color: #f59e0b; text-shadow: 0 0 25px rgba(245,158,11,0.6); }
+  
+  .otp-display.expiring {
+    color: #f59e0b;
+    text-shadow: 0 0 30px rgba(245,158,11,0.7), 0 0 60px rgba(245,158,11,0.3);
+  }
   .otp-display.critical {
     color: #ef4444;
-    text-shadow: 0 0 25px rgba(239,68,68,0.8);
+    text-shadow: 0 0 30px rgba(239,68,68,0.9), 0 0 60px rgba(239,68,68,0.4);
     animation: pulse 0.5s infinite;
   }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.99); }
+  }
 
-  /* ⭐ BLINK RED — WRONG 2FA */
+  /* ⭐ WRONG 2FA — RED BLINK */
   .otp-display.wrong {
     color: #ef4444 !important;
-    text-shadow: 0 0 30px rgba(239,68,68,1) !important;
+    text-shadow: 
+      0 0 40px rgba(239,68,68,1),
+      0 0 80px rgba(239,68,68,0.6) !important;
     animation: blinkWrong 0.6s infinite !important;
   }
   @keyframes blinkWrong {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(0.97); }
+    50% { opacity: 0.2; transform: scale(0.96); }
   }
 
   /* ===== TIMER ===== */
   .timer-row {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
+    font-size: 12px;
     color: #94a3b8;
-    margin-bottom: 10px;
-    font-weight: 600;
+    margin-bottom: 8px;
+    font-weight: 700;
+    padding: 0 4px;
+  }
+  .timer-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 10px;
   }
   .timer-value {
     color: #38bdf8;
-    font-weight: 800;
-    font-family: 'Courier New', monospace;
+    font-weight: 900;
+    font-family: 'SF Mono', 'Courier New', monospace;
     font-size: 14px;
+    text-shadow: 0 0 10px rgba(56,189,248,0.5);
   }
   .progress-track {
-    height: 6px;
-    background: #1e293b;
+    height: 5px;
+    background: #0a0e1a;
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #38bdf8, #818cf8);
     transition: width 0.1s linear;
     border-radius: 3px;
+    box-shadow: 0 0 10px rgba(56,189,248,0.6);
   }
-  .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .progress-fill.warning {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+    box-shadow: 0 0 10px rgba(239,68,68,0.6);
+  }
 
   /* ===== KEY DISPLAY ===== */
   .key-display {
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 15px;
     color: #4ade80;
     word-break: break-all;
     user-select: none;
     cursor: pointer;
     font-weight: 700;
-    letter-spacing: 3px;
-    padding: 8px;
-    border-radius: 8px;
-    transition: all 0.15s;
+    letter-spacing: 4px;
+    padding: 12px;
+    border-radius: 12px;
+    transition: all 0.2s;
     text-align: center;
+    text-shadow: 0 0 15px rgba(74,222,128,0.4);
   }
   .key-display:hover { background: rgba(34,197,94,0.08); }
   .key-display:active { transform: scale(0.98); }
@@ -308,16 +434,24 @@
   .key-display.modified {
     color: #fbbf24;
     font-size: 12px;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 15px rgba(251,191,36,0.4);
+    word-break: break-all;
   }
+  .key-display.modified:hover { background: rgba(251,191,36,0.08); }
 
-  /* ===== INFO ===== */
+  /* ===== HINT ===== */
   .info-hint {
     font-size: 10px;
-    color: #64748b;
+    color: #475569;
     text-align: center;
-    margin-top: 6px;
-    font-style: italic;
+    margin-top: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
 
   /* ===== CHAIN ===== */
@@ -325,106 +459,212 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .saved-title {
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     font-weight: 800;
+  }
+  .saved-title .chain-icon {
+    font-size: 14px;
   }
   .saved-count {
     font-size: 11px;
     background: linear-gradient(135deg, #1e40af, #3b82f6);
     color: white;
-    padding: 3px 10px;
-    border-radius: 10px;
-    font-weight: 800;
-    box-shadow: 0 2px 8px rgba(59,130,246,0.4);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 900;
+    box-shadow: 
+      0 4px 12px rgba(59,130,246,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    letter-spacing: 0.5px;
   }
   .chain-item {
-    background: #0a0e1a;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
+    background: linear-gradient(145deg, #0a0e1a, #050810);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
     font-size: 12px;
-    font-family: 'Courier New', monospace;
     color: #64748b;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
   }
-  .chain-item:hover { border-color: #475569; }
+  .chain-item:active {
+    transform: scale(0.99);
+  }
   .chain-item.active {
-    border-color: #38bdf8;
-    background: #0f172a;
+    border-color: rgba(56,189,248,0.6);
+    background: linear-gradient(145deg, #0f172a, #0a0e1a);
     color: #38bdf8;
-    box-shadow: 0 0 12px rgba(56,189,248,0.2);
+    box-shadow: 
+      0 0 20px rgba(56,189,248,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .chain-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #38bdf8, #818cf8);
+    box-shadow: 0 0 10px #38bdf8;
+  }
+  .chain-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+  }
+  .chain-num {
+    color: #f59e0b;
+    font-weight: 900;
+    font-size: 11px;
+    background: rgba(245,158,11,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(245,158,11,0.3);
   }
   .chain-item-b64 {
     font-size: 9px;
-    color: #475569;
+    color: #334155;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 140px;
+    max-width: 130px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== CLOSE BTN ===== */
+  .btn-close {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(145deg, #1e293b, #151c2e);
+    border: 1.5px solid #334155;
+    border-radius: 14px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .btn-close:active {
+    transform: scale(0.98);
+    background: linear-gradient(145deg, #151c2e, #0a0e1a);
   }
 
   /* ===== STATUS ===== */
   .status {
     font-size: 13px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    margin-top: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-top: 14px;
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
     animation: slideDown 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
   @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-8px); }
+    from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
-  .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
-  .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+  .status.success {
+    background: linear-gradient(145deg, #14532d, #0f3d1f);
+    color: #bbf7d0;
+    border: 1.5px solid #22c55e;
+    box-shadow: 0 8px 24px rgba(34,197,94,0.3);
+  }
+  .status.error {
+    background: linear-gradient(145deg, #7f1d1d, #5c1414);
+    color: #fecaca;
+    border: 1.5px solid #ef4444;
+    box-shadow: 0 8px 24px rgba(239,68,68,0.3);
+    animation: slideDown 0.3s ease-out, shake 0.5s ease-in-out;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .status.info {
+    background: linear-gradient(145deg, #1e3a8a, #152a63);
+    color: #bfdbfe;
+    border: 1.5px solid #3b82f6;
+    box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+  }
 
   .hidden { display: none !important; }
 
-  /* ===== PULSE DOT ===== */
-  .live-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #22c55e;
-    border-radius: 50%;
-    margin-right: 6px;
-    box-shadow: 0 0 8px #22c55e;
-    animation: dotPulse 1.5s ease-in-out infinite;
+  /* ===== LONG PRESS DELETE ===== */
+  .chain-item .delete-hint {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9px;
+    color: #475569;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
   }
-  @keyframes dotPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  .chain-item.show-delete .delete-hint {
+    opacity: 1;
+    color: #ef4444;
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: rgba(56,189,248,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    box-shadow: 0 0 6px rgba(56,189,248,0.6);
   }
 </style>
 </head>
 <body>
+
 <div class="app">
 
   <!-- HEADER -->
   <div class="header">
-    <div class="logo">🔐</div>
+    <div class="logo-wrap">
+      <div class="logo">🔐</div>
+    </div>
     <h1>2FA Manager Pro</h1>
     <div class="subtitle">Secure Authentication</div>
   </div>
 
   <!-- INPUT CARD -->
   <div class="card">
-    <label>📱 Select Platform</label>
-    <select id="platformSelect">
+    <div class="input-label">
+      <span class="dot"></span>
+      <span>Select Platform</span>
+    </div>
+    <select id="platformSelect" class="platform-select">
       <option value="Facebook">📘 Facebook</option>
       <option value="Instagram">📷 Instagram</option>
       <option value="LinkedIn">💼 LinkedIn</option>
@@ -440,28 +680,36 @@
       <option value="Other">🔧 Other</option>
     </select>
 
-    <label style="margin-top:14px;">🔑 Paste 2FA Key</label>
-    <input type="text" id="secretInput" placeholder="XXXX XXXX XXXX XXXX" autocomplete="off" spellcheck="false">
+    <div class="input-label" style="margin-top:18px;">
+      <span class="dot"></span>
+      <span>Paste 2FA Key</span>
+    </div>
+    <input type="text" id="secretInput" class="key-input" placeholder="XXXX XXXX XXXX XXXX" autocomplete="off" spellcheck="false">
 
-    <button class="btn btn-primary" onclick="addKey()">➕ Add Key</button>
-    <button class="btn btn-danger" onclick="clearAll()">🗑 Clear All</button>
+    <div class="input-hint">
+      <span class="live-dot"></span>
+      <span>Paste করলেই auto result আসবে</span>
+    </div>
 
     <div class="status hidden" id="status"></div>
   </div>
 
-  <!-- RESULT SECTION (Auto-show on paste) -->
+  <!-- RESULT SECTION -->
   <div id="codeSection" class="hidden">
 
     <!-- OTP CODE CARD -->
     <div class="result-card code-card">
-      <div class="result-label">
-        <span><span class="live-dot"></span><span id="activeAccountLabel">TOTP CODE</span></span>
-        <span class="result-copy-icon" onclick="copyCode()">📋</span>
+      <div class="result-header">
+        <div class="result-label">
+          <span class="icon-dot blue"></span>
+          <span id="activeAccountLabel">TOTP CODE</span>
+        </div>
+        <span class="copy-icon" onclick="copyCode()">📋</span>
       </div>
       <div class="otp-display" id="codeDisplay" onclick="copyCode()">------</div>
       <div class="timer-row">
-        <span>⏱ Refresh in</span>
-        <span class="timer-value" id="timerValue">30.0s</span>
+        <div class="timer-label">⏱ Refresh</div>
+        <div class="timer-value" id="timerValue">30.0s</div>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
@@ -471,31 +719,40 @@
 
     <!-- ORIGINAL KEY CARD -->
     <div class="result-card key-card">
-      <div class="result-label">
-        <span>🔑 2FA KEY (Original)</span>
-        <span class="result-copy-icon" onclick="copyOriginal()">📋</span>
+      <div class="result-header">
+        <div class="result-label">
+          <span class="icon-dot green"></span>
+          <span>2FA KEY (Original)</span>
+        </div>
+        <span class="copy-icon" onclick="copyOriginal()">📋</span>
       </div>
       <div class="key-display" id="originalKey" onclick="copyOriginal()">----</div>
       <div class="info-hint">👆 Tap key to copy</div>
     </div>
 
-    <!-- MODIFIED KEY CARD (Base64) -->
+    <!-- MODIFIED KEY CARD -->
     <div class="result-card modified-card">
-      <div class="result-label">
-        <span>💾 MODIFIED 2FA (Base64)</span>
-        <span class="result-copy-icon" onclick="copyOutput()">📋</span>
+      <div class="result-header">
+        <div class="result-label">
+          <span class="icon-dot amber"></span>
+          <span>MODIFIED 2FA (Base64)</span>
+        </div>
+        <span class="copy-icon" onclick="copyOutput()">📋</span>
       </div>
       <div class="key-display modified" id="outputKey" onclick="copyOutput()">----</div>
       <div class="info-hint">👆 Tap to copy modified key</div>
     </div>
 
-    <button class="btn btn-secondary" onclick="closeCode()" style="margin-bottom:16px;">✖ Close</button>
+    <button class="btn-close" onclick="closeCode()">✕ Close</button>
   </div>
 
   <!-- CHAIN LIST -->
   <div class="card" id="chainCard">
     <div class="saved-header">
-      <div class="saved-title">🔗 Chain</div>
+      <div class="saved-title">
+        <span class="chain-icon">🔗</span>
+        <span>Chain</span>
+      </div>
       <div class="saved-count" id="chainCount">0</div>
     </div>
     <div id="chainList"></div>
@@ -503,10 +760,16 @@
 
 </div>
 
+<!-- FLOATING PARTICLES -->
+<div class="particle" style="left:10%; top:20%;"></div>
+<div class="particle" style="left:85%; top:40%;"></div>
+<div class="particle" style="left:20%; top:70%;"></div>
+<div class="particle" style="left:75%; top:85%;"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   if (window.eruda) eruda.init();
-  console.log("🔐 2FA Manager Pro loaded");
+  console.log("🔐 2FA Manager Pro — Premium Edition");
 </script>
 
 <script>
@@ -551,7 +814,7 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ===== MODIFY SECRET (Base64 random modify) =====
+// ===== MODIFY SECRET =====
 function modifySecret(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
@@ -576,7 +839,7 @@ function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
-// ===== TOTP GENERATE =====
+// ===== TOTP =====
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -602,20 +865,21 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // ===== STORAGE =====
-const STORAGE_KEY = "auth_v2";
+const STORAGE_KEY = "auth_v3";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (e) { return []; }
 }
-function saveChain(chain) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(chain));
+function saveChain(c) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
 }
 
 let chain = loadChain();
 let activeIndex = -1;
 let tickInterval = null;
+let longPressTimer = null;
 
 // ===== STATUS =====
 function showStatus(msg, type = "info") {
@@ -632,13 +896,47 @@ function escapeHtml(s) {
   }[c]));
 }
 
-// ===== ADD KEY =====
-async function addKey() {
+// ===== AUTO PASTE DETECT =====
+document.getElementById("secretInput").addEventListener("input", function() {
+  var val = this.value.trim().toUpperCase().replace(/\s+/g, "");
+  if (val.length >= 16) {
+    // Debounce — user paste korle auto add
+    clearTimeout(window.__autoAddTimer);
+    window.__autoAddTimer = setTimeout(function() {
+      autoAddKey();
+    }, 300);
+  }
+});
+
+document.getElementById("secretInput").addEventListener("paste", function() {
+  setTimeout(function() {
+    var val = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
+    if (val.length >= 16) {
+      autoAddKey();
+    }
+  }, 100);
+});
+
+// ===== AUTO ADD KEY =====
+async function autoAddKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
 
-  if (!secret) return showStatus("❌ Key paste করুন", "error");
-  try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
+  if (!secret) return;
+  try { base32Decode(secret); } catch (e) {
+    showStatus("❌ " + e.message, "error");
+    return;
+  }
+
+  // Duplicate check
+  const existing = chain.find(k => k.original === secret);
+  if (existing) {
+    activeIndex = chain.indexOf(existing);
+    document.getElementById("secretInput").value = "";
+    showCode(activeIndex);
+    showStatus("ℹ Already exists — loading", "info");
+    return;
+  }
 
   const { modified, output } = convertToOutput(secret);
 
@@ -653,22 +951,11 @@ async function addKey() {
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ Added — Result below", "success");
+  showStatus("✅ Auto added", "success");
 
   activeIndex = chain.length - 1;
   showCode(activeIndex);
 }
-
-// ===== AUTO PASTE DETECT =====
-document.getElementById("secretInput").addEventListener("paste", function(e) {
-  setTimeout(function() {
-    var val = document.getElementById("secretInput").value.trim();
-    if (val.length >= 16) {
-      // Auto add after paste
-      addKey();
-    }
-  }, 100);
-});
 
 // ===== SHOW CODE =====
 async function showCode(index) {
@@ -681,21 +968,17 @@ async function showCode(index) {
   document.getElementById("activeAccountLabel").textContent =
     info.icon + " " + key.platform.toUpperCase();
 
-  // Original key (formatted)
   document.getElementById("originalKey").textContent = formatKey(key.original);
-
-  // Modified key (Base64)
   document.getElementById("outputKey").textContent = key.output;
 
-  // Check if Facebook + wrong 2FA → blink
   const display = document.getElementById("codeDisplay");
 
-  // Facebook validation check
+  // Facebook validation
   if (key.platform === "Facebook") {
     const isValid = await validateFacebookKey(key.original);
     if (!isValid) {
       display.classList.add("wrong");
-      showStatus("⚠ Wrong 2FA — please check!", "error");
+      showStatus("⚠ Wrong 2FA — check key!", "error");
     } else {
       display.classList.remove("wrong");
     }
@@ -712,22 +995,14 @@ async function showCode(index) {
 // ===== FACEBOOK VALIDATION =====
 async function validateFacebookKey(secret) {
   try {
-    // Facebook uses standard TOTP — check if key is valid base32
     const bytes = base32Decode(secret);
     if (bytes.length < 10) return false;
-
-    // Check if generated code is valid 6-digit
     const code = await generateTOTP(secret);
     if (!/^\d{6}$/.test(code)) return false;
-
-    // Check if code is not all same digits (like 000000, 111111 — invalid)
     const firstDigit = code[0];
     const allSame = code.split('').every(d => d === firstDigit);
     if (allSame) return false;
-
-    // Facebook-specific: check if code matches known invalid patterns
     if (code === "000000" || code === "123456") return false;
-
     return true;
   } catch (e) {
     return false;
@@ -741,7 +1016,7 @@ function closeCode() {
   document.getElementById("codeSection").classList.add("hidden");
 }
 
-// ===== TICK (update OTP every 100ms) =====
+// ===== TICK =====
 async function tick() {
   if (activeIndex < 0) return;
   try {
@@ -771,7 +1046,7 @@ async function tick() {
   }
 }
 
-// ===== COPY FUNCTIONS =====
+// ===== COPY =====
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
@@ -808,14 +1083,14 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ===== CHAIN LIST =====
+// ===== RENDER CHAIN =====
 function renderChain() {
   const list = document.getElementById("chainList");
   const count = document.getElementById("chainCount");
   count.textContent = chain.length;
 
   if (chain.length === 0) {
-    list.innerHTML = '<div style="color:#64748b; font-size:12px; text-align:center; padding:12px;">No keys yet</div>';
+    list.innerHTML = '<div style="color:#64748b; font-size:12px; text-align:center; padding:16px; font-weight:600;">No keys yet — paste above</div>';
     return;
   }
 
@@ -823,26 +1098,93 @@ function renderChain() {
     const info = getPlatformInfo(k.platform);
     const isActive = i === activeIndex;
     return `
-      <div class="chain-item ${isActive ? 'active' : ''}" onclick="showCode(${i})">
-        <div>
-          <span style="color:#f59e0b; font-weight:700; margin-right:8px;">#${i + 1}</span>
+      <div class="chain-item ${isActive ? 'active' : ''}" 
+           data-index="${i}"
+           onclick="handleChainClick(${i}, event)"
+           oncontextmenu="deleteChainItem(${i}, event); return false;">
+        <div class="chain-left">
+          <span class="chain-num">#${i + 1}</span>
           <span>${info.icon} ${escapeHtml(k.platform)}</span>
         </div>
-        <div class="chain-item-b64">${k.output.slice(0, 22)}...</div>
+        <div class="chain-item-b64">${k.output.slice(0, 20)}...</div>
+        <div class="delete-hint">HOLD TO DELETE</div>
       </div>
     `;
   }).join("");
+
+  // Long press for delete
+  document.querySelectorAll('.chain-item').forEach(function(item) {
+    var idx = parseInt(item.dataset.index);
+
+    item.addEventListener('touchstart', function(e) {
+      item.classList.add('show-delete');
+      longPressTimer = setTimeout(function() {
+        deleteChainItem(idx, e);
+      }, 700);
+    }, { passive: true });
+
+    item.addEventListener('touchend', function() {
+      item.classList.remove('show-delete');
+      clearTimeout(longPressTimer);
+    });
+
+    item.addEventListener('touchcancel', function() {
+      item.classList.remove('show-delete');
+      clearTimeout(longPressTimer);
+    });
+
+    // Mouse long press
+    item.addEventListener('mousedown', function(e) {
+      item.classList.add('show-delete');
+      longPressTimer = setTimeout(function() {
+        deleteChainItem(idx, e);
+      }, 700);
+    });
+
+    item.addEventListener('mouseup', function() {
+      item.classList.remove('show-delete');
+      clearTimeout(longPressTimer);
+    });
+
+    item.addEventListener('mouseleave', function() {
+      item.classList.remove('show-delete');
+      clearTimeout(longPressTimer);
+    });
+  });
 }
 
-// ===== CLEAR ALL =====
-function clearAll() {
-  if (!confirm("Clear all saved keys?")) return;
-  localStorage.removeItem(STORAGE_KEY);
-  chain = [];
-  activeIndex = -1;
-  document.getElementById("codeSection").classList.add("hidden");
+function handleChainClick(index, event) {
+  // If long press happened, don't open
+  if (event && event.detail === 0) return;
+  showCode(index);
+}
+
+// ===== DELETE CHAIN ITEM =====
+function deleteChainItem(index, event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  const key = chain[index];
+  const info = getPlatformInfo(key.platform);
+  const confirmDelete = confirm("Delete " + info.icon + " " + key.platform + "?");
+  if (!confirmDelete) return;
+
+  chain.splice(index, 1);
+  saveChain(chain);
+
+  // Reset active
+  if (activeIndex === index) {
+    activeIndex = -1;
+    clearInterval(tickInterval);
+    document.getElementById("codeSection").classList.add("hidden");
+  } else if (activeIndex > index) {
+    activeIndex--;
+  }
+
   renderChain();
-  showStatus("🗑 Cleared", "info");
+  showStatus("🗑 Deleted", "info");
 }
 
 // ===== INIT =====
