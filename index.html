@@ -251,9 +251,7 @@
     border-color: rgba(56,189,248,0.4);
     color: #38bdf8;
   }
-  .btn-close svg {
-    width: 16px; height: 16px; fill: currentColor;
-  }
+  .btn-close svg { width: 16px; height: 16px; fill: currentColor; }
 
   /* ===== CHAIN ===== */
   .saved-header {
@@ -508,9 +506,11 @@
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   if (window.eruda) eruda.init();
+  console.log("🔐 2FA Manager Pro — SaaSKo Rules");
 </script>
 
 <script>
+// ===== PLATFORM SVG ICONS =====
 const PLATFORM_ICONS = {
   "Facebook": '<svg viewBox="0 0 24 24"><path class="pi-facebook" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
   "Instagram": '<svg viewBox="0 0 24 24"><path class="pi-instagram" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.03-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>',
@@ -529,7 +529,7 @@ const PLATFORM_ICONS = {
 
 function getPlatformIcon(name) { return PLATFORM_ICONS[name] || PLATFORM_ICONS["Other"]; }
 
-// ===== BASE32 =====
+// ===== BASE32 DECODE =====
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -547,24 +547,51 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
+// ============================================================
+// ⭐ SaaSKo META STYLE — MODIFIED RANDOM BASE64 2FA KEY
+// ============================================================
+// RULES:
+//   1. 50% chance to modify the secret
+//   2. If modify: position 5 (index 5) — insert random A-Z char
+//   3. Encode with Base64 (btoa)
+//   4. Same original key — different modified — each time
+// ============================================================
+
 function modifySecret(secret) {
+  // ⭐ RULE: Position 5 (0-indexed) e random A-Z char insert
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
   return secret.slice(0, 5) + randomChar + secret.slice(5);
 }
 
 function convertToOutput(secret) {
+  // ⭐ RULE: 50% probability modify or not
   const shouldModify = Math.random() < 0.5;
-  let modified = shouldModify ? modifySecret(secret) : secret;
-  return { modified, output: btoa(modified), wasModified: shouldModify };
+
+  let modified;
+  if (shouldModify) {
+    modified = modifySecret(secret);
+    console.log("🎲 Modified:", secret, "→", modified);
+  } else {
+    modified = secret;
+    console.log("✓ No modification");
+  }
+
+  // ⭐ RULE: Base64 encode
+  const output = btoa(modified);
+  console.log("💾 Output:", output);
+
+  return { modified, output, wasModified: shouldModify };
 }
 
+// ===== MASK KEY (50% show) =====
 function maskKey(secret) {
   if (!secret) return "";
   const half = Math.ceil(secret.length / 2);
   return secret.slice(0, half) + "•".repeat(secret.length - half);
 }
 
+// ===== TOTP =====
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -578,7 +605,8 @@ async function generateTOTP(secret, timeMs = Date.now()) {
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
-const STORAGE_KEY = "auth_v6";
+// ===== STORAGE =====
+const STORAGE_KEY = "auth_v7";
 function loadChain() { try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch (e) { return []; } }
 function saveChain(c) { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); }
 
@@ -607,28 +635,22 @@ function showPopup(text, type = "success") {
   setTimeout(() => popup.classList.remove("show"), 2000);
 }
 
-// ===== SOUND (Web Audio API) =====
+// ===== SOUND =====
 let audioCtx = null;
 function initAudio() {
   if (!audioCtx) {
-    try {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {}
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
   }
-  if (audioCtx && audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
+  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 }
 
-// ⭐ OTP sound — high pitch beep
 function playOTPSound() {
   try {
     initAudio();
     if (!audioCtx) return;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    osc.connect(gain); gain.connect(audioCtx.destination);
     osc.type = "sine";
     osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.08);
@@ -640,15 +662,13 @@ function playOTPSound() {
   } catch (e) {}
 }
 
-// ⭐ Modified key sound — low pitch beep
 function playKeySound() {
   try {
     initAudio();
     if (!audioCtx) return;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    osc.connect(gain); gain.connect(audioCtx.destination);
     osc.type = "triangle";
     osc.frequency.setValueAtTime(600, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.1);
@@ -702,6 +722,7 @@ async function autoAddKey() {
     return;
   }
 
+  // ⭐ SaaSKo Rules applied
   const { modified, output } = convertToOutput(secret);
   chain.push({ id: Date.now(), platform, original: secret, modified, output, timestamp: Date.now() });
   saveChain(chain);
@@ -723,7 +744,7 @@ async function showCode(index) {
 
   document.getElementById("codeSection").classList.remove("hidden");
   document.getElementById("activeAccountLabel").textContent = key.platform.toUpperCase();
-  // ⭐ Only modified key shown — no original
+  // ⭐ Only modified key shown
   document.getElementById("outputKey").textContent = key.output;
 
   const display = document.getElementById("codeDisplay");
@@ -752,7 +773,6 @@ async function validateFacebookKey(secret) {
   } catch (e) { return false; }
 }
 
-// ⭐ Close — Hide code, show chain, NO auto-show on load
 function closeCode() {
   activeIndex = -1;
   clearInterval(tickInterval);
@@ -783,7 +803,6 @@ async function tick() {
   } catch (e) { document.getElementById("codeDisplay").textContent = "ERR"; }
 }
 
-// ⭐ COPY OTP — popup + sound
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
@@ -800,7 +819,6 @@ async function copyCode() {
   }
 }
 
-// ⭐ COPY MODIFIED KEY — popup + sound
 async function copyOutput() {
   if (activeIndex < 0) return;
   const key = chain[activeIndex];
@@ -854,11 +872,6 @@ function renderChain() {
 window.addEventListener("load", () => {
   updatePlatformIcon();
   renderChain();
-  // ⭐ NO auto-show — only show chain
-  // if (chain.length > 0) {
-  //   document.getElementById("codeSection").classList.remove("hidden");
-  //   showCode(chain.length - 1);
-  // }
 });
 window.addEventListener("beforeunload", () => { clearInterval(tickInterval); });
 </script>
