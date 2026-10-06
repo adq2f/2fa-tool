@@ -2,26 +2,35 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>2FA Manager Pro</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
   
   body {
     font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
     background: #050810;
     background-image: 
       radial-gradient(circle at 15% 20%, rgba(56,189,248,0.08) 0%, transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(129,140,248,0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(15,23,42,0.5) 0%, transparent 70%);
+      radial-gradient(circle at 85% 80%, rgba(129,140,248,0.08) 0%, transparent 40%);
     color: #e2e8f0;
     min-height: 100vh;
     padding: 20px 16px 40px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    position: relative;
-    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
   
   body::before {
@@ -34,6 +43,7 @@
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
+    will-change: transform;
   }
   
   .app {
@@ -42,13 +52,14 @@
     position: relative;
     z-index: 1;
     padding-top: 8px;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   /* ===== HEADER ===== */
   .header {
     text-align: center;
     margin-bottom: 26px;
-    position: relative;
   }
   .logo-wrap {
     display: inline-flex;
@@ -60,19 +71,10 @@
     background: linear-gradient(145deg, rgba(56,189,248,0.15), rgba(99,102,241,0.15));
     border: 1px solid rgba(56,189,248,0.3);
     margin-bottom: 14px;
-    position: relative;
-    box-shadow: 
-      0 0 40px rgba(56,189,248,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.1);
-    animation: logoPulse 3s ease-in-out infinite;
-  }
-  @keyframes logoPulse {
-    0%, 100% { box-shadow: 0 0 40px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
-    50% { box-shadow: 0 0 60px rgba(56,189,248,0.5), inset 0 1px 0 rgba(255,255,255,0.15); }
+    box-shadow: 0 0 40px rgba(56,189,248,0.3);
   }
   .logo {
     font-size: 32px;
-    filter: drop-shadow(0 0 12px rgba(56,189,248,0.8));
   }
   h1 {
     font-size: 26px;
@@ -92,21 +94,17 @@
     font-weight: 700;
   }
 
-  /* ===== PREMIUM CARD ===== */
+  /* ===== CARD ===== */
   .card {
     background: linear-gradient(145deg, rgba(30,41,59,0.85), rgba(15,23,42,0.95));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     padding: 22px;
     margin-bottom: 16px;
     border: 1px solid rgba(51,65,85,0.5);
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.5),
-      0 0 0 1px rgba(56,189,248,0.05),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     position: relative;
     overflow: hidden;
+    transform: translateZ(0);
   }
   .card::before {
     content: '';
@@ -138,10 +136,14 @@
     box-shadow: 0 0 8px #38bdf8;
   }
 
-  /* ===== SELECT ===== */
+  /* ===== PLATFORM SELECT ===== */
+  .platform-wrapper {
+    position: relative;
+    width: 100%;
+  }
   .platform-select {
     width: 100%;
-    padding: 15px 18px;
+    padding: 15px 18px 15px 50px;
     background: linear-gradient(145deg, #0a0e1a, #050810);
     border: 1.5px solid #1e293b;
     border-radius: 14px;
@@ -153,7 +155,7 @@
     background-repeat: no-repeat;
     background-position: right 18px center;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: border-color 0.2s;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
   .platform-select:focus {
@@ -161,9 +163,31 @@
     border-color: #38bdf8;
     box-shadow: 0 0 0 3px rgba(56,189,248,0.15), inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  .platform-select option { background: #0a0e1a; color: #e2e8f0; }
+  .platform-select option {
+    background: #0a0e1a;
+    color: #e2e8f0;
+  }
+  .platform-icon-badge {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,23,42,0.9);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .platform-icon-badge svg {
+    width: 18px;
+    height: 18px;
+  }
 
-  /* ===== INPUT ===== */
+  /* ===== KEY INPUT ===== */
   .key-input {
     width: 100%;
     padding: 16px 18px;
@@ -174,7 +198,7 @@
     font-size: 16px;
     font-family: 'SF Mono', 'Courier New', monospace;
     letter-spacing: 3px;
-    transition: all 0.3s;
+    transition: border-color 0.2s;
     font-weight: 600;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
@@ -216,25 +240,23 @@
   /* ===== RESULT CARD ===== */
   .result-card {
     background: linear-gradient(145deg, rgba(15,23,42,0.9), rgba(5,8,16,0.95));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 14px;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s;
+    transform: translateZ(0);
   }
   .result-card.code-card {
     border: 1.5px solid rgba(30,64,175,0.6);
-    box-shadow: 
-      0 15px 50px rgba(30,64,175,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 15px 50px rgba(30,64,175,0.25);
   }
   .result-card.code-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, #38bdf8, transparent);
     background-size: 200% 100%;
@@ -246,15 +268,11 @@
   }
   .result-card.key-card {
     border: 1.5px solid rgba(22,101,52,0.6);
-    box-shadow: 
-      0 15px 50px rgba(22,101,52,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 15px 50px rgba(22,101,52,0.2);
   }
   .result-card.modified-card {
     border: 1.5px solid rgba(180,83,9,0.6);
-    box-shadow: 
-      0 15px 50px rgba(180,83,9,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 15px 50px rgba(180,83,9,0.2);
   }
 
   .result-header {
@@ -278,9 +296,9 @@
     height: 7px;
     border-radius: 50%;
   }
-  .result-label .icon-dot.blue { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
-  .result-label .icon-dot.green { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-  .result-label .icon-dot.amber { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+  .icon-dot.blue { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+  .icon-dot.green { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+  .icon-dot.amber { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
 
   .copy-icon {
     display: inline-flex;
@@ -292,27 +310,14 @@
     border-radius: 10px;
     font-size: 14px;
     color: white;
-    box-shadow: 
-      0 4px 12px rgba(34,197,94,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    transition: all 0.15s;
+    box-shadow: 0 4px 12px rgba(34,197,94,0.4);
+    transition: transform 0.15s;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .copy-icon::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-    opacity: 0;
-    transition: opacity 0.15s;
   }
   .copy-icon:active {
     transform: scale(0.9);
     box-shadow: 0 2px 6px rgba(34,197,94,0.6);
   }
-  .copy-icon:active::after { opacity: 1; }
 
   /* ===== OTP DISPLAY ===== */
   .otp-display {
@@ -323,47 +328,39 @@
     color: #38bdf8;
     text-align: center;
     margin: 4px 0 16px;
-    text-shadow: 
-      0 0 30px rgba(56,189,248,0.7),
-      0 0 60px rgba(56,189,248,0.3);
+    text-shadow: 0 0 30px rgba(56,189,248,0.7);
     user-select: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.15s, background 0.15s;
     padding: 12px;
     border-radius: 14px;
-    position: relative;
+    will-change: transform;
   }
-  .otp-display:hover {
-    background: rgba(56,189,248,0.08);
-    transform: scale(1.02);
-  }
+  .otp-display:hover { background: rgba(56,189,248,0.08); }
   .otp-display:active { transform: scale(0.98); }
   
   .otp-display.expiring {
     color: #f59e0b;
-    text-shadow: 0 0 30px rgba(245,158,11,0.7), 0 0 60px rgba(245,158,11,0.3);
+    text-shadow: 0 0 30px rgba(245,158,11,0.7);
   }
   .otp-display.critical {
     color: #ef4444;
-    text-shadow: 0 0 30px rgba(239,68,68,0.9), 0 0 60px rgba(239,68,68,0.4);
+    text-shadow: 0 0 30px rgba(239,68,68,0.9);
     animation: pulse 0.5s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.55; transform: scale(0.99); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
   }
 
-  /* ⭐ WRONG 2FA — RED BLINK */
   .otp-display.wrong {
     color: #ef4444 !important;
-    text-shadow: 
-      0 0 40px rgba(239,68,68,1),
-      0 0 80px rgba(239,68,68,0.6) !important;
+    text-shadow: 0 0 40px rgba(239,68,68,1) !important;
     animation: blinkWrong 0.6s infinite !important;
   }
   @keyframes blinkWrong {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.2; transform: scale(0.96); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
   }
 
   /* ===== TIMER ===== */
@@ -390,7 +387,6 @@
     font-weight: 900;
     font-family: 'SF Mono', 'Courier New', monospace;
     font-size: 14px;
-    text-shadow: 0 0 10px rgba(56,189,248,0.5);
   }
   .progress-track {
     height: 5px;
@@ -398,18 +394,15 @@
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 4px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #38bdf8, #818cf8);
     transition: width 0.1s linear;
     border-radius: 3px;
-    box-shadow: 0 0 10px rgba(56,189,248,0.6);
   }
   .progress-fill.warning {
     background: linear-gradient(90deg, #f59e0b, #ef4444);
-    box-shadow: 0 0 10px rgba(239,68,68,0.6);
   }
 
   /* ===== KEY DISPLAY ===== */
@@ -424,9 +417,9 @@
     letter-spacing: 4px;
     padding: 12px;
     border-radius: 12px;
-    transition: all 0.2s;
+    transition: transform 0.15s, background 0.15s;
     text-align: center;
-    text-shadow: 0 0 15px rgba(74,222,128,0.4);
+    will-change: transform;
   }
   .key-display:hover { background: rgba(34,197,94,0.08); }
   .key-display:active { transform: scale(0.98); }
@@ -435,7 +428,6 @@
     color: #fbbf24;
     font-size: 12px;
     letter-spacing: 1.5px;
-    text-shadow: 0 0 15px rgba(251,191,36,0.4);
     word-break: break-all;
   }
   .key-display.modified:hover { background: rgba(251,191,36,0.08); }
@@ -447,7 +439,6 @@
     text-align: center;
     margin-top: 10px;
     font-weight: 600;
-    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -471,9 +462,6 @@
     letter-spacing: 2px;
     font-weight: 800;
   }
-  .saved-title .chain-icon {
-    font-size: 14px;
-  }
   .saved-count {
     font-size: 11px;
     background: linear-gradient(135deg, #1e40af, #3b82f6);
@@ -481,10 +469,7 @@
     padding: 4px 12px;
     border-radius: 12px;
     font-weight: 900;
-    box-shadow: 
-      0 4px 12px rgba(59,130,246,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.4);
   }
   .chain-item {
     background: linear-gradient(145deg, #0a0e1a, #050810);
@@ -498,9 +483,10 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
     position: relative;
     overflow: hidden;
+    will-change: transform;
   }
   .chain-item:active {
     transform: scale(0.99);
@@ -509,9 +495,7 @@
     border-color: rgba(56,189,248,0.6);
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
     color: #38bdf8;
-    box-shadow: 
-      0 0 20px rgba(56,189,248,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 0 20px rgba(56,189,248,0.2);
   }
   .chain-item.active::before {
     content: '';
@@ -521,7 +505,6 @@
     bottom: 0;
     width: 3px;
     background: linear-gradient(180deg, #38bdf8, #818cf8);
-    box-shadow: 0 0 10px #38bdf8;
   }
   .chain-left {
     display: flex;
@@ -538,7 +521,7 @@
     border-radius: 6px;
     border: 1px solid rgba(245,158,11,0.3);
   }
-  .chain-item-b64 {
+  .chain-b64 {
     font-size: 9px;
     color: #334155;
     overflow: hidden;
@@ -546,7 +529,6 @@
     white-space: nowrap;
     max-width: 130px;
     font-family: 'SF Mono', 'Courier New', monospace;
-    letter-spacing: 0.5px;
   }
 
   /* ===== CLOSE BTN ===== */
@@ -560,10 +542,8 @@
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
+    transition: transform 0.15s, background 0.2s;
     margin-bottom: 16px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
   }
   .btn-close:active {
     transform: scale(0.98);
@@ -592,56 +572,39 @@
     background: linear-gradient(145deg, #14532d, #0f3d1f);
     color: #bbf7d0;
     border: 1.5px solid #22c55e;
-    box-shadow: 0 8px 24px rgba(34,197,94,0.3);
   }
   .status.error {
     background: linear-gradient(145deg, #7f1d1d, #5c1414);
     color: #fecaca;
     border: 1.5px solid #ef4444;
-    box-shadow: 0 8px 24px rgba(239,68,68,0.3);
-    animation: slideDown 0.3s ease-out, shake 0.5s ease-in-out;
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
   }
   .status.info {
     background: linear-gradient(145deg, #1e3a8a, #152a63);
     color: #bfdbfe;
     border: 1.5px solid #3b82f6;
-    box-shadow: 0 8px 24px rgba(59,130,246,0.3);
   }
 
   .hidden { display: none !important; }
 
-  /* ===== LONG PRESS DELETE ===== */
-  .chain-item .delete-hint {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 9px;
-    color: #475569;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-  }
-  .chain-item.show-delete .delete-hint {
-    opacity: 1;
-    color: #ef4444;
-  }
+  /* ===== PLATFORM ICON SVG COLORS ===== */
+  .pi-facebook { fill: #1877f2; }
+  .pi-instagram { fill: #e4405f; }
+  .pi-linkedin { fill: #0a66c2; }
+  .pi-google { fill: #4285f4; }
+  .pi-github { fill: #ffffff; }
+  .pi-twitter { fill: #ffffff; }
+  .pi-whatsapp { fill: #25d366; }
+  .pi-telegram { fill: #26a5e4; }
+  .pi-discord { fill: #5865f2; }
+  .pi-microsoft { fill: #00a4ef; }
+  .pi-apple { fill: #ffffff; }
+  .pi-amazon { fill: #ff9900; }
+  .pi-other { fill: #94a3b8; }
 
-  /* ===== FLOATING PARTICLES ===== */
-  .particle {
-    position: fixed;
-    width: 3px;
-    height: 3px;
-    background: rgba(56,189,248,0.4);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-    box-shadow: 0 0 6px rgba(56,189,248,0.6);
+  /* ===== SMOOTH SCROLL OPTIMIZATION ===== */
+  * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 </style>
 </head>
@@ -658,27 +621,30 @@
     <div class="subtitle">Secure Authentication</div>
   </div>
 
-  <!-- INPUT CARD -->
-  <div class="card">
+  <!-- INPUT CARD (Auto-hide after paste) -->
+  <div class="card" id="inputCard">
     <div class="input-label">
       <span class="dot"></span>
       <span>Select Platform</span>
     </div>
-    <select id="platformSelect" class="platform-select">
-      <option value="Facebook">📘 Facebook</option>
-      <option value="Instagram">📷 Instagram</option>
-      <option value="LinkedIn">💼 LinkedIn</option>
-      <option value="Google">🔍 Google</option>
-      <option value="GitHub">🐙 GitHub</option>
-      <option value="Twitter/X">🐦 Twitter / X</option>
-      <option value="WhatsApp">💬 WhatsApp</option>
-      <option value="Telegram">✈️ Telegram</option>
-      <option value="Discord">🎮 Discord</option>
-      <option value="Microsoft">🪟 Microsoft</option>
-      <option value="Apple">🍎 Apple</option>
-      <option value="Amazon">📦 Amazon</option>
-      <option value="Other">🔧 Other</option>
-    </select>
+    <div class="platform-wrapper">
+      <div class="platform-icon-badge" id="platformIconBadge"></div>
+      <select id="platformSelect" class="platform-select">
+        <option value="Facebook">Facebook</option>
+        <option value="Instagram">Instagram</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Google">Google</option>
+        <option value="GitHub">GitHub</option>
+        <option value="Twitter/X">Twitter / X</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Telegram">Telegram</option>
+        <option value="Discord">Discord</option>
+        <option value="Microsoft">Microsoft</option>
+        <option value="Apple">Apple</option>
+        <option value="Amazon">Amazon</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
 
     <div class="input-label" style="margin-top:18px;">
       <span class="dot"></span>
@@ -750,7 +716,7 @@
   <div class="card" id="chainCard">
     <div class="saved-header">
       <div class="saved-title">
-        <span class="chain-icon">🔗</span>
+        <span>🔗</span>
         <span>Chain</span>
       </div>
       <div class="saved-count" id="chainCount">0</div>
@@ -760,40 +726,35 @@
 
 </div>
 
-<!-- FLOATING PARTICLES -->
-<div class="particle" style="left:10%; top:20%;"></div>
-<div class="particle" style="left:85%; top:40%;"></div>
-<div class="particle" style="left:20%; top:70%;"></div>
-<div class="particle" style="left:75%; top:85%;"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   if (window.eruda) eruda.init();
-  console.log("🔐 2FA Manager Pro — Premium Edition");
+  console.log("🔐 2FA Manager Pro — Ultimate Edition");
 </script>
 
 <script>
-const PLATFORMS = {
-  "Facebook":  { icon: "📘" },
-  "Instagram": { icon: "📷" },
-  "LinkedIn":  { icon: "💼" },
-  "Google":    { icon: "🔍" },
-  "GitHub":    { icon: "🐙" },
-  "Twitter/X": { icon: "🐦" },
-  "WhatsApp":  { icon: "💬" },
-  "Telegram":  { icon: "✈️" },
-  "Discord":   { icon: "🎮" },
-  "Microsoft": { icon: "🪟" },
-  "Apple":     { icon: "🍎" },
-  "Amazon":    { icon: "📦" },
-  "Other":     { icon: "🔧" }
+// ===== PLATFORM SVG ICONS =====
+const PLATFORM_ICONS = {
+  "Facebook": '<svg viewBox="0 0 24 24"><path class="pi-facebook" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+  "Instagram": '<svg viewBox="0 0 24 24"><path class="pi-instagram" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.03-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>',
+  "LinkedIn": '<svg viewBox="0 0 24 24"><path class="pi-linkedin" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+  "Google": '<svg viewBox="0 0 24 24"><path class="pi-google" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>',
+  "GitHub": '<svg viewBox="0 0 24 24"><path class="pi-github" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+  "Twitter/X": '<svg viewBox="0 0 24 24"><path class="pi-twitter" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+  "WhatsApp": '<svg viewBox="0 0 24 24"><path class="pi-whatsapp" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>',
+  "Telegram": '<svg viewBox="0 0 24 24"><path class="pi-telegram" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
+  "Discord": '<svg viewBox="0 0 24 24"><path class="pi-discord" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>',
+  "Microsoft": '<svg viewBox="0 0 24 24"><path class="pi-microsoft" d="M0 0h11.377v11.372H0zm12.623 0H24v11.372H12.623zM0 12.623h11.377V24H0zm12.623 0H24V24H12.623z"/></svg>',
+  "Apple": '<svg viewBox="0 0 24 24"><path class="pi-apple" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',
+  "Amazon": '<svg viewBox="0 0 24 24"><path class="pi-amazon" d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726-1.625.41-3.243.617-4.855.617-1.546 0-3.034-.2-4.464-.6-1.48-.418-2.842-1.032-4.085-1.84-.153-.098-.23-.187-.23-.29 0-.055.025-.11.09-.18zm12.658-4.456c.057.104.098.16.128.16.024 0 .048-.02.072-.06l.026-.145c.024-.09.045-.174.066-.252l.045-.15-.097.103c-.072.075-.15.15-.234.224-.048.048-.06.098-.006.12zm-4.108-.283c.018.104.036.174.054.21.024.036.06.054.108.054.06 0 .12-.024.18-.072a.83.83 0 0 0 .198-.21c.054-.096.09-.198.108-.306.018-.108.027-.216.027-.324 0-.15-.024-.276-.072-.378a.994.994 0 0 0-.198-.27.86.86 0 0 0-.27-.162 1.044 1.044 0 0 0-.324-.054c-.276 0-.49.108-.642.324-.15.216-.226.528-.226.936 0 .144.014.276.042.396.03.12.078.222.144.306.066.084.15.15.252.198.102.048.234.072.396.072.03 0 .066-.006.108-.018.042-.012.078-.03.108-.054l.09-.072v.09zm4.108-4.42c.115-.035.22-.06.315-.078.095-.018.19-.03.285-.03.138 0 .245.018.32.054.075.036.113.09.113.162 0 .054-.018.102-.054.144a.55.55 0 0 1-.144.108 1.418 1.418 0 0 1-.198.072 1.5 1.5 0 0 1-.226.054l-.198.024h-.03c-.055 0-.083-.018-.083-.054 0-.024.012-.05.036-.078l.036-.06-.108-.006c-.078 0-.15.006-.216.018a.83.83 0 0 0-.18.054.348.348 0 0 0-.126.09c-.03.036-.045.078-.045.126 0 .054.024.102.072.144.048.042.126.084.234.126.06.024.15.054.27.09.12.036.234.084.342.144.108.06.198.132.27.216a.49.49 0 0 1 .108.324c0 .144-.048.276-.144.396-.096.12-.222.216-.378.288a1.318 1.318 0 0 1-.522.108c-.126 0-.24-.012-.342-.036a1.07 1.07 0 0 1-.288-.108.53.53 0 0 1-.198-.198.6.6 0 0 1-.072-.306h.216c.024.09.072.162.144.216.072.054.174.084.306.09.072 0 .138-.006.198-.018a.44.44 0 0 0 .162-.06.29.29 0 0 0 .108-.114.35.35 0 0 0 .04-.18c0-.06-.018-.108-.054-.15a.44.44 0 0 0-.144-.108 1.34 1.34 0 0 0-.216-.084c-.078-.024-.156-.048-.234-.072l-.144-.048a.86.86 0 0 1-.198-.114.48.48 0 0 1-.132-.162.42.42 0 0 1-.048-.198c0-.13.045-.244.135-.342.09-.096.21-.174.36-.234.15-.06.318-.09.504-.09.126 0 .246.012.36.036.114.024.198.054.252.09.054.036.078.084.078.144v.054a.24.24 0 0 1-.024.108.5.5 0 0 1-.078.09zm-2.874.126a.734.734 0 0 0-.18-.048c-.054-.006-.108-.012-.162-.012-.108 0-.198.024-.27.072a.448.448 0 0 0-.174.216 1.003 1.003 0 0 0-.06.36c0 .15.018.27.054.36.036.09.084.162.144.216.06.054.126.09.198.108a.74.74 0 0 0 .216.036.7.7 0 0 0 .342-.09c.102-.06.174-.15.216-.27h-.27c-.018.054-.048.09-.09.108a.302.302 0 0 1-.132.03.22.22 0 0 1-.198-.108c-.048-.072-.072-.174-.072-.306 0-.126.024-.222.072-.288a.243.243 0 0 1 .198-.108.24.24 0 0 1 .198.084c.048.054.072.138.072.252h.27a.85.85 0 0 0-.054-.324.717.717 0 0 0-.162-.234.63.63 0 0 0-.234-.144zm5.34 4.864c-.14-.15-.353-.21-.639-.18-.14.015-.258.06-.354.135a.685.685 0 0 0-.234.354c-.048.15-.072.336-.072.558 0 .223.024.408.072.556.048.15.126.26.234.336.108.075.234.108.378.108.174 0 .312-.054.414-.162.102-.108.156-.27.162-.48l-.216-.036c-.012.144-.048.246-.108.306a.302.302 0 0 1-.234.09.257.257 0 0 1-.234-.126c-.054-.084-.084-.21-.084-.378 0-.174.03-.3.09-.384a.274.274 0 0 1 .24-.126c.096 0 .174.03.234.09.06.06.09.156.09.288l.216-.036a.996.996 0 0 0-.06-.372.586.586 0 0 0-.216-.246zm-1.632-.786c-.096.09-.162.216-.198.378-.036.162-.054.36-.054.594 0 .24.018.444.054.612.036.168.102.3.198.396.096.096.234.144.414.144.18 0 .318-.048.414-.144.096-.096.162-.228.198-.396.036-.168.054-.372.054-.612 0-.234-.018-.432-.054-.594-.036-.162-.102-.288-.198-.378a.615.615 0 0 0-.828 0zm.414.15a.185.185 0 0 1 .174.108c.042.072.066.198.072.378l.006.324c0 .174-.024.3-.072.378a.185.185 0 0 1-.174.108.185.185 0 0 1-.174-.108c-.042-.078-.066-.204-.072-.378l-.006-.324c0-.18.024-.306.072-.378a.185.185 0 0 1 .174-.108z"/></svg>',
+  "Other": '<svg viewBox="0 0 24 24"><path class="pi-other" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-5h4v2h-4zm0-8h4v6h-4z"/></svg>'
 };
 
-function getPlatformInfo(name) {
-  return PLATFORMS[name] || PLATFORMS["Other"];
+function getPlatformIcon(name) {
+  return PLATFORM_ICONS[name] || PLATFORM_ICONS["Other"];
 }
 
-// ===== BASE32 DECODE =====
+// ===== BASE32 =====
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -814,7 +775,7 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ===== MODIFY SECRET =====
+// ===== MODIFY =====
 function modifySecret(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
@@ -826,10 +787,8 @@ function convertToOutput(secret) {
   let modified;
   if (shouldModify) {
     modified = modifySecret(secret);
-    console.log("🎲 Modified:", secret, "→", modified);
   } else {
     modified = secret;
-    console.log("✓ No modification");
   }
   const output = btoa(modified);
   return { modified, output, wasModified: shouldModify };
@@ -837,6 +796,16 @@ function convertToOutput(secret) {
 
 function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
+}
+
+// ⭐ MASK KEY — 50% show, 50% hide
+function maskKey(secret) {
+  if (!secret) return "";
+  const half = Math.ceil(secret.length / 2);
+  const visible = secret.slice(0, half);
+  const hidden = secret.slice(half);
+  const dots = "•".repeat(hidden.length);
+  return visible + dots;
 }
 
 // ===== TOTP =====
@@ -865,7 +834,7 @@ async function generateTOTP(secret, timeMs = Date.now()) {
 }
 
 // ===== STORAGE =====
-const STORAGE_KEY = "auth_v3";
+const STORAGE_KEY = "auth_v4";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -879,7 +848,6 @@ function saveChain(c) {
 let chain = loadChain();
 let activeIndex = -1;
 let tickInterval = null;
-let longPressTimer = null;
 
 // ===== STATUS =====
 function showStatus(msg, type = "info") {
@@ -896,50 +864,53 @@ function escapeHtml(s) {
   }[c]));
 }
 
-// ===== AUTO PASTE DETECT =====
+// ===== PLATFORM ICON UPDATE =====
+function updatePlatformIcon() {
+  var sel = document.getElementById("platformSelect");
+  var badge = document.getElementById("platformIconBadge");
+  if (sel && badge) {
+    badge.innerHTML = getPlatformIcon(sel.value);
+  }
+}
+
+// ===== AUTO PASTE =====
+document.getElementById("platformSelect").addEventListener("change", updatePlatformIcon);
 document.getElementById("secretInput").addEventListener("input", function() {
   var val = this.value.trim().toUpperCase().replace(/\s+/g, "");
   if (val.length >= 16) {
-    // Debounce — user paste korle auto add
     clearTimeout(window.__autoAddTimer);
-    window.__autoAddTimer = setTimeout(function() {
-      autoAddKey();
-    }, 300);
+    window.__autoAddTimer = setTimeout(autoAddKey, 300);
   }
 });
 
 document.getElementById("secretInput").addEventListener("paste", function() {
   setTimeout(function() {
     var val = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
-    if (val.length >= 16) {
-      autoAddKey();
-    }
+    if (val.length >= 16) autoAddKey();
   }, 100);
 });
 
-// ===== AUTO ADD KEY =====
+// ===== AUTO ADD =====
 async function autoAddKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
-
   if (!secret) return;
   try { base32Decode(secret); } catch (e) {
     showStatus("❌ " + e.message, "error");
     return;
   }
 
-  // Duplicate check
   const existing = chain.find(k => k.original === secret);
   if (existing) {
     activeIndex = chain.indexOf(existing);
     document.getElementById("secretInput").value = "";
+    hideInputCard();
     showCode(activeIndex);
-    showStatus("ℹ Already exists — loading", "info");
+    showStatus("ℹ Already exists", "info");
     return;
   }
 
   const { modified, output } = convertToOutput(secret);
-
   chain.push({
     id: Date.now(),
     platform,
@@ -951,10 +922,19 @@ async function autoAddKey() {
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
+  hideInputCard();
   showStatus("✅ Auto added", "success");
 
   activeIndex = chain.length - 1;
   showCode(activeIndex);
+}
+
+// ===== HIDE / SHOW INPUT CARD =====
+function hideInputCard() {
+  document.getElementById("inputCard").classList.add("hidden");
+}
+function showInputCard() {
+  document.getElementById("inputCard").classList.remove("hidden");
 }
 
 // ===== SHOW CODE =====
@@ -962,18 +942,17 @@ async function showCode(index) {
   if (index < 0 || index >= chain.length) return;
   activeIndex = index;
   const key = chain[index];
-  const info = getPlatformInfo(key.platform);
 
   document.getElementById("codeSection").classList.remove("hidden");
-  document.getElementById("activeAccountLabel").textContent =
-    info.icon + " " + key.platform.toUpperCase();
+  document.getElementById("activeAccountLabel").textContent = key.platform.toUpperCase();
 
-  document.getElementById("originalKey").textContent = formatKey(key.original);
+  // Original key (masked 50%)
+  document.getElementById("originalKey").textContent = maskKey(key.original);
+  // Modified key (Base64 — full show)
   document.getElementById("outputKey").textContent = key.output;
 
   const display = document.getElementById("codeDisplay");
 
-  // Facebook validation
   if (key.platform === "Facebook") {
     const isValid = await validateFacebookKey(key.original);
     if (!isValid) {
@@ -1014,6 +993,8 @@ function closeCode() {
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
+  // ⭐ Show input card again
+  showInputCard();
 }
 
 // ===== TICK =====
@@ -1053,7 +1034,9 @@ async function copyCode() {
   try {
     await navigator.clipboard.writeText(code);
     showStatus("✅ OTP copied: " + code, "success");
-  } catch (e) { fallbackCopy(code); }
+    // ⭐ Show input card after copy
+    setTimeout(showInputCard, 800);
+  } catch (e) { fallbackCopy(code); setTimeout(showInputCard, 800); }
 }
 
 async function copyOriginal() {
@@ -1062,7 +1045,8 @@ async function copyOriginal() {
   try {
     await navigator.clipboard.writeText(key.original);
     showStatus("✅ Original key copied", "success");
-  } catch (e) { fallbackCopy(key.original); }
+    setTimeout(showInputCard, 800);
+  } catch (e) { fallbackCopy(key.original); setTimeout(showInputCard, 800); }
 }
 
 async function copyOutput() {
@@ -1071,7 +1055,8 @@ async function copyOutput() {
   try {
     await navigator.clipboard.writeText(key.output);
     showStatus("✅ Modified key copied", "success");
-  } catch (e) { fallbackCopy(key.output); }
+    setTimeout(showInputCard, 800);
+  } catch (e) { fallbackCopy(key.output); setTimeout(showInputCard, 800); }
 }
 
 function fallbackCopy(text) {
@@ -1083,7 +1068,7 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ===== RENDER CHAIN =====
+// ===== CHAIN RENDER =====
 function renderChain() {
   const list = document.getElementById("chainList");
   const count = document.getElementById("chainCount");
@@ -1095,100 +1080,24 @@ function renderChain() {
   }
 
   list.innerHTML = chain.map((k, i) => {
-    const info = getPlatformInfo(k.platform);
     const isActive = i === activeIndex;
+    // ⭐ MASKED 50%
+    const masked = maskKey(k.original);
     return `
-      <div class="chain-item ${isActive ? 'active' : ''}" 
-           data-index="${i}"
-           onclick="handleChainClick(${i}, event)"
-           oncontextmenu="deleteChainItem(${i}, event); return false;">
+      <div class="chain-item ${isActive ? 'active' : ''}" onclick="showCode(${i})">
         <div class="chain-left">
           <span class="chain-num">#${i + 1}</span>
-          <span>${info.icon} ${escapeHtml(k.platform)}</span>
+          <span>${escapeHtml(k.platform)}</span>
         </div>
-        <div class="chain-item-b64">${k.output.slice(0, 20)}...</div>
-        <div class="delete-hint">HOLD TO DELETE</div>
+        <div class="chain-b64">${escapeHtml(masked)}</div>
       </div>
     `;
   }).join("");
-
-  // Long press for delete
-  document.querySelectorAll('.chain-item').forEach(function(item) {
-    var idx = parseInt(item.dataset.index);
-
-    item.addEventListener('touchstart', function(e) {
-      item.classList.add('show-delete');
-      longPressTimer = setTimeout(function() {
-        deleteChainItem(idx, e);
-      }, 700);
-    }, { passive: true });
-
-    item.addEventListener('touchend', function() {
-      item.classList.remove('show-delete');
-      clearTimeout(longPressTimer);
-    });
-
-    item.addEventListener('touchcancel', function() {
-      item.classList.remove('show-delete');
-      clearTimeout(longPressTimer);
-    });
-
-    // Mouse long press
-    item.addEventListener('mousedown', function(e) {
-      item.classList.add('show-delete');
-      longPressTimer = setTimeout(function() {
-        deleteChainItem(idx, e);
-      }, 700);
-    });
-
-    item.addEventListener('mouseup', function() {
-      item.classList.remove('show-delete');
-      clearTimeout(longPressTimer);
-    });
-
-    item.addEventListener('mouseleave', function() {
-      item.classList.remove('show-delete');
-      clearTimeout(longPressTimer);
-    });
-  });
-}
-
-function handleChainClick(index, event) {
-  // If long press happened, don't open
-  if (event && event.detail === 0) return;
-  showCode(index);
-}
-
-// ===== DELETE CHAIN ITEM =====
-function deleteChainItem(index, event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  const key = chain[index];
-  const info = getPlatformInfo(key.platform);
-  const confirmDelete = confirm("Delete " + info.icon + " " + key.platform + "?");
-  if (!confirmDelete) return;
-
-  chain.splice(index, 1);
-  saveChain(chain);
-
-  // Reset active
-  if (activeIndex === index) {
-    activeIndex = -1;
-    clearInterval(tickInterval);
-    document.getElementById("codeSection").classList.add("hidden");
-  } else if (activeIndex > index) {
-    activeIndex--;
-  }
-
-  renderChain();
-  showStatus("🗑 Deleted", "info");
 }
 
 // ===== INIT =====
 window.addEventListener("load", () => {
+  updatePlatformIcon();
   renderChain();
   if (chain.length > 0) {
     document.getElementById("codeSection").classList.remove("hidden");
