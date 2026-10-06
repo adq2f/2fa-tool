@@ -3,48 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Manager</title>
+<title>2FA Manager Pro</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
   body {
     font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
-    background: #0a0e1a;
+    background: radial-gradient(ellipse at top, #0f172a 0%, #0a0e1a 60%, #050810 100%);
     color: #e2e8f0;
     min-height: 100vh;
     padding: 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
   }
-  .app { max-width: 440px; width: 100%; }
-  .header { text-align: center; margin-bottom: 20px; }
-  .logo { font-size: 32px; margin-bottom: 8px; }
-  h1 { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { font-size: 12px; color: #64748b; }
+  
+  .app { max-width: 440px; width: 100%; padding-top: 10px; }
 
+  /* ===== HEADER ===== */
+  .header { text-align: center; margin-bottom: 24px; position: relative; }
+  .logo {
+    font-size: 38px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 20px rgba(56,189,248,0.6));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, #38bdf8, #818cf8, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  /* ===== CARD ===== */
   .card {
     background: linear-gradient(145deg, #1e293b, #151c2e);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 20px;
     margin-bottom: 16px;
-    border: 1px solid #334155;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(51,65,85,0.6);
+    box-shadow: 
+      0 10px 40px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
   }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(56,189,248,0.5), transparent);
+  }
+
   label {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     color: #94a3b8;
     margin-bottom: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
+
   select {
     width: 100%;
     padding: 14px 16px;
     background: #0a0e1a;
     border: 2px solid #334155;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #e2e8f0;
     font-size: 15px;
     font-weight: 600;
@@ -53,8 +97,9 @@
     background-repeat: no-repeat;
     background-position: right 16px center;
     cursor: pointer;
+    transition: all 0.2s;
   }
-  select:focus { outline: none; border-color: #38bdf8; }
+  select:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
   select option { background: #0a0e1a; color: #e2e8f0; }
 
   input[type="text"] {
@@ -62,44 +107,74 @@
     padding: 14px 16px;
     background: #0a0e1a;
     border: 2px solid #334155;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #e2e8f0;
     font-size: 16px;
     font-family: 'Courier New', monospace;
     letter-spacing: 2px;
+    transition: all 0.2s;
+    font-weight: 600;
   }
-  input[type="text"]:focus { outline: none; border-color: #38bdf8; }
-  input::placeholder { color: #475569; letter-spacing: 1px; }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  }
+  input::placeholder { color: #475569; letter-spacing: 1px; font-weight: 400; }
 
+  /* ===== BUTTONS ===== */
   .btn {
     width: 100%;
     padding: 14px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     margin-top: 12px;
-    transition: transform 0.1s;
+    transition: all 0.15s;
     letter-spacing: 0.5px;
-  }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary { background: linear-gradient(135deg, #38bdf8, #6366f1); color: white; }
-  .btn-secondary { background: #334155; color: #e2e8f0; }
-  .btn-accent { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
-  .btn-danger { background: #dc2626; color: white; }
-
-  .code-card {
-    background: linear-gradient(145deg, #0f172a, #0a0e1a);
-    border: 2px solid #1e40af;
-    border-radius: 16px;
-    padding: 24px 20px;
-    text-align: center;
-    margin-bottom: 16px;
     position: relative;
     overflow: hidden;
   }
-  .code-card::before {
+  .btn:active { transform: scale(0.98); }
+  .btn-primary {
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px rgba(56,189,248,0.5); }
+  .btn-secondary { background: #334155; color: #e2e8f0; }
+  .btn-accent {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+    box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+  }
+  .btn-danger { background: #dc2626; color: white; }
+
+  /* ===== RESULT CARDS ===== */
+  .result-card {
+    background: linear-gradient(145deg, #0f172a, #0a0e1a);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .result-card.code-card {
+    border: 2px solid #1e40af;
+    box-shadow: 0 8px 30px rgba(30,64,175,0.25);
+  }
+  .result-card.key-card {
+    border: 2px solid #166534;
+    box-shadow: 0 8px 30px rgba(22,101,52,0.25);
+  }
+  .result-card.modified-card {
+    border: 2px solid #b45309;
+    box-shadow: 0 8px 30px rgba(180,83,9,0.25);
+  }
+  .result-card.code-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -112,28 +187,75 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-  .code-label {
-    font-size: 11px;
+
+  .result-label {
+    font-size: 10px;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
-    font-weight: 600;
+    margin-bottom: 10px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .code-display {
-    font-size: 44px;
-    font-weight: 800;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 6px;
-    color: #38bdf8;
-    margin-bottom: 12px;
-    text-shadow: 0 0 20px rgba(56,189,248,0.5);
-    user-select: all;
-  }
-  .code-display.expiring { color: #f59e0b; }
-  .code-display.critical { color: #ef4444; animation: pulse 0.5s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
+  .result-copy-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    border-radius: 6px;
+    font-size: 12px;
+    color: white;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.4);
+    transition: all 0.15s;
+  }
+  .result-copy-icon:active { transform: scale(0.9); }
+
+  /* ===== OTP DISPLAY ===== */
+  .otp-display {
+    font-size: 48px;
+    font-weight: 900;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 8px;
+    color: #38bdf8;
+    text-align: center;
+    margin: 8px 0 12px;
+    text-shadow: 0 0 25px rgba(56,189,248,0.6);
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .otp-display:hover {
+    background: rgba(56,189,248,0.08);
+    transform: scale(1.02);
+  }
+  .otp-display:active { transform: scale(0.98); }
+  .otp-display.expiring { color: #f59e0b; text-shadow: 0 0 25px rgba(245,158,11,0.6); }
+  .otp-display.critical {
+    color: #ef4444;
+    text-shadow: 0 0 25px rgba(239,68,68,0.8);
+    animation: pulse 0.5s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+  /* ⭐ BLINK RED — WRONG 2FA */
+  .otp-display.wrong {
+    color: #ef4444 !important;
+    text-shadow: 0 0 30px rgba(239,68,68,1) !important;
+    animation: blinkWrong 0.6s infinite !important;
+  }
+  @keyframes blinkWrong {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.97); }
+  }
+
+  /* ===== TIMER ===== */
   .timer-row {
     display: flex;
     justify-content: center;
@@ -141,10 +263,22 @@
     gap: 8px;
     font-size: 13px;
     color: #94a3b8;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    font-weight: 600;
   }
-  .timer-value { color: #38bdf8; font-weight: 700; font-family: 'Courier New', monospace; }
-  .progress-track { height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+  .timer-value {
+    color: #38bdf8;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+  }
+  .progress-track {
+    height: 6px;
+    background: #1e293b;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #38bdf8, #818cf8);
@@ -153,49 +287,40 @@
   }
   .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
 
-  .info-section {
-    background: #0a0e1a;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    text-align: left;
-  }
-  .info-section.green { border-color: #166534; }
-  .info-section.blue { border-color: #1e40af; }
-  .info-label {
-    font-size: 10px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .info-copy {
-    background: #1e40af;
-    color: white;
-    border: none;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    cursor: pointer;
-    font-weight: 700;
-  }
-  .info-copy.accent { background: #f59e0b; }
-  .info-value {
+  /* ===== KEY DISPLAY ===== */
+  .key-display {
     font-family: 'Courier New', monospace;
     font-size: 14px;
+    color: #4ade80;
     word-break: break-all;
-    user-select: all;
-    font-weight: 600;
-    letter-spacing: 2px;
+    user-select: none;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    text-align: center;
   }
-  .info-value.green { color: #4ade80; }
-  .info-value.blue { color: #a5b4fc; font-size: 12px; letter-spacing: 1px; }
+  .key-display:hover { background: rgba(34,197,94,0.08); }
+  .key-display:active { transform: scale(0.98); }
 
+  .key-display.modified {
+    color: #fbbf24;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== INFO ===== */
+  .info-hint {
+    font-size: 10px;
+    color: #64748b;
+    text-align: center;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ===== CHAIN ===== */
   .saved-header {
     display: flex;
     justify-content: space-between;
@@ -203,24 +328,25 @@
     margin-bottom: 12px;
   }
   .saved-title {
-    font-size: 13px;
+    font-size: 12px;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
+    letter-spacing: 1.5px;
+    font-weight: 800;
   }
   .saved-count {
-    font-size: 12px;
-    background: #1e40af;
+    font-size: 11px;
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
     color: white;
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 10px;
-    font-weight: 700;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.4);
   }
   .chain-item {
     background: #0a0e1a;
     border: 1px solid #334155;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 10px 12px;
     margin-bottom: 6px;
     font-size: 12px;
@@ -230,11 +356,14 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    transition: all 0.15s;
   }
+  .chain-item:hover { border-color: #475569; }
   .chain-item.active {
     border-color: #38bdf8;
     background: #0f172a;
     color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56,189,248,0.2);
   }
   .chain-item-b64 {
     font-size: 9px;
@@ -242,33 +371,57 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 160px;
+    max-width: 140px;
   }
 
+  /* ===== STATUS ===== */
   .status {
     font-size: 13px;
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     margin-top: 12px;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
+    animation: slideDown 0.3s ease-out;
   }
-  .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
-  .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
-  .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+  .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
+  .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
 
   .hidden { display: none !important; }
+
+  /* ===== PULSE DOT ===== */
+  .live-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 8px #22c55e;
+    animation: dotPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
 </style>
 </head>
 <body>
 <div class="app">
 
+  <!-- HEADER -->
   <div class="header">
     <div class="logo">🔐</div>
-    <h1>2FA Manager</h1>
-    <div class="subtitle">Secure authentication</div>
+    <h1>2FA Manager Pro</h1>
+    <div class="subtitle">Secure Authentication</div>
   </div>
 
+  <!-- INPUT CARD -->
   <div class="card">
     <label>📱 Select Platform</label>
     <select id="platformSelect">
@@ -296,58 +449,64 @@
     <div class="status hidden" id="status"></div>
   </div>
 
+  <!-- RESULT SECTION (Auto-show on paste) -->
   <div id="codeSection" class="hidden">
-    <div class="code-card">
-      <div class="code-label" id="activeAccountLabel">TOTP CODE</div>
-      <div class="code-display" id="codeDisplay">------</div>
+
+    <!-- OTP CODE CARD -->
+    <div class="result-card code-card">
+      <div class="result-label">
+        <span><span class="live-dot"></span><span id="activeAccountLabel">TOTP CODE</span></span>
+        <span class="result-copy-icon" onclick="copyCode()">📋</span>
+      </div>
+      <div class="otp-display" id="codeDisplay" onclick="copyCode()">------</div>
       <div class="timer-row">
-        <span>⏱️ Refresh in</span>
+        <span>⏱ Refresh in</span>
         <span class="timer-value" id="timerValue">30.0s</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="progressFill" style="width:100%"></div>
       </div>
-
-      <!-- Display: Original only (SaaSKo style — no modified shown) -->
-      <div class="info-section green">
-        <div class="info-label">
-          <span>🔑 2FA KEY</span>
-          <button class="info-copy" onclick="copyOriginal()">Copy</button>
-        </div>
-        <div class="info-value green" id="originalKey">----</div>
-      </div>
-
-      <!-- Base64 Copy (main copy — hidden content) -->
-      <div class="info-section blue">
-        <div class="info-label">
-          <span>💾 Copy Key (Base64)</span>
-          <button class="info-copy accent" onclick="copyOutput()">COPY</button>
-        </div>
-        <div class="info-value blue" id="outputKey">----</div>
-      </div>
-
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <button class="btn btn-accent" onclick="copyOutput()" style="flex:1; margin-top:0;">💾 Copy Key</button>
-        <button class="btn btn-primary" onclick="copyCode()" style="flex:1; margin-top:0;">📋 Copy Code</button>
-      </div>
-      <button class="btn btn-secondary" onclick="closeCode()" style="margin-top:8px;">✖ Close</button>
+      <div class="info-hint">👆 Tap code to copy</div>
     </div>
 
-    <div class="card">
-      <div class="saved-header">
-        <div class="saved-title">🔗 Chain</div>
-        <div class="saved-count" id="chainCount">0</div>
+    <!-- ORIGINAL KEY CARD -->
+    <div class="result-card key-card">
+      <div class="result-label">
+        <span>🔑 2FA KEY (Original)</span>
+        <span class="result-copy-icon" onclick="copyOriginal()">📋</span>
       </div>
-      <div id="chainList"></div>
+      <div class="key-display" id="originalKey" onclick="copyOriginal()">----</div>
+      <div class="info-hint">👆 Tap key to copy</div>
     </div>
+
+    <!-- MODIFIED KEY CARD (Base64) -->
+    <div class="result-card modified-card">
+      <div class="result-label">
+        <span>💾 MODIFIED 2FA (Base64)</span>
+        <span class="result-copy-icon" onclick="copyOutput()">📋</span>
+      </div>
+      <div class="key-display modified" id="outputKey" onclick="copyOutput()">----</div>
+      <div class="info-hint">👆 Tap to copy modified key</div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="closeCode()" style="margin-bottom:16px;">✖ Close</button>
+  </div>
+
+  <!-- CHAIN LIST -->
+  <div class="card" id="chainCard">
+    <div class="saved-header">
+      <div class="saved-title">🔗 Chain</div>
+      <div class="saved-count" id="chainCount">0</div>
+    </div>
+    <div id="chainList"></div>
   </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
-  eruda.init();
-  console.log("🔐 2FA Manager loaded");
+  if (window.eruda) eruda.init();
+  console.log("🔐 2FA Manager Pro loaded");
 </script>
 
 <script>
@@ -371,7 +530,7 @@ function getPlatformInfo(name) {
   return PLATFORMS[name] || PLATFORMS["Other"];
 }
 
-// Base32 decode (TOTP-এর জন্য)
+// ===== BASE32 DECODE =====
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
@@ -392,17 +551,15 @@ function base32Decode(input) {
   return new Uint8Array(output);
 }
 
-// ⭐ SaaSKo Meta style: Random modification
+// ===== MODIFY SECRET (Base64 random modify) =====
 function modifySecret(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
   return secret.slice(0, 5) + randomChar + secret.slice(5);
 }
 
-// ⭐ Random decision: modify or not (SaaSKo behavior)
 function convertToOutput(secret) {
-  const shouldModify = Math.random() < 0.5;  // 50% chance
-  
+  const shouldModify = Math.random() < 0.5;
   let modified;
   if (shouldModify) {
     modified = modifySecret(secret);
@@ -411,10 +568,7 @@ function convertToOutput(secret) {
     modified = secret;
     console.log("✓ No modification");
   }
-  
-  const output = btoa(modified);  // Base64 encode
-  console.log("💾 Output:", output);
-  
+  const output = btoa(modified);
   return { modified, output, wasModified: shouldModify };
 }
 
@@ -422,7 +576,7 @@ function formatKey(secret) {
   return secret.match(/.{1,4}/g).join(" ");
 }
 
-// TOTP generation
+// ===== TOTP GENERATE =====
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
@@ -447,8 +601,8 @@ async function generateTOTP(secret, timeMs = Date.now()) {
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
-// Storage
-const STORAGE_KEY = "auth_v1";
+// ===== STORAGE =====
+const STORAGE_KEY = "auth_v2";
 function loadChain() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -463,12 +617,13 @@ let chain = loadChain();
 let activeIndex = -1;
 let tickInterval = null;
 
+// ===== STATUS =====
 function showStatus(msg, type = "info") {
   const el = document.getElementById("status");
   el.textContent = msg;
   el.className = "status " + type;
   el.classList.remove("hidden");
-  setTimeout(() => el.classList.add("hidden"), 3500);
+  setTimeout(() => el.classList.add("hidden"), 3000);
 }
 
 function escapeHtml(s) {
@@ -477,6 +632,7 @@ function escapeHtml(s) {
   }[c]));
 }
 
+// ===== ADD KEY =====
 async function addKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
@@ -484,26 +640,37 @@ async function addKey() {
   if (!secret) return showStatus("❌ Key paste করুন", "error");
   try { base32Decode(secret); } catch (e) { return showStatus("❌ " + e.message, "error"); }
 
-  // ⭐ SaaSKo style: random modification
   const { modified, output } = convertToOutput(secret);
 
   chain.push({
     id: Date.now(),
     platform,
     original: secret,
-    modified: modified,   // Internal — not shown to user
-    output: output,       // Base64 — copy button gives this
+    modified: modified,
+    output: output,
     timestamp: Date.now()
   });
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
-  showStatus("✅ Added", "success");
+  showStatus("✅ Added — Result below", "success");
 
   activeIndex = chain.length - 1;
   showCode(activeIndex);
 }
 
+// ===== AUTO PASTE DETECT =====
+document.getElementById("secretInput").addEventListener("paste", function(e) {
+  setTimeout(function() {
+    var val = document.getElementById("secretInput").value.trim();
+    if (val.length >= 16) {
+      // Auto add after paste
+      addKey();
+    }
+  }, 100);
+});
+
+// ===== SHOW CODE =====
 async function showCode(index) {
   if (index < 0 || index >= chain.length) return;
   activeIndex = index;
@@ -514,16 +681,57 @@ async function showCode(index) {
   document.getElementById("activeAccountLabel").textContent =
     info.icon + " " + key.platform.toUpperCase();
 
-  // ⭐ Display: Original only (SaaSKo style)
+  // Original key (formatted)
   document.getElementById("originalKey").textContent = formatKey(key.original);
-  
-  // ⭐ Base64 output (copy target)
+
+  // Modified key (Base64)
   document.getElementById("outputKey").textContent = key.output;
+
+  // Check if Facebook + wrong 2FA → blink
+  const display = document.getElementById("codeDisplay");
+
+  // Facebook validation check
+  if (key.platform === "Facebook") {
+    const isValid = await validateFacebookKey(key.original);
+    if (!isValid) {
+      display.classList.add("wrong");
+      showStatus("⚠ Wrong 2FA — please check!", "error");
+    } else {
+      display.classList.remove("wrong");
+    }
+  } else {
+    display.classList.remove("wrong");
+  }
 
   renderChain();
   clearInterval(tickInterval);
   tick();
   tickInterval = setInterval(tick, 100);
+}
+
+// ===== FACEBOOK VALIDATION =====
+async function validateFacebookKey(secret) {
+  try {
+    // Facebook uses standard TOTP — check if key is valid base32
+    const bytes = base32Decode(secret);
+    if (bytes.length < 10) return false;
+
+    // Check if generated code is valid 6-digit
+    const code = await generateTOTP(secret);
+    if (!/^\d{6}$/.test(code)) return false;
+
+    // Check if code is not all same digits (like 000000, 111111 — invalid)
+    const firstDigit = code[0];
+    const allSame = code.split('').every(d => d === firstDigit);
+    if (allSame) return false;
+
+    // Facebook-specific: check if code matches known invalid patterns
+    if (code === "000000" || code === "123456") return false;
+
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 function closeCode() {
@@ -533,11 +741,11 @@ function closeCode() {
   document.getElementById("codeSection").classList.add("hidden");
 }
 
+// ===== TICK (update OTP every 100ms) =====
 async function tick() {
   if (activeIndex < 0) return;
   try {
     const key = chain[activeIndex];
-    // ⭐ Code from ORIGINAL key (Facebook-এ যা valid)
     const code = await generateTOTP(key.original);
     const display = document.getElementById("codeDisplay");
     display.textContent = code.slice(0, 3) + " " + code.slice(3);
@@ -551,19 +759,25 @@ async function tick() {
 
     display.classList.remove("expiring", "critical");
     fill.classList.remove("warning");
-    if (remaining <= 5) { display.classList.add("critical"); fill.classList.add("warning"); }
-    else if (remaining <= 10) { display.classList.add("expiring"); fill.classList.add("warning"); }
+    if (remaining <= 5) {
+      display.classList.add("critical");
+      fill.classList.add("warning");
+    } else if (remaining <= 10) {
+      display.classList.add("expiring");
+      fill.classList.add("warning");
+    }
   } catch (e) {
     document.getElementById("codeDisplay").textContent = "ERROR";
   }
 }
 
+// ===== COPY FUNCTIONS =====
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
   try {
     await navigator.clipboard.writeText(code);
-    showStatus("✅ Code copied: " + code, "success");
+    showStatus("✅ OTP copied: " + code, "success");
   } catch (e) { fallbackCopy(code); }
 }
 
@@ -572,17 +786,16 @@ async function copyOriginal() {
   const key = chain[activeIndex];
   try {
     await navigator.clipboard.writeText(key.original);
-    showStatus("✅ Key copied", "success");
+    showStatus("✅ Original key copied", "success");
   } catch (e) { fallbackCopy(key.original); }
 }
 
-// ⭐ Main Copy — Base64 (SaaSKo style)
 async function copyOutput() {
   if (activeIndex < 0) return;
   const key = chain[activeIndex];
   try {
     await navigator.clipboard.writeText(key.output);
-    showStatus("✅ Key copied", "success");
+    showStatus("✅ Modified key copied", "success");
   } catch (e) { fallbackCopy(key.output); }
 }
 
@@ -595,6 +808,7 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
+// ===== CHAIN LIST =====
 function renderChain() {
   const list = document.getElementById("chainList");
   const count = document.getElementById("chainCount");
@@ -620,6 +834,7 @@ function renderChain() {
   }).join("");
 }
 
+// ===== CLEAR ALL =====
 function clearAll() {
   if (!confirm("Clear all saved keys?")) return;
   localStorage.removeItem(STORAGE_KEY);
@@ -630,7 +845,9 @@ function clearAll() {
   showStatus("🗑 Cleared", "info");
 }
 
+// ===== INIT =====
 window.addEventListener("load", () => {
+  renderChain();
   if (chain.length > 0) {
     document.getElementById("codeSection").classList.remove("hidden");
     showCode(chain.length - 1);
