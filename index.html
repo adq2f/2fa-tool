@@ -5,17 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>2FA Manager Pro</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   
-  html, body {
-    height: 100%;
-    overflow-x: hidden;
-  }
+  html, body { height: 100%; overflow-x: hidden; }
   
   body {
     font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
@@ -25,238 +17,192 @@
       radial-gradient(circle at 85% 80%, rgba(129,140,248,0.08) 0%, transparent 40%);
     color: #e2e8f0;
     min-height: 100vh;
-    padding: 20px 16px 40px;
+    padding: 14px 14px 30px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
   }
-  
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(56,189,248,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56,189,248,0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-    will-change: transform;
-  }
-  
+
   .app {
-    max-width: 460px;
+    max-width: 440px;
     width: 100%;
     position: relative;
     z-index: 1;
-    padding-top: 8px;
-    will-change: transform;
-    transform: translateZ(0);
   }
 
   /* ===== HEADER ===== */
-  .header {
-    text-align: center;
-    margin-bottom: 26px;
-  }
+  .header { text-align: center; margin-bottom: 16px; }
   .logo-wrap {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 68px;
-    height: 68px;
-    border-radius: 22px;
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
     background: linear-gradient(145deg, rgba(56,189,248,0.15), rgba(99,102,241,0.15));
     border: 1px solid rgba(56,189,248,0.3);
-    margin-bottom: 14px;
-    box-shadow: 0 0 40px rgba(56,189,248,0.3);
+    margin-bottom: 10px;
+    box-shadow: 0 0 30px rgba(56,189,248,0.3);
   }
-  .logo {
-    font-size: 32px;
-  }
+  .logo { font-size: 24px; }
   h1 {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 900;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     background: linear-gradient(135deg, #38bdf8 0%, #a5b4fc 50%, #38bdf8 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
   }
   .subtitle {
-    font-size: 10px;
+    font-size: 9px;
     color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2.5px;
     font-weight: 700;
   }
 
   /* ===== CARD ===== */
   .card {
-    background: linear-gradient(145deg, rgba(30,41,59,0.85), rgba(15,23,42,0.95));
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 16px;
+    background: linear-gradient(145deg, rgba(30,41,59,0.9), rgba(15,23,42,0.95));
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
     border: 1px solid rgba(51,65,85,0.5);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     position: relative;
     overflow: hidden;
-    transform: translateZ(0);
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
   }
 
   /* ===== INPUT LABEL ===== */
   .input-label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11px;
+    gap: 6px;
+    font-size: 10px;
     color: #94a3b8;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     font-weight: 800;
   }
   .input-label .dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #38bdf8;
-    box-shadow: 0 0 8px #38bdf8;
+    box-shadow: 0 0 6px #38bdf8;
   }
 
   /* ===== PLATFORM SELECT ===== */
-  .platform-wrapper {
-    position: relative;
-    width: 100%;
-  }
+  .platform-wrapper { position: relative; width: 100%; }
   .platform-select {
     width: 100%;
-    padding: 15px 18px 15px 50px;
+    padding: 12px 14px 12px 44px;
     background: linear-gradient(145deg, #0a0e1a, #050810);
     border: 1.5px solid #1e293b;
-    border-radius: 14px;
+    border-radius: 12px;
     color: #e2e8f0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2338bdf8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 12 8'%3E%3Cpath fill='%2338bdf8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 18px center;
+    background-position: right 14px center;
     cursor: pointer;
     transition: border-color 0.2s;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  .platform-select:focus {
-    outline: none;
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,0.15), inset 0 2px 6px rgba(0,0,0,0.3);
-  }
-  .platform-select option {
-    background: #0a0e1a;
-    color: #e2e8f0;
-  }
+  .platform-select:focus { outline: none; border-color: #38bdf8; }
+  .platform-select option { background: #0a0e1a; color: #e2e8f0; }
   .platform-icon-badge {
     position: absolute;
-    left: 12px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(15,23,42,0.9);
-    border-radius: 8px;
+    border-radius: 6px;
     pointer-events: none;
     z-index: 2;
   }
-  .platform-icon-badge svg {
-    width: 18px;
-    height: 18px;
-  }
+  .platform-icon-badge svg { width: 16px; height: 16px; }
 
   /* ===== KEY INPUT ===== */
   .key-input {
     width: 100%;
-    padding: 16px 18px;
+    padding: 12px 14px;
     background: linear-gradient(145deg, #0a0e1a, #050810);
     border: 1.5px solid #1e293b;
-    border-radius: 14px;
+    border-radius: 12px;
     color: #e2e8f0;
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'SF Mono', 'Courier New', monospace;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     transition: border-color 0.2s;
     font-weight: 600;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
   }
-  .key-input:focus {
-    outline: none;
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,0.15), inset 0 2px 6px rgba(0,0,0,0.3);
-  }
-  .key-input::placeholder {
-    color: #334155;
-    letter-spacing: 2px;
-    font-weight: 500;
-  }
+  .key-input:focus { outline: none; border-color: #38bdf8; }
+  .key-input::placeholder { color: #334155; letter-spacing: 1.5px; font-weight: 500; }
 
   .input-hint {
-    font-size: 11px;
+    font-size: 10px;
     color: #64748b;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     font-weight: 600;
   }
   .input-hint .live-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background: #22c55e;
     border-radius: 50%;
-    box-shadow: 0 0 8px #22c55e;
+    box-shadow: 0 0 6px #22c55e;
     animation: dotPulse 1.5s ease-in-out infinite;
   }
   @keyframes dotPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
-  /* ===== RESULT CARD ===== */
-  .result-card {
+  /* ===== RESULT ROW (Compact) ===== */
+  .result-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background: linear-gradient(145deg, rgba(15,23,42,0.9), rgba(5,8,16,0.95));
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 14px;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border: 1.5px solid rgba(30,64,175,0.5);
     position: relative;
     overflow: hidden;
-    transform: translateZ(0);
   }
-  .result-card.code-card {
-    border: 1.5px solid rgba(30,64,175,0.6);
-    box-shadow: 0 15px 50px rgba(30,64,175,0.25);
+  .result-row.code-row {
+    border-color: rgba(30,64,175,0.6);
+    box-shadow: 0 8px 25px rgba(30,64,175,0.2);
   }
-  .result-card.code-card::before {
+  .result-row.key-row {
+    border-color: rgba(22,101,52,0.6);
+    box-shadow: 0 8px 25px rgba(22,101,52,0.15);
+  }
+  .result-row.modified-row {
+    border-color: rgba(180,83,9,0.6);
+    box-shadow: 0 8px 25px rgba(180,83,9,0.15);
+  }
+  .result-row.code-row::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, #38bdf8, transparent);
     background-size: 200% 100%;
@@ -266,96 +212,52 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-  .result-card.key-card {
-    border: 1.5px solid rgba(22,101,52,0.6);
-    box-shadow: 0 15px 50px rgba(22,101,52,0.2);
-  }
-  .result-card.modified-card {
-    border: 1.5px solid rgba(180,83,9,0.6);
-    box-shadow: 0 15px 50px rgba(180,83,9,0.2);
-  }
 
-  .result-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
+  .result-info { flex: 1; min-width: 0; }
   .result-label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 10px;
+    gap: 5px;
+    font-size: 9px;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.2px;
     font-weight: 800;
+    margin-bottom: 4px;
   }
   .result-label .icon-dot {
-    width: 7px;
-    height: 7px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
   }
-  .icon-dot.blue { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
-  .icon-dot.green { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-  .icon-dot.amber { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+  .icon-dot.blue { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
+  .icon-dot.green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+  .icon-dot.amber { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
 
-  .copy-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #16a34a, #22c55e);
-    border-radius: 10px;
-    font-size: 14px;
-    color: white;
-    box-shadow: 0 4px 12px rgba(34,197,94,0.4);
-    transition: transform 0.15s;
-    cursor: pointer;
-  }
-  .copy-icon:active {
-    transform: scale(0.9);
-    box-shadow: 0 2px 6px rgba(34,197,94,0.6);
-  }
-
-  /* ===== OTP DISPLAY ===== */
-  .otp-display {
-    font-size: 52px;
+  /* ⭐ OTP chhoto */
+  .otp-value {
+    font-size: 26px;
     font-weight: 900;
     font-family: 'SF Mono', 'Courier New', monospace;
-    letter-spacing: 10px;
+    letter-spacing: 5px;
     color: #38bdf8;
-    text-align: center;
-    margin: 4px 0 16px;
-    text-shadow: 0 0 30px rgba(56,189,248,0.7);
-    user-select: none;
+    text-shadow: 0 0 15px rgba(56,189,248,0.6);
+    line-height: 1;
     cursor: pointer;
-    transition: transform 0.15s, background 0.15s;
-    padding: 12px;
-    border-radius: 14px;
-    will-change: transform;
+    user-select: none;
+    transition: opacity 0.15s;
   }
-  .otp-display:hover { background: rgba(56,189,248,0.08); }
-  .otp-display:active { transform: scale(0.98); }
-  
-  .otp-display.expiring {
-    color: #f59e0b;
-    text-shadow: 0 0 30px rgba(245,158,11,0.7);
-  }
-  .otp-display.critical {
+  .otp-value:active { opacity: 0.6; }
+  .otp-value.expiring { color: #f59e0b; text-shadow: 0 0 15px rgba(245,158,11,0.6); }
+  .otp-value.critical {
     color: #ef4444;
-    text-shadow: 0 0 30px rgba(239,68,68,0.9);
+    text-shadow: 0 0 15px rgba(239,68,68,0.8);
     animation: pulse 0.5s infinite;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
-  }
-
-  .otp-display.wrong {
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .otp-value.wrong {
     color: #ef4444 !important;
-    text-shadow: 0 0 40px rgba(239,68,68,1) !important;
+    text-shadow: 0 0 20px rgba(239,68,68,1) !important;
     animation: blinkWrong 0.6s infinite !important;
   }
   @keyframes blinkWrong {
@@ -363,86 +265,80 @@
     50% { opacity: 0.2; }
   }
 
+  /* ⭐ KEY chhoto */
+  .key-value {
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    letter-spacing: 2px;
+    color: #4ade80;
+    word-break: break-all;
+    line-height: 1.3;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s;
+  }
+  .key-value:active { opacity: 0.6; }
+  .key-value.modified {
+    color: #fbbf24;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* ⭐ COPY ICON right side */
+  .copy-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(34,197,94,0.4);
+    transition: transform 0.15s;
+    padding: 0;
+  }
+  .copy-btn:active { transform: scale(0.9); }
+  .copy-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: #ffffff;
+  }
+
   /* ===== TIMER ===== */
   .timer-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-    color: #94a3b8;
-    margin-bottom: 8px;
-    font-weight: 700;
-    padding: 0 4px;
-  }
-  .timer-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     font-size: 10px;
+    color: #94a3b8;
+    margin-top: 6px;
+    font-weight: 700;
   }
   .timer-value {
     color: #38bdf8;
     font-weight: 900;
     font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 14px;
   }
   .progress-track {
-    height: 5px;
+    height: 3px;
     background: #0a0e1a;
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 4px;
+    margin-top: 4px;
   }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #38bdf8, #818cf8);
     transition: width 0.1s linear;
-    border-radius: 3px;
+    border-radius: 2px;
   }
   .progress-fill.warning {
     background: linear-gradient(90deg, #f59e0b, #ef4444);
-  }
-
-  /* ===== KEY DISPLAY ===== */
-  .key-display {
-    font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 15px;
-    color: #4ade80;
-    word-break: break-all;
-    user-select: none;
-    cursor: pointer;
-    font-weight: 700;
-    letter-spacing: 4px;
-    padding: 12px;
-    border-radius: 12px;
-    transition: transform 0.15s, background 0.15s;
-    text-align: center;
-    will-change: transform;
-  }
-  .key-display:hover { background: rgba(34,197,94,0.08); }
-  .key-display:active { transform: scale(0.98); }
-
-  .key-display.modified {
-    color: #fbbf24;
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    word-break: break-all;
-  }
-  .key-display.modified:hover { background: rgba(251,191,36,0.08); }
-
-  /* ===== HINT ===== */
-  .info-hint {
-    font-size: 10px;
-    color: #475569;
-    text-align: center;
-    margin-top: 10px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
   }
 
   /* ===== CHAIN ===== */
@@ -450,143 +346,117 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
   .saved-title {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11px;
+    gap: 6px;
+    font-size: 10px;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     font-weight: 800;
   }
   .saved-count {
-    font-size: 11px;
+    font-size: 10px;
     background: linear-gradient(135deg, #1e40af, #3b82f6);
     color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
     font-weight: 900;
-    box-shadow: 0 4px 12px rgba(59,130,246,0.4);
   }
   .chain-item {
     background: linear-gradient(145deg, #0a0e1a, #050810);
     border: 1px solid #1e293b;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: #64748b;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 11px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    transition: border-color 0.2s, background 0.2s;
     position: relative;
-    overflow: hidden;
-    will-change: transform;
-  }
-  .chain-item:active {
-    transform: scale(0.99);
   }
   .chain-item.active {
     border-color: rgba(56,189,248,0.6);
     background: linear-gradient(145deg, #0f172a, #0a0e1a);
     color: #38bdf8;
-    box-shadow: 0 0 20px rgba(56,189,248,0.2);
   }
   .chain-item.active::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    left: 0; top: 0; bottom: 0;
     width: 3px;
     background: linear-gradient(180deg, #38bdf8, #818cf8);
+    border-radius: 10px 0 0 10px;
   }
   .chain-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     font-weight: 700;
+    color: #e2e8f0;
   }
   .chain-num {
     color: #f59e0b;
     font-weight: 900;
-    font-size: 11px;
+    font-size: 10px;
     background: rgba(245,158,11,0.1);
-    padding: 2px 8px;
-    border-radius: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
     border: 1px solid rgba(245,158,11,0.3);
   }
-  .chain-b64 {
+  .chain-masked {
     font-size: 9px;
-    color: #334155;
+    color: #475569;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    letter-spacing: 1px;
+    max-width: 140px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 130px;
-    font-family: 'SF Mono', 'Courier New', monospace;
   }
 
   /* ===== CLOSE BTN ===== */
   .btn-close {
     width: 100%;
-    padding: 14px;
+    padding: 10px;
     background: linear-gradient(145deg, #1e293b, #151c2e);
-    border: 1.5px solid #334155;
-    border-radius: 14px;
+    border: 1px solid #334155;
+    border-radius: 10px;
     color: #94a3b8;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 800;
     cursor: pointer;
-    transition: transform 0.15s, background 0.2s;
-    margin-bottom: 16px;
+    transition: transform 0.15s;
+    margin-top: 4px;
   }
-  .btn-close:active {
-    transform: scale(0.98);
-    background: linear-gradient(145deg, #151c2e, #0a0e1a);
-  }
+  .btn-close:active { transform: scale(0.98); }
 
   /* ===== STATUS ===== */
   .status {
-    font-size: 13px;
-    padding: 14px 18px;
-    border-radius: 12px;
-    margin-top: 14px;
+    font-size: 11px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-top: 10px;
     text-align: center;
     font-weight: 800;
     animation: slideDown 0.3s ease-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
   }
   @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
+    from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .status.success {
-    background: linear-gradient(145deg, #14532d, #0f3d1f);
-    color: #bbf7d0;
-    border: 1.5px solid #22c55e;
-  }
-  .status.error {
-    background: linear-gradient(145deg, #7f1d1d, #5c1414);
-    color: #fecaca;
-    border: 1.5px solid #ef4444;
-  }
-  .status.info {
-    background: linear-gradient(145deg, #1e3a8a, #152a63);
-    color: #bfdbfe;
-    border: 1.5px solid #3b82f6;
-  }
+  .status.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
+  .status.error { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
+  .status.info { background: #1e3a8a; color: #bfdbfe; border: 1px solid #3b82f6; }
 
   .hidden { display: none !important; }
 
-  /* ===== PLATFORM ICON SVG COLORS ===== */
+  /* ===== SVG ICON COLORS ===== */
   .pi-facebook { fill: #1877f2; }
   .pi-instagram { fill: #e4405f; }
   .pi-linkedin { fill: #0a66c2; }
@@ -600,28 +470,19 @@
   .pi-apple { fill: #ffffff; }
   .pi-amazon { fill: #ff9900; }
   .pi-other { fill: #94a3b8; }
-
-  /* ===== SMOOTH SCROLL OPTIMIZATION ===== */
-  * {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
 </style>
 </head>
 <body>
 
 <div class="app">
 
-  <!-- HEADER -->
   <div class="header">
-    <div class="logo-wrap">
-      <div class="logo">🔐</div>
-    </div>
+    <div class="logo-wrap"><div class="logo">🔐</div></div>
     <h1>2FA Manager Pro</h1>
     <div class="subtitle">Secure Authentication</div>
   </div>
 
-  <!-- INPUT CARD (Auto-hide after paste) -->
+  <!-- INPUT CARD -->
   <div class="card" id="inputCard">
     <div class="input-label">
       <span class="dot"></span>
@@ -646,7 +507,7 @@
       </select>
     </div>
 
-    <div class="input-label" style="margin-top:18px;">
+    <div class="input-label" style="margin-top:14px;">
       <span class="dot"></span>
       <span>Paste 2FA Key</span>
     </div>
@@ -663,56 +524,59 @@
   <!-- RESULT SECTION -->
   <div id="codeSection" class="hidden">
 
-    <!-- OTP CODE CARD -->
-    <div class="result-card code-card">
-      <div class="result-header">
+    <!-- OTP ROW -->
+    <div class="result-row code-row">
+      <div class="result-info">
         <div class="result-label">
           <span class="icon-dot blue"></span>
           <span id="activeAccountLabel">TOTP CODE</span>
         </div>
-        <span class="copy-icon" onclick="copyCode()">📋</span>
+        <div class="otp-value" id="codeDisplay" onclick="copyCode()">--- ---</div>
+        <div class="timer-row">
+          <span>⏱ Refresh</span>
+          <span class="timer-value" id="timerValue">30.0s</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:100%"></div>
+        </div>
       </div>
-      <div class="otp-display" id="codeDisplay" onclick="copyCode()">------</div>
-      <div class="timer-row">
-        <div class="timer-label">⏱ Refresh</div>
-        <div class="timer-value" id="timerValue">30.0s</div>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width:100%"></div>
-      </div>
-      <div class="info-hint">👆 Tap code to copy</div>
+      <button class="copy-btn" onclick="copyCode()" aria-label="Copy OTP">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      </button>
     </div>
 
-    <!-- ORIGINAL KEY CARD -->
-    <div class="result-card key-card">
-      <div class="result-header">
+    <!-- ORIGINAL KEY ROW -->
+    <div class="result-row key-row">
+      <div class="result-info">
         <div class="result-label">
           <span class="icon-dot green"></span>
           <span>2FA KEY (Original)</span>
         </div>
-        <span class="copy-icon" onclick="copyOriginal()">📋</span>
+        <div class="key-value" id="originalKey" onclick="copyOriginal()">----</div>
       </div>
-      <div class="key-display" id="originalKey" onclick="copyOriginal()">----</div>
-      <div class="info-hint">👆 Tap key to copy</div>
+      <button class="copy-btn" onclick="copyOriginal()" aria-label="Copy key">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      </button>
     </div>
 
-    <!-- MODIFIED KEY CARD -->
-    <div class="result-card modified-card">
-      <div class="result-header">
+    <!-- MODIFIED KEY ROW -->
+    <div class="result-row modified-row">
+      <div class="result-info">
         <div class="result-label">
           <span class="icon-dot amber"></span>
           <span>MODIFIED 2FA (Base64)</span>
         </div>
-        <span class="copy-icon" onclick="copyOutput()">📋</span>
+        <div class="key-value modified" id="outputKey" onclick="copyOutput()">----</div>
       </div>
-      <div class="key-display modified" id="outputKey" onclick="copyOutput()">----</div>
-      <div class="info-hint">👆 Tap to copy modified key</div>
+      <button class="copy-btn" onclick="copyOutput()" aria-label="Copy modified">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      </button>
     </div>
 
     <button class="btn-close" onclick="closeCode()">✕ Close</button>
   </div>
 
-  <!-- CHAIN LIST -->
+  <!-- CHAIN -->
   <div class="card" id="chainCard">
     <div class="saved-header">
       <div class="saved-title">
@@ -729,11 +593,9 @@
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   if (window.eruda) eruda.init();
-  console.log("🔐 2FA Manager Pro — Ultimate Edition");
 </script>
 
 <script>
-// ===== PLATFORM SVG ICONS =====
 const PLATFORM_ICONS = {
   "Facebook": '<svg viewBox="0 0 24 24"><path class="pi-facebook" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
   "Instagram": '<svg viewBox="0 0 24 24"><path class="pi-instagram" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.03-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>',
@@ -746,36 +608,30 @@ const PLATFORM_ICONS = {
   "Discord": '<svg viewBox="0 0 24 24"><path class="pi-discord" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>',
   "Microsoft": '<svg viewBox="0 0 24 24"><path class="pi-microsoft" d="M0 0h11.377v11.372H0zm12.623 0H24v11.372H12.623zM0 12.623h11.377V24H0zm12.623 0H24V24H12.623z"/></svg>',
   "Apple": '<svg viewBox="0 0 24 24"><path class="pi-apple" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',
-  "Amazon": '<svg viewBox="0 0 24 24"><path class="pi-amazon" d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726-1.625.41-3.243.617-4.855.617-1.546 0-3.034-.2-4.464-.6-1.48-.418-2.842-1.032-4.085-1.84-.153-.098-.23-.187-.23-.29 0-.055.025-.11.09-.18zm12.658-4.456c.057.104.098.16.128.16.024 0 .048-.02.072-.06l.026-.145c.024-.09.045-.174.066-.252l.045-.15-.097.103c-.072.075-.15.15-.234.224-.048.048-.06.098-.006.12zm-4.108-.283c.018.104.036.174.054.21.024.036.06.054.108.054.06 0 .12-.024.18-.072a.83.83 0 0 0 .198-.21c.054-.096.09-.198.108-.306.018-.108.027-.216.027-.324 0-.15-.024-.276-.072-.378a.994.994 0 0 0-.198-.27.86.86 0 0 0-.27-.162 1.044 1.044 0 0 0-.324-.054c-.276 0-.49.108-.642.324-.15.216-.226.528-.226.936 0 .144.014.276.042.396.03.12.078.222.144.306.066.084.15.15.252.198.102.048.234.072.396.072.03 0 .066-.006.108-.018.042-.012.078-.03.108-.054l.09-.072v.09zm4.108-4.42c.115-.035.22-.06.315-.078.095-.018.19-.03.285-.03.138 0 .245.018.32.054.075.036.113.09.113.162 0 .054-.018.102-.054.144a.55.55 0 0 1-.144.108 1.418 1.418 0 0 1-.198.072 1.5 1.5 0 0 1-.226.054l-.198.024h-.03c-.055 0-.083-.018-.083-.054 0-.024.012-.05.036-.078l.036-.06-.108-.006c-.078 0-.15.006-.216.018a.83.83 0 0 0-.18.054.348.348 0 0 0-.126.09c-.03.036-.045.078-.045.126 0 .054.024.102.072.144.048.042.126.084.234.126.06.024.15.054.27.09.12.036.234.084.342.144.108.06.198.132.27.216a.49.49 0 0 1 .108.324c0 .144-.048.276-.144.396-.096.12-.222.216-.378.288a1.318 1.318 0 0 1-.522.108c-.126 0-.24-.012-.342-.036a1.07 1.07 0 0 1-.288-.108.53.53 0 0 1-.198-.198.6.6 0 0 1-.072-.306h.216c.024.09.072.162.144.216.072.054.174.084.306.09.072 0 .138-.006.198-.018a.44.44 0 0 0 .162-.06.29.29 0 0 0 .108-.114.35.35 0 0 0 .04-.18c0-.06-.018-.108-.054-.15a.44.44 0 0 0-.144-.108 1.34 1.34 0 0 0-.216-.084c-.078-.024-.156-.048-.234-.072l-.144-.048a.86.86 0 0 1-.198-.114.48.48 0 0 1-.132-.162.42.42 0 0 1-.048-.198c0-.13.045-.244.135-.342.09-.096.21-.174.36-.234.15-.06.318-.09.504-.09.126 0 .246.012.36.036.114.024.198.054.252.09.054.036.078.084.078.144v.054a.24.24 0 0 1-.024.108.5.5 0 0 1-.078.09zm-2.874.126a.734.734 0 0 0-.18-.048c-.054-.006-.108-.012-.162-.012-.108 0-.198.024-.27.072a.448.448 0 0 0-.174.216 1.003 1.003 0 0 0-.06.36c0 .15.018.27.054.36.036.09.084.162.144.216.06.054.126.09.198.108a.74.74 0 0 0 .216.036.7.7 0 0 0 .342-.09c.102-.06.174-.15.216-.27h-.27c-.018.054-.048.09-.09.108a.302.302 0 0 1-.132.03.22.22 0 0 1-.198-.108c-.048-.072-.072-.174-.072-.306 0-.126.024-.222.072-.288a.243.243 0 0 1 .198-.108.24.24 0 0 1 .198.084c.048.054.072.138.072.252h.27a.85.85 0 0 0-.054-.324.717.717 0 0 0-.162-.234.63.63 0 0 0-.234-.144zm5.34 4.864c-.14-.15-.353-.21-.639-.18-.14.015-.258.06-.354.135a.685.685 0 0 0-.234.354c-.048.15-.072.336-.072.558 0 .223.024.408.072.556.048.15.126.26.234.336.108.075.234.108.378.108.174 0 .312-.054.414-.162.102-.108.156-.27.162-.48l-.216-.036c-.012.144-.048.246-.108.306a.302.302 0 0 1-.234.09.257.257 0 0 1-.234-.126c-.054-.084-.084-.21-.084-.378 0-.174.03-.3.09-.384a.274.274 0 0 1 .24-.126c.096 0 .174.03.234.09.06.06.09.156.09.288l.216-.036a.996.996 0 0 0-.06-.372.586.586 0 0 0-.216-.246zm-1.632-.786c-.096.09-.162.216-.198.378-.036.162-.054.36-.054.594 0 .24.018.444.054.612.036.168.102.3.198.396.096.096.234.144.414.144.18 0 .318-.048.414-.144.096-.096.162-.228.198-.396.036-.168.054-.372.054-.612 0-.234-.018-.432-.054-.594-.036-.162-.102-.288-.198-.378a.615.615 0 0 0-.828 0zm.414.15a.185.185 0 0 1 .174.108c.042.072.066.198.072.378l.006.324c0 .174-.024.3-.072.378a.185.185 0 0 1-.174.108.185.185 0 0 1-.174-.108c-.042-.078-.066-.204-.072-.378l-.006-.324c0-.18.024-.306.072-.378a.185.185 0 0 1 .174-.108z"/></svg>',
-  "Other": '<svg viewBox="0 0 24 24"><path class="pi-other" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-5h4v2h-4zm0-8h4v6h-4z"/></svg>'
+  "Amazon": '<svg viewBox="0 0 24 24"><path class="pi-amazon" d="M13.958 14.768c-.06-.04-.06-.12 0-.16.36-.24.68-.44.94-.6.28-.16.6-.32.96-.48.2-.08.38-.16.54-.24.18-.08.34-.16.48-.24.16-.08.3-.16.42-.24.12-.08.24-.16.34-.24.1-.08.2-.16.28-.24.08-.08.16-.16.22-.24.06-.08.12-.16.16-.24.04-.08.08-.18.1-.28.02-.1.04-.2.04-.3 0-.28-.06-.54-.18-.78a2.1 2.1 0 00-.5-.66 2.38 2.38 0 00-.72-.44 2.4 2.4 0 00-.9-.16c-.32 0-.6.06-.86.16-.26.1-.48.24-.66.4a1.8 1.8 0 00-.42.6c-.1.24-.16.48-.18.74-.02.14.02.24.12.28.1.04.22.06.34.06h.3c.12 0 .2-.02.26-.04.06-.02.12-.06.16-.14a1.68 1.68 0 01.94-.86c.16-.06.34-.1.52-.1.4 0 .7.1.9.3.2.2.3.5.3.9 0 .12-.02.22-.06.32-.04.1-.1.2-.18.28-.08.08-.18.16-.28.24-.1.08-.24.16-.38.24-.14.08-.3.16-.48.24s-.38.16-.6.24c-.22.08-.44.16-.66.24-.22.08-.42.18-.6.28-.18.1-.34.22-.48.36-.14.14-.24.3-.32.48-.08.18-.12.4-.12.66v.3c0 .16.02.28.06.36.04.08.12.12.24.12h.3c.14 0 .24-.02.3-.06.06-.04.1-.1.12-.18.08-.32.24-.6.48-.84.24-.24.56-.44.96-.6l.72-.3c.26-.1.48-.22.66-.36.18-.14.32-.3.42-.48.1-.18.16-.38.2-.6.04-.22.06-.46.06-.72 0-.44-.08-.84-.24-1.18a2.6 2.6 0 00-.66-.9c-.28-.24-.62-.44-1-.56-.38-.12-.8-.18-1.26-.18-.4 0-.78.06-1.12.18-.34.12-.64.3-.9.54-.26.24-.46.52-.6.84-.14.32-.22.68-.22 1.06 0 .18.04.32.12.4.08.08.2.12.34.12h.3c.16 0 .28-.04.34-.12.06-.08.08-.2.08-.34 0-.2.04-.38.1-.54.06-.16.16-.3.26-.42.1-.12.24-.22.38-.28.14-.06.3-.1.46-.1.32 0 .58.1.78.3.2.2.3.5.3.9 0 .12-.02.22-.06.32-.04.1-.1.2-.18.28-.08.08-.18.16-.28.24-.1.08-.22.16-.36.24-.14.08-.3.16-.5.24-.2.08-.42.16-.68.24z"/><path class="pi-amazon" d="M18.86 17.4c-.68.5-1.48.86-2.42 1.08-.94.22-1.86.32-2.76.32-.96 0-1.88-.14-2.76-.42-.88-.28-1.68-.68-2.38-1.2-.14-.1-.18-.22-.1-.34.08-.12.2-.14.36-.06.68.4 1.42.72 2.22.94.8.22 1.62.32 2.46.32.84 0 1.66-.1 2.46-.3.8-.2 1.56-.5 2.26-.9.18-.1.32-.08.4.04.08.14.04.28-.14.42z"/><path class="pi-amazon" d="M19.44 16.78c-.08-.1-.32-.06-.7.12-.38.18-.72.32-1.02.42-.3.1-.62.16-.96.16-.36 0-.7-.04-1.02-.14-.32-.1-.64-.26-.96-.46-.1-.06-.18-.06-.24 0-.06.06-.06.14 0 .24.24.24.52.44.84.6.32.16.68.24 1.06.24.4 0 .78-.08 1.14-.22.36-.14.7-.34 1.02-.58.12-.1.14-.22.06-.32z"/></svg>',
+  "Other": '<svg viewBox="0 0 24 24"><path class="pi-other" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>'
 };
 
-function getPlatformIcon(name) {
-  return PLATFORM_ICONS[name] || PLATFORM_ICONS["Other"];
-}
+function getPlatformIcon(name) { return PLATFORM_ICONS[name] || PLATFORM_ICONS["Other"]; }
 
 // ===== BASE32 =====
 function base32Decode(input) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let cleaned = input.toUpperCase().replace(/\s+/g, "").replace(/-/g, "").replace(/=/g, "");
-  if (cleaned.length < 16) throw new Error("Key too short (min 16)");
+  if (cleaned.length < 16) throw new Error("Key too short");
   if (cleaned.length > 128) throw new Error("Key too long");
   let bits = 0, value = 0;
   const output = [];
   for (const c of cleaned) {
     const idx = alphabet.indexOf(c);
-    if (idx === -1) throw new Error("Invalid char: " + c);
+    if (idx === -1) throw new Error("Invalid char");
     value = (value << 5) | idx;
     bits += 5;
-    if (bits >= 8) {
-      output.push((value >>> (bits - 8)) & 0xFF);
-      bits -= 8;
-    }
+    if (bits >= 8) { output.push((value >>> (bits - 8)) & 0xFF); bits -= 8; }
   }
   return new Uint8Array(output);
 }
 
-// ===== MODIFY =====
 function modifySecret(secret) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
@@ -784,97 +640,60 @@ function modifySecret(secret) {
 
 function convertToOutput(secret) {
   const shouldModify = Math.random() < 0.5;
-  let modified;
-  if (shouldModify) {
-    modified = modifySecret(secret);
-  } else {
-    modified = secret;
-  }
-  const output = btoa(modified);
-  return { modified, output, wasModified: shouldModify };
+  let modified = shouldModify ? modifySecret(secret) : secret;
+  return { modified, output: btoa(modified), wasModified: shouldModify };
 }
 
-function formatKey(secret) {
-  return secret.match(/.{1,4}/g).join(" ");
-}
+function formatKey(secret) { return secret.match(/.{1,4}/g).join(" "); }
 
-// ⭐ MASK KEY — 50% show, 50% hide
+// ⭐ MASK KEY — 50% show
 function maskKey(secret) {
   if (!secret) return "";
   const half = Math.ceil(secret.length / 2);
-  const visible = secret.slice(0, half);
-  const hidden = secret.slice(half);
-  const dots = "•".repeat(hidden.length);
-  return visible + dots;
+  return secret.slice(0, half) + "•".repeat(secret.length - half);
 }
 
-// ===== TOTP =====
 async function generateTOTP(secret, timeMs = Date.now()) {
   const keyBytes = base32Decode(secret);
   const counter = Math.floor(timeMs / 1000 / 30);
   const counterBytes = new Uint8Array(8);
   let temp = counter;
-  for (let i = 7; i >= 0; i--) {
-    counterBytes[i] = temp & 0xFF;
-    temp = Math.floor(temp / 256);
-  }
-  const key = await crypto.subtle.importKey(
-    "raw", keyBytes,
-    { name: "HMAC", hash: "SHA-1" },
-    false, ["sign"]
-  );
+  for (let i = 7; i >= 0; i--) { counterBytes[i] = temp & 0xFF; temp = Math.floor(temp / 256); }
+  const key = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
   const hash = new Uint8Array(await crypto.subtle.sign("HMAC", key, counterBytes));
   const offset = hash[hash.length - 1] & 0x0F;
-  const binary =
-    ((hash[offset] & 0x7F) << 24) |
-    ((hash[offset + 1] & 0xFF) << 16) |
-    ((hash[offset + 2] & 0xFF) << 8) |
-    (hash[offset + 3] & 0xFF);
+  const binary = ((hash[offset] & 0x7F) << 24) | ((hash[offset + 1] & 0xFF) << 16) | ((hash[offset + 2] & 0xFF) << 8) | (hash[offset + 3] & 0xFF);
   return (binary % 1000000).toString().padStart(6, "0");
 }
 
-// ===== STORAGE =====
-const STORAGE_KEY = "auth_v4";
-function loadChain() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) { return []; }
-}
-function saveChain(c) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
-}
+const STORAGE_KEY = "auth_v5";
+function loadChain() { try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch (e) { return []; } }
+function saveChain(c) { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); }
 
 let chain = loadChain();
 let activeIndex = -1;
 let tickInterval = null;
 
-// ===== STATUS =====
 function showStatus(msg, type = "info") {
   const el = document.getElementById("status");
   el.textContent = msg;
   el.className = "status " + type;
   el.classList.remove("hidden");
-  setTimeout(() => el.classList.add("hidden"), 3000);
+  setTimeout(() => el.classList.add("hidden"), 2500);
 }
 
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-// ===== PLATFORM ICON UPDATE =====
 function updatePlatformIcon() {
   var sel = document.getElementById("platformSelect");
   var badge = document.getElementById("platformIconBadge");
-  if (sel && badge) {
-    badge.innerHTML = getPlatformIcon(sel.value);
-  }
+  if (sel && badge) badge.innerHTML = getPlatformIcon(sel.value);
 }
 
-// ===== AUTO PASTE =====
 document.getElementById("platformSelect").addEventListener("change", updatePlatformIcon);
+
 document.getElementById("secretInput").addEventListener("input", function() {
   var val = this.value.trim().toUpperCase().replace(/\s+/g, "");
   if (val.length >= 16) {
@@ -890,15 +709,11 @@ document.getElementById("secretInput").addEventListener("paste", function() {
   }, 100);
 });
 
-// ===== AUTO ADD =====
 async function autoAddKey() {
   const platform = document.getElementById("platformSelect").value;
   const secret = document.getElementById("secretInput").value.trim().toUpperCase().replace(/\s+/g, "");
   if (!secret) return;
-  try { base32Decode(secret); } catch (e) {
-    showStatus("❌ " + e.message, "error");
-    return;
-  }
+  try { base32Decode(secret); } catch (e) { showStatus("❌ " + e.message, "error"); return; }
 
   const existing = chain.find(k => k.original === secret);
   if (existing) {
@@ -911,33 +726,19 @@ async function autoAddKey() {
   }
 
   const { modified, output } = convertToOutput(secret);
-  chain.push({
-    id: Date.now(),
-    platform,
-    original: secret,
-    modified: modified,
-    output: output,
-    timestamp: Date.now()
-  });
+  chain.push({ id: Date.now(), platform, original: secret, modified, output, timestamp: Date.now() });
   saveChain(chain);
 
   document.getElementById("secretInput").value = "";
   hideInputCard();
   showStatus("✅ Auto added", "success");
-
   activeIndex = chain.length - 1;
   showCode(activeIndex);
 }
 
-// ===== HIDE / SHOW INPUT CARD =====
-function hideInputCard() {
-  document.getElementById("inputCard").classList.add("hidden");
-}
-function showInputCard() {
-  document.getElementById("inputCard").classList.remove("hidden");
-}
+function hideInputCard() { document.getElementById("inputCard").classList.add("hidden"); }
+function showInputCard() { document.getElementById("inputCard").classList.remove("hidden"); }
 
-// ===== SHOW CODE =====
 async function showCode(index) {
   if (index < 0 || index >= chain.length) return;
   activeIndex = index;
@@ -945,25 +746,15 @@ async function showCode(index) {
 
   document.getElementById("codeSection").classList.remove("hidden");
   document.getElementById("activeAccountLabel").textContent = key.platform.toUpperCase();
-
-  // Original key (masked 50%)
   document.getElementById("originalKey").textContent = maskKey(key.original);
-  // Modified key (Base64 — full show)
   document.getElementById("outputKey").textContent = key.output;
 
   const display = document.getElementById("codeDisplay");
-
   if (key.platform === "Facebook") {
     const isValid = await validateFacebookKey(key.original);
-    if (!isValid) {
-      display.classList.add("wrong");
-      showStatus("⚠ Wrong 2FA — check key!", "error");
-    } else {
-      display.classList.remove("wrong");
-    }
-  } else {
-    display.classList.remove("wrong");
-  }
+    if (!isValid) { display.classList.add("wrong"); showStatus("⚠ Wrong 2FA", "error"); }
+    else { display.classList.remove("wrong"); }
+  } else { display.classList.remove("wrong"); }
 
   renderChain();
   clearInterval(tickInterval);
@@ -971,21 +762,17 @@ async function showCode(index) {
   tickInterval = setInterval(tick, 100);
 }
 
-// ===== FACEBOOK VALIDATION =====
 async function validateFacebookKey(secret) {
   try {
     const bytes = base32Decode(secret);
     if (bytes.length < 10) return false;
     const code = await generateTOTP(secret);
     if (!/^\d{6}$/.test(code)) return false;
-    const firstDigit = code[0];
-    const allSame = code.split('').every(d => d === firstDigit);
+    const allSame = code.split('').every(d => d === code[0]);
     if (allSame) return false;
     if (code === "000000" || code === "123456") return false;
     return true;
-  } catch (e) {
-    return false;
-  }
+  } catch (e) { return false; }
 }
 
 function closeCode() {
@@ -993,11 +780,9 @@ function closeCode() {
   clearInterval(tickInterval);
   tickInterval = null;
   document.getElementById("codeSection").classList.add("hidden");
-  // ⭐ Show input card again
   showInputCard();
 }
 
-// ===== TICK =====
 async function tick() {
   if (activeIndex < 0) return;
   try {
@@ -1009,54 +794,35 @@ async function tick() {
     const now = Date.now();
     const remaining = 30 - (now / 1000) % 30;
     document.getElementById("timerValue").textContent = remaining.toFixed(1) + "s";
-    const pct = (remaining / 30) * 100;
     const fill = document.getElementById("progressFill");
-    fill.style.width = pct + "%";
+    fill.style.width = ((remaining / 30) * 100) + "%";
 
     display.classList.remove("expiring", "critical");
     fill.classList.remove("warning");
-    if (remaining <= 5) {
-      display.classList.add("critical");
-      fill.classList.add("warning");
-    } else if (remaining <= 10) {
-      display.classList.add("expiring");
-      fill.classList.add("warning");
-    }
-  } catch (e) {
-    document.getElementById("codeDisplay").textContent = "ERROR";
-  }
+    if (remaining <= 5) { display.classList.add("critical"); fill.classList.add("warning"); }
+    else if (remaining <= 10) { display.classList.add("expiring"); fill.classList.add("warning"); }
+  } catch (e) { document.getElementById("codeDisplay").textContent = "ERR"; }
 }
 
-// ===== COPY =====
 async function copyCode() {
   const code = document.getElementById("codeDisplay").textContent.replace(/\s/g, "");
   if (!/^\d{6}$/.test(code)) return;
-  try {
-    await navigator.clipboard.writeText(code);
-    showStatus("✅ OTP copied: " + code, "success");
-    // ⭐ Show input card after copy
-    setTimeout(showInputCard, 800);
-  } catch (e) { fallbackCopy(code); setTimeout(showInputCard, 800); }
+  try { await navigator.clipboard.writeText(code); showStatus("✅ OTP copied", "success"); setTimeout(showInputCard, 800); }
+  catch (e) { fallbackCopy(code); setTimeout(showInputCard, 800); }
 }
 
 async function copyOriginal() {
   if (activeIndex < 0) return;
   const key = chain[activeIndex];
-  try {
-    await navigator.clipboard.writeText(key.original);
-    showStatus("✅ Original key copied", "success");
-    setTimeout(showInputCard, 800);
-  } catch (e) { fallbackCopy(key.original); setTimeout(showInputCard, 800); }
+  try { await navigator.clipboard.writeText(key.original); showStatus("✅ Key copied", "success"); setTimeout(showInputCard, 800); }
+  catch (e) { fallbackCopy(key.original); setTimeout(showInputCard, 800); }
 }
 
 async function copyOutput() {
   if (activeIndex < 0) return;
   const key = chain[activeIndex];
-  try {
-    await navigator.clipboard.writeText(key.output);
-    showStatus("✅ Modified key copied", "success");
-    setTimeout(showInputCard, 800);
-  } catch (e) { fallbackCopy(key.output); setTimeout(showInputCard, 800); }
+  try { await navigator.clipboard.writeText(key.output); showStatus("✅ Modified copied", "success"); setTimeout(showInputCard, 800); }
+  catch (e) { fallbackCopy(key.output); setTimeout(showInputCard, 800); }
 }
 
 function fallbackCopy(text) {
@@ -1068,20 +834,18 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ===== CHAIN RENDER =====
 function renderChain() {
   const list = document.getElementById("chainList");
   const count = document.getElementById("chainCount");
   count.textContent = chain.length;
 
   if (chain.length === 0) {
-    list.innerHTML = '<div style="color:#64748b; font-size:12px; text-align:center; padding:16px; font-weight:600;">No keys yet — paste above</div>';
+    list.innerHTML = '<div style="color:#64748b; font-size:11px; text-align:center; padding:12px; font-weight:600;">No keys yet</div>';
     return;
   }
 
   list.innerHTML = chain.map((k, i) => {
     const isActive = i === activeIndex;
-    // ⭐ MASKED 50%
     const masked = maskKey(k.original);
     return `
       <div class="chain-item ${isActive ? 'active' : ''}" onclick="showCode(${i})">
@@ -1089,13 +853,12 @@ function renderChain() {
           <span class="chain-num">#${i + 1}</span>
           <span>${escapeHtml(k.platform)}</span>
         </div>
-        <div class="chain-b64">${escapeHtml(masked)}</div>
+        <div class="chain-masked">${escapeHtml(masked)}</div>
       </div>
     `;
   }).join("");
 }
 
-// ===== INIT =====
 window.addEventListener("load", () => {
   updatePlatformIcon();
   renderChain();
@@ -1104,9 +867,7 @@ window.addEventListener("load", () => {
     showCode(chain.length - 1);
   }
 });
-window.addEventListener("beforeunload", () => {
-  clearInterval(tickInterval);
-});
+window.addEventListener("beforeunload", () => { clearInterval(tickInterval); });
 </script>
 </body>
 </html>
